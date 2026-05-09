@@ -790,6 +790,16 @@ class AppLocalizations {
     bs: 'Valuta postavljena na $code.',
     da: 'Valuta sat til $code.',
   );
+  String get currencyLockedDescription => _byLanguage(
+    en: 'Your home currency is locked to keep your spending history consistent. Changing it would invalidate past receipt amounts and budget totals.',
+    bs: 'Tvoja osnovna valuta je zakljucana radi konzistentnosti historije potrosnje. Promjena bi onemogucila usporedbu istorijskih iznosa i budzeta.',
+    da: 'Din hjemvaluta er laast for at holde din forbrugshistorik konsistent. En aendring ville ugyldiggore tidligere kviteringsbelob og budgettotaler.',
+  );
+  String get currencyLockedResetHint => _byLanguage(
+    en: 'Need a different currency? Use "Clear all data" in the Data section below.',
+    bs: 'Trebaš drugu valutu? Koristi "Obriši sve podatke" u sekciji Podaci ispod.',
+    da: 'Har du brug for en anden valuta? Brug "Slet alle data" i afsnittet Data nedenfor.',
+  );
 
   // ── Home view switcher ─────────────────────────────────────────────────────
   String get homeViewSwitcherHome => _byLanguage(
