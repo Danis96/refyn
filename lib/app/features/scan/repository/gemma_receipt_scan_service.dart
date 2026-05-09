@@ -60,6 +60,7 @@ class GemmaReceiptScanService {
 
   Future<Map<String, dynamic>> scanReceiptImage({
     required String imagePath,
+    String? defaultCurrency,
   }) async {
     final AiConfiguration config = await _configurationRepository
         .getConfiguration();
@@ -96,7 +97,7 @@ class GemmaReceiptScanService {
     final HttpClientRequest request = await _httpClient.postUrl(uri);
     request.headers.contentType = ContentType.json;
 
-    final String prompt = _promptBuilder.build();
+    final String prompt = _promptBuilder.build(defaultCurrency: defaultCurrency);
     final Map<String, dynamic> body = <String, dynamic>{
       'contents': <dynamic>[
         <String, dynamic>{

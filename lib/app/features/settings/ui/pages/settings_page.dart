@@ -5,9 +5,11 @@ import 'package:refyn/app/features/settings/action_utils/settings_action_utils.d
 import 'package:refyn/app/features/settings/controllers/settings_controller.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_about_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_ai_config_card.dart';
-import 'package:refyn/app/features/settings/ui/widgets/settings_export_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_currency_card.dart';
+import 'package:refyn/app/features/settings/ui/widgets/settings_export_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_language_card.dart';
+import 'package:refyn/app/features/travel_mode/action_utils/travel_mode_action_utils.dart';
+import 'package:refyn/app/features/travel_mode/ui/widgets/travel_mode_settings_card/travel_mode_settings_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_legal_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_theme_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_title_block.dart';
@@ -29,6 +31,14 @@ class SettingsPage extends StatelessWidget {
               children: <Widget>[
                 const SettingsTitleBlock(),
                 const SizedBox(height: 16),
+                TravelModeSettingsCard(
+                  onStartTrip: () =>
+                      TravelModeActionUtils.startTrip(context),
+                  onEndTrip: () => TravelModeActionUtils.endTrip(context),
+                  onOpenReceipts: () =>
+                      TravelModeActionUtils.showTripReceipts(context),
+                ),
+                const SizedBox(height: 14),
                 SettingsThemeCard(
                   selectedMode: controller.themeMode,
                   onChanged: (ThemeMode mode) =>
@@ -44,11 +54,7 @@ class SettingsPage extends StatelessWidget {
                       ),
                 ),
                 const SizedBox(height: 14),
-                SettingsCurrencyCard(
-                  selectedCode: controller.currencyCode,
-                  onChanged: (String code) =>
-                      SettingsActionUtils.onCurrencyChanged(context, code),
-                ),
+                SettingsCurrencyCard(currencyCode: controller.currencyCode),
                 const SizedBox(height: 14),
                 const SettingsAiConfigCard(),
                 const SizedBox(height: 14),

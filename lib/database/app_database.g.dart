@@ -403,6 +403,17 @@ class $ReceiptsTable extends Receipts with TableInfo<$ReceiptsTable, Receipt> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _travelSessionIdMeta = const VerificationMeta(
+    'travelSessionId',
+  );
+  @override
+  late final GeneratedColumn<int> travelSessionId = GeneratedColumn<int>(
+    'travel_session_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     localId,
@@ -439,6 +450,7 @@ class $ReceiptsTable extends Receipts with TableInfo<$ReceiptsTable, Receipt> {
     imagePath,
     payloadJson,
     createdAt,
+    travelSessionId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -718,6 +730,15 @@ class $ReceiptsTable extends Receipts with TableInfo<$ReceiptsTable, Receipt> {
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
     }
+    if (data.containsKey('travel_session_id')) {
+      context.handle(
+        _travelSessionIdMeta,
+        travelSessionId.isAcceptableOrUnknown(
+          data['travel_session_id']!,
+          _travelSessionIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -863,6 +884,10 @@ class $ReceiptsTable extends Receipts with TableInfo<$ReceiptsTable, Receipt> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      travelSessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}travel_session_id'],
+      ),
     );
   }
 
@@ -907,6 +932,11 @@ class Receipt extends DataClass implements Insertable<Receipt> {
   final String? imagePath;
   final String payloadJson;
   final DateTime createdAt;
+
+  /// Non-null while this receipt belongs to an active travel-mode trip.
+  /// Cleared (set to null) when the trip ends and amounts are converted to
+  /// the home currency.
+  final int? travelSessionId;
   const Receipt({
     required this.localId,
     required this.receiptId,
@@ -942,6 +972,7 @@ class Receipt extends DataClass implements Insertable<Receipt> {
     this.imagePath,
     required this.payloadJson,
     required this.createdAt,
+    this.travelSessionId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1024,6 +1055,9 @@ class Receipt extends DataClass implements Insertable<Receipt> {
     }
     map['payload_json'] = Variable<String>(payloadJson);
     map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || travelSessionId != null) {
+      map['travel_session_id'] = Variable<int>(travelSessionId);
+    }
     return map;
   }
 
@@ -1105,6 +1139,9 @@ class Receipt extends DataClass implements Insertable<Receipt> {
           : Value(imagePath),
       payloadJson: Value(payloadJson),
       createdAt: Value(createdAt),
+      travelSessionId: travelSessionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(travelSessionId),
     );
   }
 
@@ -1152,6 +1189,7 @@ class Receipt extends DataClass implements Insertable<Receipt> {
       imagePath: serializer.fromJson<String?>(json['imagePath']),
       payloadJson: serializer.fromJson<String>(json['payloadJson']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      travelSessionId: serializer.fromJson<int?>(json['travelSessionId']),
     );
   }
   @override
@@ -1194,6 +1232,7 @@ class Receipt extends DataClass implements Insertable<Receipt> {
       'imagePath': serializer.toJson<String?>(imagePath),
       'payloadJson': serializer.toJson<String>(payloadJson),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'travelSessionId': serializer.toJson<int?>(travelSessionId),
     };
   }
 
@@ -1232,6 +1271,7 @@ class Receipt extends DataClass implements Insertable<Receipt> {
     Value<String?> imagePath = const Value.absent(),
     String? payloadJson,
     DateTime? createdAt,
+    Value<int?> travelSessionId = const Value.absent(),
   }) => Receipt(
     localId: localId ?? this.localId,
     receiptId: receiptId ?? this.receiptId,
@@ -1287,6 +1327,9 @@ class Receipt extends DataClass implements Insertable<Receipt> {
     imagePath: imagePath.present ? imagePath.value : this.imagePath,
     payloadJson: payloadJson ?? this.payloadJson,
     createdAt: createdAt ?? this.createdAt,
+    travelSessionId: travelSessionId.present
+        ? travelSessionId.value
+        : this.travelSessionId,
   );
   Receipt copyWithCompanion(ReceiptsCompanion data) {
     return Receipt(
@@ -1368,6 +1411,9 @@ class Receipt extends DataClass implements Insertable<Receipt> {
           ? data.payloadJson.value
           : this.payloadJson,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      travelSessionId: data.travelSessionId.present
+          ? data.travelSessionId.value
+          : this.travelSessionId,
     );
   }
 
@@ -1407,7 +1453,8 @@ class Receipt extends DataClass implements Insertable<Receipt> {
           ..write('rawJson: $rawJson, ')
           ..write('imagePath: $imagePath, ')
           ..write('payloadJson: $payloadJson, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('travelSessionId: $travelSessionId')
           ..write(')'))
         .toString();
   }
@@ -1448,6 +1495,7 @@ class Receipt extends DataClass implements Insertable<Receipt> {
     imagePath,
     payloadJson,
     createdAt,
+    travelSessionId,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -1486,7 +1534,8 @@ class Receipt extends DataClass implements Insertable<Receipt> {
           other.rawJson == this.rawJson &&
           other.imagePath == this.imagePath &&
           other.payloadJson == this.payloadJson &&
-          other.createdAt == this.createdAt);
+          other.createdAt == this.createdAt &&
+          other.travelSessionId == this.travelSessionId);
 }
 
 class ReceiptsCompanion extends UpdateCompanion<Receipt> {
@@ -1524,6 +1573,7 @@ class ReceiptsCompanion extends UpdateCompanion<Receipt> {
   final Value<String?> imagePath;
   final Value<String> payloadJson;
   final Value<DateTime> createdAt;
+  final Value<int?> travelSessionId;
   const ReceiptsCompanion({
     this.localId = const Value.absent(),
     this.receiptId = const Value.absent(),
@@ -1559,6 +1609,7 @@ class ReceiptsCompanion extends UpdateCompanion<Receipt> {
     this.imagePath = const Value.absent(),
     this.payloadJson = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.travelSessionId = const Value.absent(),
   });
   ReceiptsCompanion.insert({
     this.localId = const Value.absent(),
@@ -1595,6 +1646,7 @@ class ReceiptsCompanion extends UpdateCompanion<Receipt> {
     this.imagePath = const Value.absent(),
     this.payloadJson = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.travelSessionId = const Value.absent(),
   }) : receiptId = Value(receiptId);
   static Insertable<Receipt> custom({
     Expression<int>? localId,
@@ -1631,6 +1683,7 @@ class ReceiptsCompanion extends UpdateCompanion<Receipt> {
     Expression<String>? imagePath,
     Expression<String>? payloadJson,
     Expression<DateTime>? createdAt,
+    Expression<int>? travelSessionId,
   }) {
     return RawValuesInsertable({
       if (localId != null) 'local_id': localId,
@@ -1668,6 +1721,7 @@ class ReceiptsCompanion extends UpdateCompanion<Receipt> {
       if (imagePath != null) 'image_path': imagePath,
       if (payloadJson != null) 'payload_json': payloadJson,
       if (createdAt != null) 'created_at': createdAt,
+      if (travelSessionId != null) 'travel_session_id': travelSessionId,
     });
   }
 
@@ -1706,6 +1760,7 @@ class ReceiptsCompanion extends UpdateCompanion<Receipt> {
     Value<String?>? imagePath,
     Value<String>? payloadJson,
     Value<DateTime>? createdAt,
+    Value<int?>? travelSessionId,
   }) {
     return ReceiptsCompanion(
       localId: localId ?? this.localId,
@@ -1743,6 +1798,7 @@ class ReceiptsCompanion extends UpdateCompanion<Receipt> {
       imagePath: imagePath ?? this.imagePath,
       payloadJson: payloadJson ?? this.payloadJson,
       createdAt: createdAt ?? this.createdAt,
+      travelSessionId: travelSessionId ?? this.travelSessionId,
     );
   }
 
@@ -1853,6 +1909,9 @@ class ReceiptsCompanion extends UpdateCompanion<Receipt> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
+    if (travelSessionId.present) {
+      map['travel_session_id'] = Variable<int>(travelSessionId.value);
+    }
     return map;
   }
 
@@ -1892,7 +1951,8 @@ class ReceiptsCompanion extends UpdateCompanion<Receipt> {
           ..write('rawJson: $rawJson, ')
           ..write('imagePath: $imagePath, ')
           ..write('payloadJson: $payloadJson, ')
-          ..write('createdAt: $createdAt')
+          ..write('createdAt: $createdAt, ')
+          ..write('travelSessionId: $travelSessionId')
           ..write(')'))
         .toString();
   }
@@ -3343,6 +3403,7 @@ typedef $$ReceiptsTableCreateCompanionBuilder =
       Value<String?> imagePath,
       Value<String> payloadJson,
       Value<DateTime> createdAt,
+      Value<int?> travelSessionId,
     });
 typedef $$ReceiptsTableUpdateCompanionBuilder =
     ReceiptsCompanion Function({
@@ -3380,6 +3441,7 @@ typedef $$ReceiptsTableUpdateCompanionBuilder =
       Value<String?> imagePath,
       Value<String> payloadJson,
       Value<DateTime> createdAt,
+      Value<int?> travelSessionId,
     });
 
 final class $$ReceiptsTableReferences
@@ -3589,6 +3651,11 @@ class $$ReceiptsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get travelSessionId => $composableBuilder(
+    column: $table.travelSessionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> receiptItemsRefs(
     Expression<bool> Function($$ReceiptItemsTableFilterComposer f) f,
   ) {
@@ -3793,6 +3860,11 @@ class $$ReceiptsTableOrderingComposer
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get travelSessionId => $composableBuilder(
+    column: $table.travelSessionId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ReceiptsTableAnnotationComposer
@@ -3950,6 +4022,11 @@ class $$ReceiptsTableAnnotationComposer
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
+  GeneratedColumn<int> get travelSessionId => $composableBuilder(
+    column: $table.travelSessionId,
+    builder: (column) => column,
+  );
+
   Expression<T> receiptItemsRefs<T extends Object>(
     Expression<T> Function($$ReceiptItemsTableAnnotationComposer a) f,
   ) {
@@ -4038,6 +4115,7 @@ class $$ReceiptsTableTableManager
                 Value<String?> imagePath = const Value.absent(),
                 Value<String> payloadJson = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<int?> travelSessionId = const Value.absent(),
               }) => ReceiptsCompanion(
                 localId: localId,
                 receiptId: receiptId,
@@ -4073,6 +4151,7 @@ class $$ReceiptsTableTableManager
                 imagePath: imagePath,
                 payloadJson: payloadJson,
                 createdAt: createdAt,
+                travelSessionId: travelSessionId,
               ),
           createCompanionCallback:
               ({
@@ -4110,6 +4189,7 @@ class $$ReceiptsTableTableManager
                 Value<String?> imagePath = const Value.absent(),
                 Value<String> payloadJson = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<int?> travelSessionId = const Value.absent(),
               }) => ReceiptsCompanion.insert(
                 localId: localId,
                 receiptId: receiptId,
@@ -4145,6 +4225,7 @@ class $$ReceiptsTableTableManager
                 imagePath: imagePath,
                 payloadJson: payloadJson,
                 createdAt: createdAt,
+                travelSessionId: travelSessionId,
               ),
           withReferenceMapper: (p0) => p0
               .map(

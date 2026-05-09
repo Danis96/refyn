@@ -8,6 +8,7 @@ import '../../../../../database/app_database.dart';
 import '../../../dashboard/ui/pages/dashboard_shell_page.dart';
 import '../../provider/introduction_provider.dart';
 import '../../repository/introduction_repository.dart';
+import 'home_currency_picker_page.dart';
 import 'introduction_page.dart';
 
 class IntroductionFlowPage extends StatelessWidget {
@@ -60,9 +61,13 @@ class _IntroductionFlowView extends StatelessWidget {
                   key: const ValueKey<String>('introduction'),
                   onCompleted: () {},
                 )
-              : const DashboardShellPage(
-                  key: ValueKey<String>('dashboard'),
-                ),
+              : provider.shouldShowHomeCurrencyPicker
+                  ? const HomeCurrencyPickerPage(
+                      key: ValueKey<String>('home-currency'),
+                    )
+                  : const DashboardShellPage(
+                      key: ValueKey<String>('dashboard'),
+                    ),
         );
       },
     );

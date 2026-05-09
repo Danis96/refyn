@@ -112,6 +112,8 @@ class SettingsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Sets the home currency once during onboarding. After onboarding the
+  /// only way to change it is to wipe all data via `clearAllLocalData`.
   Future<void> updateCurrency(String code) async {
     final String normalized = code.trim().toUpperCase();
     if (normalized.isEmpty || _currencyCode == normalized) {

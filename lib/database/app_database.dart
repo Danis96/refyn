@@ -53,6 +53,11 @@ class Receipts extends Table {
 
   TextColumn get payloadJson => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  /// Non-null while this receipt belongs to an active travel-mode trip.
+  /// Cleared (set to null) when the trip ends and amounts are converted to
+  /// the home currency.
+  IntColumn get travelSessionId => integer().nullable()();
 }
 
 class ReceiptItems extends Table {
@@ -100,7 +105,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'receipt_local_db'));
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -118,6 +123,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 4) {
         await m.addColumn(receiptItems, receiptItems.category);
+      }
+      if (from < 5) {
+        await m.addColumn(receipts, receipts.travelSessionId);
       }
     },
   );

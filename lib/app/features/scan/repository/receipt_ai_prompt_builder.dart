@@ -1,12 +1,17 @@
 import 'package:refyn/app/features/budgets/repository/category_budget_catalog.dart';
 
 class ReceiptAiPromptBuilder {
-  String build() => [
+  /// [defaultCurrency] is the user's preferred currency. It is passed to the
+  /// model only as context so it knows which currency the user expects — the
+  /// app does the mismatch comparison and conversion itself.
+  String build({String? defaultCurrency}) => [
     _guardSection,
     _imageQualitySection,
     _taskSection,
     _schemaSection,
     _fieldRulesSection,
+    if (defaultCurrency != null && defaultCurrency.trim().isNotEmpty)
+      _defaultCurrencyContext(defaultCurrency.trim()),
     _categorySection,
   ].join('\n\n');
 
@@ -21,8 +26,6 @@ Before extraction, decide whether the receipt can be read clearly enough to iden
 If the image is blurry, cropped, too dark or bright, has glare, or even one line item or required field is not reliably readable, return ONLY: {"imageQualityIssue":true,"reason":"<one sentence>"}.
 If the image contains two or more separate bills/documents, or the model cannot tell which bill is the primary target, return ONLY: {"imageQualityIssue":true,"reason":"<one sentence>"}.
 Do not guess. Do not return extracted receipt data in that case.''';
-
-
 
   static const String _taskSection = '''
 Step 1 — Identify receipt origin BEFORE extracting any data:
@@ -60,6 +63,11 @@ Rules:
 - Each item gets its own category.
 - Lines showing "Rabat" (Danish discount) are negative adjustments — apply them to the preceding item's finalPrice, do not create a separate item.
 - Lines like "PANT" or "Pant B" are bottle deposits — include them as separate items categorized as miscellaneous.''';
+
+  static String _defaultCurrencyContext(String defaultCurrency) => '''
+Context: the user's default currency is $defaultCurrency.
+Return all monetary values exactly as printed on the receipt — do NOT convert anything.
+The app handles currency conversion separately.''';
 
   String get _categorySection => '''
 Categories (use ONLY these exact values): ${_supportedCategories.join(', ')}

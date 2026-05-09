@@ -30,23 +30,6 @@ class SettingsActionUtils {
     return context.read<SettingsController>().updateLanguage(locale);
   }
 
-  static Future<void> onCurrencyChanged(
-    BuildContext context,
-    String code,
-  ) async {
-    await context.read<SettingsController>().updateCurrency(code);
-    if (!context.mounted) {
-      return;
-    }
-    await _reloadAppState(context);
-    if (!context.mounted) {
-      return;
-    }
-    AppSnackBar.success(
-      context,
-      context.l10n.currencySavedLabel(code.toUpperCase()),
-    );
-  }
 
   static Future<void> confirmApiKey(BuildContext context) async {
     final SettingsController controller = context.read<SettingsController>();

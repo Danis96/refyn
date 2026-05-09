@@ -4,6 +4,7 @@ import 'package:refyn/app/features/dashboard/controllers/dashboard_controller.da
 import 'package:refyn/app/features/history/controllers/history_controller.dart';
 import 'package:refyn/app/features/scan/controllers/scan_controller.dart';
 import 'package:refyn/app/features/scan/repository/scan_failure.dart';
+import 'package:refyn/app/features/travel_mode/controllers/travel_mode_controller.dart';
 import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/app/models/receipt/receipt_model.dart';
 import 'package:refyn/app/widgets/app_snackbar.dart';
@@ -48,12 +49,15 @@ class ScanActionUtils {
         .read<DashboardController>();
     final HistoryController historyController = context
         .read<HistoryController>();
+    final TravelModeController travelModeController = context
+        .read<TravelModeController>();
 
     await scanController.saveDraftReceipt();
     final bool saved = !scanController.hasPendingReceiptDraft;
     if (saved) {
       await dashboardController.refreshHome();
       await historyController.loadHistory();
+      await travelModeController.refresh();
     }
     if (!context.mounted) {
       return;

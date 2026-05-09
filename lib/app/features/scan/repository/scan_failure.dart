@@ -5,6 +5,7 @@ enum ScanFailureType {
   aiResponseFailed,
   invalidJson,
   parseFailure,
+  currencyConversionFailed,
 }
 
 class ScanFailure {
