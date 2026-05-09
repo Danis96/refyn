@@ -10,6 +10,19 @@ class IntroductionRepository {
   final AppSettingsDao _settingsDao;
 
   static const String _hasSeenIntroductionKey = 'has_seen_introduction';
+  static const String _homeCurrencyKey = 'currency_code';
+
+  Future<bool> hasHomeCurrency() async {
+    final String? value = await _settingsDao.getSetting(_homeCurrencyKey);
+    return value != null && value.trim().isNotEmpty;
+  }
+
+  Future<void> setHomeCurrency(String code) {
+    return _settingsDao.upsertSetting(
+      key: _homeCurrencyKey,
+      value: code.trim().toUpperCase(),
+    );
+  }
 
   List<IntroductionStep> loadSteps() {
     return const [

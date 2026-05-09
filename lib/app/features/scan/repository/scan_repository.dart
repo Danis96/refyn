@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:refyn/app/features/scan/repository/gemma_receipt_mapper.dart';
 import 'package:refyn/app/features/scan/repository/gemma_receipt_scan_service.dart';
 import 'package:refyn/app/features/scan/repository/scan_failure.dart';
+import 'package:refyn/app/features/travel_mode/repository/travel_mode_repository.dart';
+import 'package:refyn/app/shared/services/currency_conversion_service.dart';
 import 'package:refyn/app/shared/utils/app_currency_utils.dart';
 import 'package:refyn/app/models/receipt/receipt_db_mapper.dart';
 import 'package:refyn/app/models/receipt/receipt_model.dart';
@@ -18,17 +20,23 @@ class ScanRepository {
     required AppSettingsDao settingsDao,
     required GemmaReceiptScanService gemmaService,
     required MonthlyBudgetSyncRepository monthlyBudgetSyncRepository,
+    required CurrencyConversionService currencyConversionService,
+    required TravelModeRepository travelModeRepository,
     ImagePicker? imagePicker,
   }) : _receiptDao = receiptDao,
        _settingsDao = settingsDao,
        _gemmaService = gemmaService,
        _monthlyBudgetSyncRepository = monthlyBudgetSyncRepository,
+       _currencyConversionService = currencyConversionService,
+       _travelModeRepository = travelModeRepository,
        _imagePicker = imagePicker ?? ImagePicker();
 
   final ReceiptDao _receiptDao;
   final AppSettingsDao _settingsDao;
   final GemmaReceiptScanService _gemmaService;
   final MonthlyBudgetSyncRepository _monthlyBudgetSyncRepository;
+  final CurrencyConversionService _currencyConversionService;
+  final TravelModeRepository _travelModeRepository;
   final ImagePicker _imagePicker;
 
   Future<String?> pickImageFromGallery() async {
@@ -57,8 +65,18 @@ class ScanRepository {
 
   Future<ReceiptModel> scanReceipt({required String imagePath}) async {
     try {
+      final String homeCurrency = await _getDefaultCurrency();
+      final TravelModeState travelState = await _travelModeRepository
+          .getState();
+      final String targetCurrency = travelState.isActive
+          ? travelState.tripCurrency ?? homeCurrency
+          : homeCurrency;
+
       final Map<String, dynamic> aiPayload = await _gemmaService
-          .scanReceiptImage(imagePath: imagePath);
+          .scanReceiptImage(
+            imagePath: imagePath,
+            defaultCurrency: targetCurrency,
+          );
       if (_isNotAReceipt(aiPayload)) {
         final String reason = _notAReceiptReason(aiPayload);
         developer.log(
@@ -90,14 +108,48 @@ class ScanRepository {
         );
       }
 
-      final String defaultCurrency = await _getDefaultCurrency();
-      final ReceiptModel scanned = GemmaReceiptMapper.toReceiptModel(
+      final ReceiptModel scannedRaw = GemmaReceiptMapper.toReceiptModel(
         payload: aiPayload,
         imagePath: imagePath,
-        defaultCurrency: defaultCurrency,
+        defaultCurrency: targetCurrency,
       );
 
-      return scanned;
+      final ReceiptModel scanned = travelState.isActive
+          ? scannedRaw.copyWithTravelSessionId(travelState.sessionId)
+          : scannedRaw;
+
+      if (!_currencyConversionService.needsConversion(
+        scanned.currency,
+        targetCurrency,
+      )) {
+        return scanned;
+      }
+
+      try {
+        final ConversionResult result = await _currencyConversionService
+            .getRate(from: scanned.currency, to: targetCurrency);
+        developer.log(
+          'Converted receipt ${scanned.currency}→$targetCurrency rate=${result.rate}'
+          '${travelState.isActive ? ' (travel mode)' : ''}',
+          name: 'ScanRepository',
+        );
+        return scanned.convertedTo(
+          rate: result.rate,
+          currency: targetCurrency,
+        );
+      } on CurrencyConversionException catch (error) {
+        throw ScanException(
+          ScanFailure(
+            type: ScanFailureType.currencyConversionFailed,
+            title: AppLocalizations.current.currencyConversionFailedTitle,
+            message: AppLocalizations.current.currencyConversionFailedMessage(
+              scanned.currency,
+              targetCurrency,
+            ),
+            technicalDetails: error.message,
+          ),
+        );
+      }
     } on ScanException {
       rethrow;
     } on GemmaScanException catch (error) {

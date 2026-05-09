@@ -16,7 +16,8 @@
       "Bash(find /Users/danispreldzic/Desktop/Danis/PROJECTS/athanor/lib -path \"*export*\" -name \"*.dart\" 2>/dev/null)",
       "Read(//Users/danispreldzic/Desktop/Danis/PROJECTS/athanor/assets/fonts/**)",
       "Read(//Users/danispreldzic/Desktop/Danis/PROJECTS/athanor/**)",
-      "Bash(mkdir -p /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/assets/fonts && cp /Users/danispreldzic/Desktop/Danis/PROJECTS/athanor/assets/fonts/NotoSans-*.ttf /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/assets/fonts/ && ls /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/assets/fonts/)"
+      "Bash(mkdir -p /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/assets/fonts && cp /Users/danispreldzic/Desktop/Danis/PROJECTS/athanor/assets/fonts/NotoSans-*.ttf /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/assets/fonts/ && ls /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/assets/fonts/)",
+      "Bash(grep -rn \"WigglyLoader.indeterminate\\(\" /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/.dart_tool 2>/dev/null | head -3; echo \"---\"; find ~ -path \"*wiggly_loaders*lib*.dart\" 2>/dev/null | head -5)"
     ]
   }
 }

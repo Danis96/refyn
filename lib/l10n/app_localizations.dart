@@ -767,6 +767,8 @@ class AppLocalizations {
   String get invalidJsonResponseMessage => _byLanguage(en: 'AI returned broken JSON. Please retry scan.', bs: 'AI je vratio neispravan JSON. Pokusaj ponovo skenirati.', da: 'AI returnerede ugyldig JSON. Prov at scanne igen.');
   String get aiResponseFailedTitle => _byLanguage(en: 'AI response failed', bs: 'AI odgovor nije uspio', da: 'AI-svar mislykkedes');
   String get aiResponseFailedMessage => _byLanguage(en: 'Could not get valid AI response for this image.', bs: 'Nije moguce dobiti ispravan AI odgovor za ovu sliku.', da: 'Kunne ikke hente et gyldigt AI-svar for dette billede.');
+  String get currencyConversionFailedTitle => _byLanguage(en: 'Currency conversion failed', bs: 'Konverzija valute nije uspjela', da: 'Valutaomregning mislykkedes');
+  String currencyConversionFailedMessage(String from, String to) => _byLanguage(en: 'Could not convert $from to $to. Check your internet connection and try again.', bs: 'Nije moguce konvertovati $from u $to. Provjeri internet vezu i pokusaj ponovo.', da: 'Kunne ikke omregne $from til $to. Tjek din internetforbindelse og prov igen.');
 
   String get currency => _byLanguage(
     en: 'Currency',
@@ -787,6 +789,294 @@ class AppLocalizations {
     en: 'Currency set to $code.',
     bs: 'Valuta postavljena na $code.',
     da: 'Valuta sat til $code.',
+  );
+
+  // ── Home view switcher ─────────────────────────────────────────────────────
+  String get homeViewSwitcherHome => _byLanguage(
+    en: 'Home',
+    bs: 'Pocetna',
+    da: 'Hjem',
+  );
+  String get homeViewSwitcherTrip => _byLanguage(
+    en: 'Trip',
+    bs: 'Putovanje',
+    da: 'Tur',
+  );
+
+  // ── Trip info card ─────────────────────────────────────────────────────────
+  String get tripInfoCardTitle => _byLanguage(
+    en: 'Trip in progress',
+    bs: 'Putovanje u toku',
+    da: 'Tur i gang',
+  );
+  String tripInfoCardSubtitle(String homeCode) => _byLanguage(
+    en: 'End the trip to convert receipts back to $homeCode.',
+    bs: 'Zavrsi putovanje da pretvoris racune u $homeCode.',
+    da: 'Afslut turen for at omregne kvitteringer tilbage til $homeCode.',
+  );
+
+  // ── Trip summary hero ──────────────────────────────────────────────────────
+  String tripHeroAvgPerDay(String amount, String code) => _byLanguage(
+    en: '$amount $code / day',
+    bs: '$amount $code / dan',
+    da: '$amount $code / dag',
+  );
+  String tripHeroConvertsTo(String homeCode) => _byLanguage(
+    en: 'Converts to $homeCode',
+    bs: 'Pretvara se u $homeCode',
+    da: 'Omregnes til $homeCode',
+  );
+
+  // ── Scan travel banner ─────────────────────────────────────────────────────
+  String scanTravelBannerTitle(String code) => _byLanguage(
+    en: 'Scanning in $code',
+    bs: 'Skeniras u $code',
+    da: 'Scanner i $code',
+  );
+  String scanTravelBannerSubtitle(String homeCode) => _byLanguage(
+    en: 'Receipts save to this trip and convert to $homeCode when you end it.',
+    bs: 'Racuni se cuvaju u putovanju i pretvaraju u $homeCode kad zavrsis.',
+    da: 'Kvitteringer gemmes pa turen og omregnes til $homeCode, nar du afslutter.',
+  );
+
+  // ── Travel mode ────────────────────────────────────────────────────────────
+  String get travelModeIdleTitle => _byLanguage(
+    en: 'Travel mode',
+    bs: 'Putni nacin',
+    da: 'Rejsetilstand',
+  );
+  String get travelModeIdleSubtitle => _byLanguage(
+    en: 'Scan in a different currency while you’re away. We’ll convert it back to your home currency when the trip ends.',
+    bs: 'Skeniraj u drugoj valuti dok si na putu. Pretvorit cemo u tvoju zadanu valutu kad putovanje zavrsi.',
+    da: 'Scan i en anden valuta, mens du er pa rejse. Vi omregner det tilbage til din hjemmevaluta, nar turen slutter.',
+  );
+  String get travelModeStartTrip => _byLanguage(
+    en: 'Start a trip',
+    bs: 'Pocni putovanje',
+    da: 'Start tur',
+  );
+  String get travelModeInfoButton => _byLanguage(
+    en: 'How it works',
+    bs: 'Kako radi',
+    da: 'Sadan virker det',
+  );
+  String get travelModeActiveLabel => _byLanguage(
+    en: 'Travel mode',
+    bs: 'Putni nacin',
+    da: 'Rejsetilstand',
+  );
+  String get travelModeScanningIn => _byLanguage(
+    en: 'scanning in',
+    bs: 'skeniras u',
+    da: 'scanner i',
+  );
+  String get travelModeSpentSoFar => _byLanguage(
+    en: 'SPENT SO FAR',
+    bs: 'POTROSENO',
+    da: 'BRUGT INDTIL NU',
+  );
+  String travelModeReceiptCount(int count) => _byLanguage(
+    en: '$count receipt${count == 1 ? '' : 's'}',
+    bs: '$count racun${count == 1 ? '' : 'a'}',
+    da: '$count kvittering${count == 1 ? '' : 'er'}',
+  );
+  String travelModeDayBadge(int day) => _byLanguage(
+    en: 'Day $day',
+    bs: 'Dan $day',
+    da: 'Dag $day',
+  );
+  String get travelModeEndTrip => _byLanguage(
+    en: 'End trip',
+    bs: 'Zavrsi',
+    da: 'Slut tur',
+  );
+  String get travelModeViewReceipts => _byLanguage(
+    en: 'View trip receipts',
+    bs: 'Prikazi racune',
+    da: 'Se turkvitteringer',
+  );
+  String get travelModeSheetTitle => _byLanguage(
+    en: 'Trip receipts',
+    bs: 'Racuni s putovanja',
+    da: 'Turkvitteringer',
+  );
+  String travelModeSheetSubtitle(String code) => _byLanguage(
+    en: 'Everything scanned in $code during this trip.',
+    bs: 'Sve skenirano u $code tokom ovog putovanja.',
+    da: 'Alt scannet i $code under denne tur.',
+  );
+  String get travelModeSheetItems => _byLanguage(
+    en: 'RECEIPTS',
+    bs: 'RACUNI',
+    da: 'KVITTERINGER',
+  );
+  String get travelModeSheetHint => _byLanguage(
+    en: 'Tap any receipt to open details.',
+    bs: 'Dodirni racun za detalje.',
+    da: 'Tryk pa en kvittering for detaljer.',
+  );
+  String get travelModeSheetEmptyTitle => _byLanguage(
+    en: 'No trip receipts yet',
+    bs: 'Jos nema racuna',
+    da: 'Ingen turkvitteringer endnu',
+  );
+  String travelModeSheetEmptySubtitle(String code) => _byLanguage(
+    en: 'Start scanning in $code and they will land here.',
+    bs: 'Pocni skenirati u $code i pojavit ce se ovdje.',
+    da: 'Start scanning i $code, sa lander de her.',
+  );
+
+  String get travelStartSheetTitle => _byLanguage(
+    en: 'Pick your trip currency',
+    bs: 'Izaberi valutu putovanja',
+    da: 'Vaelg din rejsevaluta',
+  );
+  String get travelStartSheetSubtitle => _byLanguage(
+    en: 'All scans during the trip will be saved in this currency.',
+    bs: 'Svi skenovi tokom putovanja cuvat ce se u ovoj valuti.',
+    da: 'Alle scanninger under turen gemmes i denne valuta.',
+  );
+  String get travelStartSheetConfirm => _byLanguage(
+    en: 'Start trip',
+    bs: 'Pocni',
+    da: 'Start',
+  );
+  String get travelModeInfoTitle => _byLanguage(
+    en: 'How travel mode works',
+    bs: 'Kako radi putni nacin',
+    da: 'Sadan fungerer rejsetilstand',
+  );
+  String get travelModeInfoSubtitle => _byLanguage(
+    en: 'Use it when you want to scan receipts in a temporary trip currency.',
+    bs: 'Koristi ovo kad zelis skenirati racune u privremenoj valuti putovanja.',
+    da: 'Brug dette, nar du vil scanne kvitteringer i en midlertidig rejsevaluta.',
+  );
+  String get travelModeInfoStep1Title => _byLanguage(
+    en: 'Choose the trip currency',
+    bs: 'Izaberi valutu putovanja',
+    da: 'Vaelg rejsevaluta',
+  );
+  String get travelModeInfoStep1Body => _byLanguage(
+    en: 'Start travel mode and pick the currency you will spend in during the trip.',
+    bs: 'Pokreni putni nacin i izaberi valutu u kojoj ces trositi tokom putovanja.',
+    da: 'Start rejsetilstand og vaelg den valuta, du bruger under turen.',
+  );
+  String get travelModeInfoStep2Title => _byLanguage(
+    en: 'Scan receipts as usual',
+    bs: 'Skeniraj racune kao i inace',
+    da: 'Scan kvitteringer som normalt',
+  );
+  String get travelModeInfoStep2Body => _byLanguage(
+    en: 'Each receipt is saved in that trip currency and grouped into the active trip.',
+    bs: 'Svaki racun se cuva u toj valuti i povezuje s aktivnim putovanjem.',
+    da: 'Hver kvittering gemmes i rejsevalutaen og knyttes til den aktive tur.',
+  );
+  String get travelModeInfoStep3Title => _byLanguage(
+    en: 'End trip and convert',
+    bs: 'Zavrsi putovanje i pretvori',
+    da: 'Afslut turen og omregn',
+  );
+  String get travelModeInfoStep3Body => _byLanguage(
+    en: 'When the trip ends, convert all trip receipts back to your home currency in one step.',
+    bs: 'Kad putovanje zavrsi, pretvori sve racune s putovanja nazad u svoju domacu valutu jednim korakom.',
+    da: 'Nar turen slutter, omregner du alle turkvitteringer tilbage til din hjemmevaluta i et trin.',
+  );
+  String get travelModeInfoNote => _byLanguage(
+    en: 'You can choose a quick today-rate conversion or a more accurate per-day conversion when ending the trip.',
+    bs: 'Pri zavrsetku putovanja mozes izabrati brzu konverziju po danasnjem kursu ili precizniju po danima.',
+    da: 'Nar du afslutter turen, kan du vaelge en hurtig omregning med dagens kurs eller en mere praecis daglig omregning.',
+  );
+  String get travelModeInfoConfirm => _byLanguage(
+    en: 'Got it',
+    bs: 'Jasno',
+    da: 'Forstaet',
+  );
+  String travelModeStartedSnackbar(String code) => _byLanguage(
+    en: 'Travel mode started — scanning in $code.',
+    bs: 'Putni nacin aktivan — skeniras u $code.',
+    da: 'Rejsetilstand startet — scanner i $code.',
+  );
+  String travelModeEndedSnackbar(String from, String to) => _byLanguage(
+    en: 'Trip ended — converted $from to $to.',
+    bs: 'Putovanje zavrseno — pretvoreno $from u $to.',
+    da: 'Tur afsluttet — omregnet $from til $to.',
+  );
+
+  // End-trip confirm dialog
+  String get tripEndDialogTitle => _byLanguage(
+    en: 'End your trip?',
+    bs: 'Zavrsiti putovanje?',
+    da: 'Afslutte turen?',
+  );
+  String tripEndDialogIntro(int receipts, String from, String to) =>
+      _byLanguage(
+        en: '$receipts receipt${receipts == 1 ? '' : 's'} in $from will be converted to $to.',
+        bs: '$receipts racun${receipts == 1 ? '' : 'a'} u $from bit ce pretvoren u $to.',
+        da: '$receipts kvittering${receipts == 1 ? '' : 'er'} i $from bliver omregnet til $to.',
+      );
+  String get tripEndDialogConfirm => _byLanguage(
+    en: 'Convert and finish',
+    bs: 'Pretvori i zavrsi',
+    da: 'Omregn og afslut',
+  );
+  String get tripEndStrategyPerDayTitle => _byLanguage(
+    en: 'Per-day rates',
+    bs: 'Kursevi po danu',
+    da: 'Daglige kurser',
+  );
+  String get tripEndStrategyPerDaySubtitle => _byLanguage(
+    en: 'Most accurate. Uses each receipt’s purchase date.',
+    bs: 'Najtacnije. Koristi datum kupovine za svaki racun.',
+    da: 'Mest praecist. Bruger koebsdato for hver kvittering.',
+  );
+  String get tripEndStrategyTodayTitle => _byLanguage(
+    en: 'Today’s rate',
+    bs: 'Danasnji kurs',
+    da: 'Dagens kurs',
+  );
+  String get tripEndStrategyTodaySubtitle => _byLanguage(
+    en: 'Fast. Same rate applied to every receipt.',
+    bs: 'Brzo. Isti kurs primijenjen na svaki racun.',
+    da: 'Hurtig. Samme kurs anvendes for alle kvitteringer.',
+  );
+
+  // End-trip loading dialog
+  String get tripEndLoadingFetchingRate => _byLanguage(
+    en: 'Fetching exchange rate',
+    bs: 'Dohvacanje kursa',
+    da: 'Henter valutakurs',
+  );
+  String tripEndLoadingFetchingDate(String date) => _byLanguage(
+    en: 'Fetching rate for $date',
+    bs: 'Dohvacanje kursa za $date',
+    da: 'Henter kurs for $date',
+  );
+  String get tripEndLoadingConverting => _byLanguage(
+    en: 'Converting trip receipts',
+    bs: 'Pretvaranje racuna',
+    da: 'Omregner kvitteringer',
+  );
+  String get tripEndLoadingFinishing => _byLanguage(
+    en: 'Finishing up',
+    bs: 'Zavrsavam',
+    da: 'Afslutter',
+  );
+
+  // Onboarding
+  String get onboardingCurrencyTitle => _byLanguage(
+    en: 'Pick your home currency',
+    bs: 'Izaberi zadanu valutu',
+    da: 'Vaelg din hjemmevaluta',
+  );
+  String get onboardingCurrencySubtitle => _byLanguage(
+    en: 'All your spending and budgets will live in this currency. You can\'t change it later without wiping your data.',
+    bs: 'Sva potrosnja i budzeti bit ce u ovoj valuti. Kasnije se moze promijeniti samo brisanjem svih podataka.',
+    da: 'Alt forbrug og alle budgetter vil vaere i denne valuta. Den kan kun aendres ved at slette dine data.',
+  );
+  String get onboardingCurrencyContinue => _byLanguage(
+    en: 'Continue',
+    bs: 'Nastavi',
+    da: 'Fortsaet',
   );
 
   String categoryLabel(String category) {

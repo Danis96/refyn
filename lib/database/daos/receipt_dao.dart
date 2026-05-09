@@ -69,6 +69,18 @@ class ReceiptDao extends DatabaseAccessor<AppDatabase> with _$ReceiptDaoMixin {
     return _attachItems(receiptRows);
   }
 
+  Future<List<ReceiptWithItems>> getRecentHomeReceiptsWithItems(
+    int limit,
+  ) async {
+    final List<Receipt> receiptRows =
+        await (select(receipts)
+              ..where((Receipts tbl) => tbl.travelSessionId.isNull())
+              ..orderBy([(tbl) => OrderingTerm.desc(tbl.createdAt)])
+              ..limit(limit))
+            .get();
+    return _attachItems(receiptRows);
+  }
+
   Future<List<ReceiptWithItems>> getReceiptsWithItemsBetween({
     required DateTime fromInclusive,
     required DateTime toExclusive,
@@ -79,6 +91,23 @@ class ReceiptDao extends DatabaseAccessor<AppDatabase> with _$ReceiptDaoMixin {
                 (Receipts tbl) =>
                     tbl.createdAt.isBiggerOrEqualValue(fromInclusive) &
                     tbl.createdAt.isSmallerThanValue(toExclusive),
+              )
+              ..orderBy([(tbl) => OrderingTerm.desc(tbl.createdAt)]))
+            .get();
+    return _attachItems(receiptRows);
+  }
+
+  Future<List<ReceiptWithItems>> getHomeReceiptsWithItemsBetween({
+    required DateTime fromInclusive,
+    required DateTime toExclusive,
+  }) async {
+    final List<Receipt> receiptRows =
+        await (select(receipts)
+              ..where(
+                (Receipts tbl) =>
+                    tbl.createdAt.isBiggerOrEqualValue(fromInclusive) &
+                    tbl.createdAt.isSmallerThanValue(toExclusive) &
+                    tbl.travelSessionId.isNull(),
               )
               ..orderBy([(tbl) => OrderingTerm.desc(tbl.createdAt)]))
             .get();
@@ -141,6 +170,13 @@ class ReceiptDao extends DatabaseAccessor<AppDatabase> with _$ReceiptDaoMixin {
     return row.read<int>('count');
   }
 
+  Future<int> getHomeReceiptCount() async {
+    final QueryRow row = await customSelect(
+      'SELECT COUNT(*) AS count FROM receipts WHERE travel_session_id IS NULL',
+    ).getSingle();
+    return row.read<int>('count');
+  }
+
   Future<double> getTotalSpentBetween({
     required DateTime fromInclusive,
     required DateTime toExclusive,
@@ -149,7 +185,7 @@ class ReceiptDao extends DatabaseAccessor<AppDatabase> with _$ReceiptDaoMixin {
       '''
       SELECT COALESCE(SUM(total_amount), 0) AS total
       FROM receipts
-      WHERE created_at >= ? AND created_at < ?
+      WHERE created_at >= ? AND created_at < ? AND travel_session_id IS NULL
       ''',
       variables: <Variable<Object>>[
         Variable<DateTime>(fromInclusive),
@@ -175,7 +211,7 @@ class ReceiptDao extends DatabaseAccessor<AppDatabase> with _$ReceiptDaoMixin {
       '''
       SELECT COUNT(*) AS count
       FROM receipts
-      WHERE created_at >= ? AND created_at < ?
+      WHERE created_at >= ? AND created_at < ? AND travel_session_id IS NULL
       ''',
       variables: <Variable<Object>>[
         Variable<DateTime>(fromInclusive),
@@ -195,7 +231,7 @@ class ReceiptDao extends DatabaseAccessor<AppDatabase> with _$ReceiptDaoMixin {
       SELECT i.category AS category, COALESCE(SUM(i.final_price), 0) AS spent
       FROM receipt_items i
       INNER JOIN receipts r ON r.local_id = i.receipt_local_id
-      WHERE r.created_at >= ? AND r.created_at < ?
+      WHERE r.created_at >= ? AND r.created_at < ? AND r.travel_session_id IS NULL
       GROUP BY i.category
       ''',
       variables: <Variable<Object>>[
@@ -217,6 +253,41 @@ class ReceiptDao extends DatabaseAccessor<AppDatabase> with _$ReceiptDaoMixin {
       }
     }
     return result;
+  }
+
+  /// Returns receipts (with items) belonging to an active travel-mode trip.
+  /// Used by trip-end conversion to load and re-save each receipt scaled to
+  /// the home currency.
+  Future<List<ReceiptWithItems>> getReceiptsWithItemsBySessionId(
+    int sessionId,
+  ) async {
+    final List<Receipt> receiptRows =
+        await (select(receipts)
+              ..where((Receipts tbl) => tbl.travelSessionId.equals(sessionId))
+              ..orderBy([(tbl) => OrderingTerm.asc(tbl.createdAt)]))
+            .get();
+    return _attachItems(receiptRows);
+  }
+
+  /// Sum of `total_amount` for receipts in the given trip session — used by
+  /// the active travel-mode card to show running trip spend.
+  Future<double> getTripSpendTotal(int sessionId) async {
+    final QueryRow row = await customSelect(
+      'SELECT COALESCE(SUM(total_amount), 0) AS total FROM receipts WHERE travel_session_id = ?',
+      variables: <Variable<Object>>[Variable<int>(sessionId)],
+    ).getSingle();
+    final dynamic raw = row.data['total'];
+    if (raw is int) return raw.toDouble();
+    if (raw is double) return raw;
+    return 0;
+  }
+
+  Future<int> getTripReceiptCount(int sessionId) async {
+    final QueryRow row = await customSelect(
+      'SELECT COUNT(*) AS count FROM receipts WHERE travel_session_id = ?',
+      variables: <Variable<Object>>[Variable<int>(sessionId)],
+    ).getSingle();
+    return row.read<int>('count');
   }
 
   Future<int> deleteReceiptByReceiptId(String receiptId) {

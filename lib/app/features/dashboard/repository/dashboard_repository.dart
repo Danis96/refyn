@@ -28,7 +28,9 @@ class DashboardRepository {
 
   Future<String> _getDefaultCurrency() async {
     final String? value = await _settingsDao.getSetting(_currencyCodeKey);
-    return (value != null && value.trim().isNotEmpty) ? value : _defaultCurrency;
+    return (value != null && value.trim().isNotEmpty)
+        ? value
+        : _defaultCurrency;
   }
 
   Future<HomeDashboardModel> loadHomeDashboard() async {
@@ -36,7 +38,7 @@ class DashboardRepository {
     final DateTime monthStart = DateTime(now.year, now.month);
     final DateTime monthEnd = DateTime(now.year, now.month + 1);
 
-    final int totalReceipts = await _receiptDao.getReceiptCount();
+    final int totalReceipts = await _receiptDao.getHomeReceiptCount();
     final int thisMonthReceipts = await _receiptDao.getReceiptCountBetween(
       fromInclusive: monthStart,
       toExclusive: monthEnd,
@@ -64,7 +66,7 @@ class DashboardRepository {
     );
 
     final List<ReceiptWithItems> rows = await _receiptDao
-        .getRecentReceiptsWithItems(3);
+        .getRecentHomeReceiptsWithItems(3);
     final List<ReceiptModel> recentReceipts = rows
         .map((ReceiptWithItems row) => row.toReceiptModel())
         .toList(growable: false);
@@ -72,7 +74,9 @@ class DashboardRepository {
     final String topCategoryLabel = _resolveTopCategory(progress);
 
     final String defaultCurrency = await _getDefaultCurrency();
-    final String currency = budgets.isNotEmpty ? budgets.first.currency : defaultCurrency;
+    final String currency = budgets.isNotEmpty
+        ? budgets.first.currency
+        : defaultCurrency;
 
     return HomeDashboardModel(
       totalReceipts: totalReceipts,
@@ -111,32 +115,31 @@ class DashboardRepository {
     );
 
     final List<ReceiptWithItems> receipts = await _receiptDao
-        .getReceiptsWithItemsBetween(
+        .getHomeReceiptsWithItemsBetween(
           fromInclusive: monthStart,
           toExclusive: monthEnd,
         );
-    final List<DashboardCategoryItemModel> items =
-        receipts
-            .expand(
-              (ReceiptWithItems row) => row.items
-                  .where(
-                    (ReceiptItem item) =>
-                        CategoryBudgetCatalog.normalize(item.category) ==
-                        normalizedCategory,
-                  )
-                  .map(
-                    (ReceiptItem item) => DashboardCategoryItemModel(
-                      name: item.name,
-                      merchantName: row.receipt.merchantName,
-                      currency: row.receipt.currency,
-                      purchasedAt: row.receipt.createdAt,
-                      amount: item.finalPrice,
-                      quantity: item.quantity,
-                      unit: item.unit,
-                    ),
-                  ),
-            )
-            .toList(growable: false);
+    final List<DashboardCategoryItemModel> items = receipts
+        .expand(
+          (ReceiptWithItems row) => row.items
+              .where(
+                (ReceiptItem item) =>
+                    CategoryBudgetCatalog.normalize(item.category) ==
+                    normalizedCategory,
+              )
+              .map(
+                (ReceiptItem item) => DashboardCategoryItemModel(
+                  name: item.name,
+                  merchantName: row.receipt.merchantName,
+                  currency: row.receipt.currency,
+                  purchasedAt: row.receipt.createdAt,
+                  amount: item.finalPrice,
+                  quantity: item.quantity,
+                  unit: item.unit,
+                ),
+              ),
+        )
+        .toList(growable: false);
 
     return DashboardCategoryDetailsModel(
       category: progress.category,

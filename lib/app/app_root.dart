@@ -12,6 +12,10 @@ import 'package:refyn/app/features/receipt_details/repository/receipt_details_re
 import 'package:refyn/app/features/scan/repository/gemma_receipt_scan_service.dart';
 import 'package:refyn/app/features/scan/repository/receipt_image_compression_service.dart';
 import 'package:refyn/app/features/settings/application/local_backup_service.dart';
+import 'package:refyn/app/features/travel_mode/controllers/travel_mode_controller.dart';
+import 'package:refyn/app/features/travel_mode/repository/travel_mode_repository.dart';
+import 'package:refyn/app/features/travel_mode/repository/travel_mode_service.dart';
+import 'package:refyn/app/shared/services/currency_conversion_service.dart';
 
 import '../database/app_database.dart';
 import 'features/dashboard/controllers/dashboard_controller.dart';
@@ -106,6 +110,31 @@ class AppRoot extends StatelessWidget {
             return service;
           },
         ),
+        Provider<CurrencyConversionService>(
+          create: (_) => CurrencyConversionService(),
+        ),
+        Provider<TravelModeRepository>(
+          create: (context) => TravelModeRepository(
+            settingsDao: context.read<AppSettingsDao>(),
+          ),
+        ),
+        Provider<TravelModeService>(
+          create: (context) => TravelModeService(
+            database: context.read<AppDatabase>(),
+            receiptDao: context.read<ReceiptDao>(),
+            settingsDao: context.read<AppSettingsDao>(),
+            travelModeRepository: context.read<TravelModeRepository>(),
+            conversionService: context.read<CurrencyConversionService>(),
+            monthlyBudgetSyncRepository: context
+                .read<MonthlyBudgetSyncRepository>(),
+          ),
+        ),
+        ChangeNotifierProvider<TravelModeController>(
+          create: (context) => TravelModeController(
+            service: context.read<TravelModeService>(),
+            receiptDao: context.read<ReceiptDao>(),
+          )..initialize(),
+        ),
         Provider<ScanRepository>(
           create: (context) => ScanRepository(
             receiptDao: context.read<ReceiptDao>(),
@@ -113,6 +142,9 @@ class AppRoot extends StatelessWidget {
             gemmaService: context.read<GemmaReceiptScanService>(),
             monthlyBudgetSyncRepository: context
                 .read<MonthlyBudgetSyncRepository>(),
+            currencyConversionService: context
+                .read<CurrencyConversionService>(),
+            travelModeRepository: context.read<TravelModeRepository>(),
           ),
         ),
         Provider<HistoryRepository>(

@@ -6,6 +6,8 @@ import 'package:refyn/app/features/scan/controllers/scan_view_state.dart';
 import 'package:refyn/app/features/scan/ui/widgets/recent_scans_section.dart';
 import 'package:refyn/app/features/scan/ui/widgets/scan_header_section.dart';
 import 'package:refyn/app/features/scan/ui/widgets/scan_surface_card.dart';
+import 'package:refyn/app/features/scan/ui/widgets/scan_travel_mode_banner.dart';
+import 'package:refyn/app/features/travel_mode/controllers/travel_mode_controller.dart';
 import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/app/models/receipt/receipt_model.dart';
 import 'package:refyn/theme/app_spacing.dart';
@@ -27,6 +29,7 @@ class ScanPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 _ScanHeaderSection(),
+                _ScanTravelBannerSlot(),
                 SizedBox(height: AppSpacing.md),
                 _ScanSurfaceSection(),
                 SizedBox(height: AppSpacing.lg),
@@ -118,6 +121,53 @@ class _ScanSurfaceSection extends StatelessWidget {
               context.l10n.scanStepFinalizing,
             ],
           ),
+    );
+  }
+}
+
+class _ScanTravelBannerSlot extends StatelessWidget {
+  const _ScanTravelBannerSlot();
+
+  @override
+  Widget build(BuildContext context) {
+    final bool active = context.select<TravelModeController, bool>(
+      (TravelModeController c) => c.isActive,
+    );
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 360),
+      curve: Curves.easeOutCubic,
+      alignment: Alignment.topCenter,
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 360),
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeInCubic,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, -0.08),
+                end: Offset.zero,
+              ).animate(
+                CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOutCubic,
+                ),
+              ),
+              child: child,
+            ),
+          );
+        },
+        child: active
+            ? const Padding(
+                key: ValueKey<String>('scan-travel-banner'),
+                padding: EdgeInsets.only(top: AppSpacing.md),
+                child: ScanTravelModeBanner(),
+              )
+            : const SizedBox.shrink(
+                key: ValueKey<String>('scan-travel-banner-empty'),
+              ),
+      ),
     );
   }
 }

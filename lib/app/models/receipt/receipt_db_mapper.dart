@@ -15,7 +15,11 @@ extension ReceiptRowMapper on ReceiptWithItems {
   ReceiptModel toReceiptModel() {
     final Map<String, dynamic> payload = _decodePayload(receipt.payloadJson);
     if (payload.isNotEmpty) {
-      return ReceiptModel.fromJson(payload);
+      final ReceiptModel decoded = ReceiptModel.fromJson(payload);
+      // The row column is the source of truth for travel_session_id since
+      // trip-end conversion writes it via SQL. Override whatever the payload
+      // says with the live row value.
+      return decoded.copyWithTravelSessionId(receipt.travelSessionId);
     }
 
     return ReceiptModel(
@@ -80,6 +84,7 @@ extension ReceiptRowMapper on ReceiptWithItems {
       rawJson: receipt.rawJson,
       imagePath: receipt.imagePath,
       createdAt: receipt.createdAt,
+      travelSessionId: receipt.travelSessionId,
     );
   }
 }
@@ -120,6 +125,7 @@ extension ReceiptModelCompanionMapper on ReceiptModel {
       imagePath: Value(imagePath),
       payloadJson: Value(jsonEncode(toJson())),
       createdAt: Value(createdAt),
+      travelSessionId: Value(travelSessionId),
     );
   }
 
