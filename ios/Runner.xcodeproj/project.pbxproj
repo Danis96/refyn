@@ -199,6 +199,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				439ADD002F96CE6D009E4491 /* Codesign Fix */,
 				7648259771CE98CEAC05E857 /* [CP] Embed Pods Frameworks */,
+				43E3F13E2FB0AD360056ED0A /* FirebaseConfig */,
 			);
 			buildRules = (
 			);
@@ -303,6 +304,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nfind \"${CODESIGNING_FOLDER_PATH}/Frameworks\" -name \"*.framework\" -exec \\\n  codesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY}\" \\\n  --timestamp=none --preserve-metadata=identifier,entitlements,flags {} \\;\n";
+		};
+		43E3F13E2FB0AD360056ED0A /* FirebaseConfig */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = FirebaseConfig;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n#!/bin/sh\n\n# Detect the current build configuration\necho \"Current build configuration: $CONFIGURATION\"\n\n# Split the configuration into parts using parameter expansion\n# This extracts everything after the first hyphen\nif [[ \"$CONFIGURATION\" == *-* ]]; then\n    MAIN_CONFIG=\"${CONFIGURATION%%-*}\"\n    ENVIRONMENT=\"${CONFIGURATION#*-}\"\nelse\n    MAIN_CONFIG=\"$CONFIGURATION\"\n    ENVIRONMENT=\"development\"\nfi\n\necho \"Main configuration: $MAIN_CONFIG\"\necho \"Environment: $ENVIRONMENT\"\necho \"Main configuration: $MAIN_CONFIG\" >> ~/Desktop/build_log.txt\necho \"Environment: $ENVIRONMENT\" >> ~/Desktop/build_log.txt\n\nGOOGLE_SERVICE_INFO_PLIST=GoogleService-Info.plist\n\n# Defining path to .plist file via environment\nGOOGLE_SERVICE_INFO_TARGET_FILE=\"${PROJECT_DIR}/firebaseConfig/${ENVIRONMENT}/${GOOGLE_SERVICE_INFO_PLIST}\"\n\n# Make sure the version of GoogleService-Info.plist exists\necho \"Looking for ${GOOGLE_SERVICE_INFO_PLIST} in ${GOOGLE_SERVICE_INFO_TARGET_FILE}\"\necho \"Looking for ${GOOGLE_SERVICE_INFO_PLIST} in ${GOOGLE_SERVICE_INFO_TARGET_FILE}\" >> ~/Desktop/build_log.txt\n\nif [ ! -f \"$GOOGLE_SERVICE_INFO_TARGET_FILE\" ]; then\n    echo \"ERROR: No GoogleService-Info.plist found at: $GOOGLE_SERVICE_INFO_TARGET_FILE\"\n    echo \"ERROR: No GoogleService-Info.plist found at: $GOOGLE_SERVICE_INFO_TARGET_FILE\" >> ~/Desktop/build_log.txt\n    echo \"Available files in ${PROJECT_DIR}/firebaseConfig/:\"\n    ls -la \"${PROJECT_DIR}/firebaseConfig/\" >> ~/Desktop/build_log.txt 2>&1\n    exit 1\nfi\n\n# Get a reference to the destination location for the GoogleService-Info.plist\nPLIST_DESTINATION=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\"\n\necho \"Will copy ${GOOGLE_SERVICE_INFO_PLIST} to final destination: ${PLIST_DESTINATION}\"\necho \"Using ${GOOGLE_SERVICE_INFO_TARGET_FILE}\"\necho \"Will copy ${GOOGLE_SERVICE_INFO_PLIST} to final destination: ${PLIST_DESTINATION}\" >> ~/Desktop/build_log.txt\necho \"Using ${GOOGLE_SERVICE_INFO_TARGET_FILE}\" >> ~/Desktop/build_log.txt\n\n# Create destination directory if it doesn't exist\nmkdir -p \"$PLIST_DESTINATION\"\n\n# Copy the file\ncp \"$GOOGLE_SERVICE_INFO_TARGET_FILE\" \"$PLIST_DESTINATION/\"\n\nif [ $? -eq 0 ]; then\n    echo \"Successfully copied ${GOOGLE_SERVICE_INFO_PLIST} to ${PLIST_DESTINATION}\"\n    echo \"Successfully copied ${GOOGLE_SERVICE_INFO_PLIST} to ${PLIST_DESTINATION}\" >> ~/Desktop/build_log.txt\nelse\n    echo \"ERROR: Failed to copy ${GOOGLE_SERVICE_INFO_PLIST} to ${PLIST_DESTINATION}\"\n    echo \"ERROR: Failed to copy ${GOOGLE_SERVICE_INFO_PLIST} to ${PLIST_DESTINATION}\" >> ~/Desktop/build_log.txt\n    exit 1\nfi\n\n# Declare the output file to avoid Xcode build error\necho \"${PLIST_DESTINATION}/${GOOGLE_SERVICE_INFO_PLIST}\"\n\n";
 		};
 		7648259771CE98CEAC05E857 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -473,7 +492,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -497,7 +516,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.refyn.app;
+				PRODUCT_BUNDLE_IDENTIFIER = io.refyn.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -604,7 +623,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -655,7 +674,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -681,7 +700,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.refyn.app;
+				PRODUCT_BUNDLE_IDENTIFIER = io.refyn.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -705,7 +724,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.refyn.app;
+				PRODUCT_BUNDLE_IDENTIFIER = io.refyn.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

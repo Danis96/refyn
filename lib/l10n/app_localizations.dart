@@ -7,7 +7,7 @@ class AppLocalizations {
   final Locale locale;
 
   static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  _AppLocalizationsDelegate();
 
   static const List<Locale> supportedLocales = [
     Locale('en'),
@@ -107,7 +107,7 @@ class AppLocalizations {
     },
     'bs': {
       'appTitle': 'Refyn',
-      'home': 'Pocetna',
+      'home': 'Početna',
       'scan': 'Skeniraj',
       'history': 'Historija',
       'settings': 'Postavke',
@@ -120,55 +120,55 @@ class AppLocalizations {
       'lightTheme': 'Svijetla',
       'darkTheme': 'Tamna',
       'systemTheme': 'Sistemska',
-      'noReceiptsYet': 'Jos nema racuna. Sacuvaj jedan iz Skeniraj taba.',
-      'scanReceiptTitle': 'Skeniraj racun',
-      'scanReceiptSubtitle': 'Ucitaj ili uslikaj racun',
-      'scanUpload': 'Ucitaj',
+      'noReceiptsYet': 'Još nema računa. Sačuvaj jedan iz kartice Skeniraj.',
+      'scanReceiptTitle': 'Skeniraj račun',
+      'scanReceiptSubtitle': 'Učitaj ili uslikaj račun',
+      'scanUpload': 'Učitaj',
       'scanCamera': 'Kamera',
-      'scanUploadTitle': 'Ucitaj racun',
-      'scanUploadSubtitle': 'Dodirni za izbor iz galerije',
-      'scanCameraTitle': 'Fotografisi',
-      'scanCameraSubtitle': 'Koristi kameru za unos',
-      'scanSupportFormats': 'Podrzano JPG, PNG • Max 10MB',
-      'scanReceiptButton': 'Skeniraj racun',
-      'scanReset': 'Ponisti',
+      'scanUploadTitle': 'Učitaj račun',
+      'scanUploadSubtitle': 'Dodirni za odabir iz galerije',
+      'scanCameraTitle': 'Fotografiši',
+      'scanCameraSubtitle': 'Koristi kameru za snimanje',
+      'scanSupportFormats': 'Podržano JPG, PNG • Maks 10MB',
+      'scanReceiptButton': 'Skeniraj račun',
+      'scanReset': 'Poništi',
       'scanAnother': 'Skeniraj novi',
       'scanRecentTitle': 'Skorija skeniranja',
-      'scanSuccessTitle': 'Racun uspjesno skeniran!',
+      'scanSuccessTitle': 'Račun uspješno skeniran!',
       'scanErrorTitle': 'Skeniranje nije uspjelo',
-      'scanErrorFallback': 'Nije moguce obraditi sliku racuna.',
+      'scanErrorFallback': 'Nije moguće obraditi sliku računa.',
       'scanStepUploading': 'Otpremanje slike',
-      'scanStepReading': 'Citanje teksta',
+      'scanStepReading': 'Čitanje teksta',
       'scanStepDetecting': 'Prepoznavanje stavki',
-      'scanStepCategorizing': 'Kategorizacija racuna',
-      'scanStepFinalizing': 'Zavrsna obrada',
-      'scanMerchant': 'Prodavac',
+      'scanStepCategorizing': 'Kategorizacija računa',
+      'scanStepFinalizing': 'Završna obrada',
+      'scanMerchant': 'Prodavač',
       'scanTotal': 'Ukupno',
       'scanDate': 'Datum',
       'scanCategory': 'Kategorija',
       'scanItems': 'Stavke',
       'scanConfidence': 'Pouzdanost',
-      'scanRetry': 'Pokusaj ponovo',
-      'scanPickAnotherImage': 'Izaberi drugu sliku',
-      'scanSaveReceipt': 'Sacuvaj racun',
-      'scanEditBeforeSave': 'Uredi prije cuvanja',
-      'scanSaving': 'Cuvanje...',
+      'scanRetry': 'Pokušaj ponovo',
+      'scanPickAnotherImage': 'Odaberi drugu sliku',
+      'scanSaveReceipt': 'Sačuvaj račun',
+      'scanEditBeforeSave': 'Uredi prije čuvanja',
+      'scanSaving': 'Čuvanje...',
       'scanLowConfidenceWarning':
-          'Niska pouzdanost parsiranja. Pregledaj prije cuvanja.',
-      'scanReceiptSaved': 'Racun sacuvan.',
-      'scanDraftUpdated': 'Nacrt azuriran.',
+      'Niska pouzdanost parsiranja. Pregledaj prije čuvanja.',
+      'scanReceiptSaved': 'Račun sačuvan.',
+      'scanDraftUpdated': 'Nacrt ažuriran.',
       'scanTotalValidationError': 'Ukupno mora biti broj > 0.',
-      'scanEditParsedReceipt': 'Uredi parsirani racun',
-      'scanEditMerchant': 'Prodavac',
+      'scanEditParsedReceipt': 'Uredi parsirani račun',
+      'scanEditMerchant': 'Prodavač',
       'scanEditCategory': 'Kategorija',
-      'scanEditPaymentMethod': 'Nacin placanja',
+      'scanEditPaymentMethod': 'Način plaćanja',
       'scanEditTotal': 'Ukupno',
       'scanDialogCancel': 'Odustani',
       'scanDialogApply': 'Primijeni',
       'scanErrorDismiss': 'Zatvori',
       'scanErrorRetry': 'Ponovo',
       'scanRecentEmptyHint':
-          'Skeniraj prvi racun da ovdje prikazemo historiju.',
+      'Skeniraj prvi račun da ovdje prikažemo historiju.',
     },
     'da': {
       'appTitle': 'Refyn',
@@ -225,7 +225,7 @@ class AppLocalizations {
       'scanEditBeforeSave': 'Rediger for gem',
       'scanSaving': 'Gemmer...',
       'scanLowConfidenceWarning':
-          'Lav parse-sikkerhed. Gennemga før du gemmer.',
+      'Lav parse-sikkerhed. Gennemga før du gemmer.',
       'scanReceiptSaved': 'Kvittering gemt.',
       'scanDraftUpdated': 'Kladde opdateret.',
       'scanTotalValidationError': 'Belob skal vaere et gyldigt tal > 0.',
@@ -239,7 +239,7 @@ class AppLocalizations {
       'scanErrorDismiss': 'Luk',
       'scanErrorRetry': 'Prov igen',
       'scanRecentEmptyHint':
-          'Scan din forste kvittering for at vise historik her.',
+      'Scan din forste kvittering for at vise historik her.',
     },
   };
 
@@ -323,17 +323,17 @@ class AppLocalizations {
   );
   String get save => _byLanguage(
     en: 'Save',
-    bs: 'Sacuvaj',
+    bs: 'Sačuvaj',
     da: 'Gem',
   );
   String get clear => _byLanguage(
     en: 'Clear',
-    bs: 'Ocisti',
+    bs: 'Očisti',
     da: 'Ryd',
   );
   String get delete => _byLanguage(
     en: 'Delete',
-    bs: 'Obrisi',
+    bs: 'Obriši',
     da: 'Slet',
   );
   String get edit => _byLanguage(
@@ -343,7 +343,7 @@ class AppLocalizations {
   );
   String get retry => _byLanguage(
     en: 'Retry',
-    bs: 'Ponovo',
+    bs: 'Pokušaj ponovo',
     da: 'Prov igen',
   );
   String get confirm => _byLanguage(
@@ -378,22 +378,22 @@ class AppLocalizations {
   );
   String get termsOfService => _byLanguage(
     en: 'Terms of Service',
-    bs: 'Uslovi koristenja',
+    bs: 'Uvjeti korištenja',
     da: 'Servicevilkar',
   );
   String get receiptDetails => _byLanguage(
     en: 'Receipt Details',
-    bs: 'Detalji racuna',
+    bs: 'Detalji računa',
     da: 'Kvitteringsdetaljer',
   );
   String get receiptNumber => _byLanguage(
     en: 'Receipt Number',
-    bs: 'Broj racuna',
+    bs: 'Broj računa',
     da: 'Kvitteringsnummer',
   );
   String get paymentSummary => _byLanguage(
     en: 'Payment Summary',
-    bs: 'Sazetak placanja',
+    bs: 'Sažetak plaćanja',
     da: 'Betalingsoversigt',
   );
   String get date => _byLanguage(
@@ -403,17 +403,17 @@ class AppLocalizations {
   );
   String get merchant => _byLanguage(
     en: 'Merchant',
-    bs: 'Prodavac',
+    bs: 'Prodavač',
     da: 'Butik',
   );
   String get paymentMethod => _byLanguage(
     en: 'Payment Method',
-    bs: 'Nacin placanja',
+    bs: 'Način plaćanja',
     da: 'Betalingsmetode',
   );
   String get subtotal => _byLanguage(
     en: 'Subtotal',
-    bs: 'Meduzbir',
+    bs: 'Međuzbir',
     da: 'Subtotal',
   );
   String get tax => _byLanguage(
@@ -428,7 +428,7 @@ class AppLocalizations {
   );
   String get unknownMerchant => _byLanguage(
     en: 'Unknown merchant',
-    bs: 'Nepoznat prodavac',
+    bs: 'Nepoznat prodavač',
     da: 'Ukendt butik',
   );
   String get unknown => _byLanguage(
@@ -443,27 +443,27 @@ class AppLocalizations {
   );
   String get shareUnavailable => _byLanguage(
     en: 'Share is not available yet.',
-    bs: 'Dijeljenje jos nije dostupno.',
+    bs: 'Dijeljenje još nije dostupno.',
     da: 'Deling er ikke tilgaengelig endnu.',
   );
   String get keepReceiptForRecords => _byLanguage(
     en: 'Keep this receipt for your records',
-    bs: 'Sacuvaj ovaj racun za svoju evidenciju',
+    bs: 'Sačuvaj ovaj račun za svoju evidenciju',
     da: 'Gem denne kvittering til dine poster',
   );
   String get searchHistoryHint => _byLanguage(
     en: 'Search by merchant, item, or category...',
-    bs: 'Pretrazi po prodavacu, stavci ili kategoriji...',
+    bs: 'Pretraži po prodavaču, stavci ili kategoriji...',
     da: 'Sog efter butik, vare eller kategori...',
   );
   String get noItemsFound => _byLanguage(
     en: 'No items found',
-    bs: 'Nema pronadjenih stavki',
+    bs: 'Nema pronađenih stavki',
     da: 'Ingen varer fundet',
   );
   String get noItemsFoundAll => _byLanguage(
     en: 'Try a different merchant, item, category, or date range. Saved receipt items will appear here.',
-    bs: 'Probaj drugog prodavaca, stavku, kategoriju ili datum. Sacuvane stavke racuna ce se prikazati ovdje.',
+    bs: 'Pokušaj drugog prodavača, stavku, kategoriju ili datum. Sačuvane stavke računa će se prikazati ovdje.',
     da: 'Prov en anden butik, vare, kategori eller datoperiode. Gemte kvitteringsvarer vises her.',
   );
   String noItemsFoundCategory(String categoryLabel) => _byLanguage(
@@ -478,7 +478,7 @@ class AppLocalizations {
   );
   String get recentReceipts => _byLanguage(
     en: 'Recent Receipts',
-    bs: 'Skoriji racuni',
+    bs: 'Skoriji računi',
     da: 'Seneste kvitteringer',
   );
   String get viewAll => _byLanguage(
@@ -494,7 +494,7 @@ class AppLocalizations {
   );
   String get highestAmount => _byLanguage(
     en: 'Highest Amount',
-    bs: 'Najveci iznos',
+    bs: 'Najveći iznos',
     da: 'Hojeste belob',
   );
   String get lowestAmount => _byLanguage(
@@ -504,20 +504,20 @@ class AppLocalizations {
   );
   String historyTotalsLabel(int itemCount, int receiptCount) => _byLanguage(
     en: '$itemCount total items from $receiptCount receipts',
-    bs: '$itemCount ukupno stavki iz $receiptCount racuna',
+    bs: '$itemCount ukupno stavki iz $receiptCount računa',
     da: '$itemCount varer fra $receiptCount kvitteringer',
   );
   String get noBudgetsYet => _byLanguage(
     en: 'No budgets yet',
-    bs: 'Jos nema budzeta',
+    bs: 'Još nema budžeta',
     da: 'Ingen budgetter endnu',
   );
   String get noBudgetsYetMessage => _byLanguage(
     en: 'Create monthly category budgets from Manage and track each spend bucket here.',
-    bs: 'Kreiraj mjesecne budzete po kategoriji iz Upravljaj i prati potrosnju ovdje.',
+    bs: 'Kreiraj mjesečne budžete po kategoriji iz Upravljaj i prati potrošnju ovdje.',
     da: 'Opret manedlige kategoribudgetter fra Administrer og spor hvert forbrugsomrade her.',
   );
-  String get show => _byLanguage(en: 'Show', bs: 'Prikazi', da: 'Vis');
+  String get show => _byLanguage(en: 'Show', bs: 'Prikaži', da: 'Vis');
   String get hide => _byLanguage(en: 'Hide', bs: 'Sakrij', da: 'Skjul');
   String get manage => _byLanguage(
     en: 'Manage',
@@ -526,12 +526,12 @@ class AppLocalizations {
   );
   String get categoryBudgets => _byLanguage(
     en: 'Category Budgets',
-    bs: 'Budzeti po kategoriji',
+    bs: 'Budžeti po kategoriji',
     da: 'Kategoribudgetter',
   );
   String get localDeviceData => _byLanguage(
     en: 'Local device data',
-    bs: 'Lokalni podaci uredjaja',
+    bs: 'Lokalni podaci uređaja',
     da: 'Lokale enhedsdata',
   );
   String get theme => _byLanguage(en: 'Theme', bs: 'Tema', da: 'Tema');
@@ -542,7 +542,7 @@ class AppLocalizations {
   );
   String get homeSpendingOverview => _byLanguage(
     en: "Here's your spending overview",
-    bs: 'Ovo je pregled tvoje potrosnje',
+    bs: 'Ovo je pregled tvoje potrošnje',
     da: 'Her er dit forbrugsoverblik',
   );
   String get thisMonth => _byLanguage(
@@ -552,12 +552,12 @@ class AppLocalizations {
   );
   String get budget => _byLanguage(
     en: 'Budget',
-    bs: 'Budzet',
+    bs: 'Budžet',
     da: 'Budget',
   );
   String spentAmountLabel(String amount, [String currency = '']) => _byLanguage(
     en: '$amount${currency.isNotEmpty ? ' $currency' : ''} spent',
-    bs: 'Potroseno $amount${currency.isNotEmpty ? ' $currency' : ''}',
+    bs: 'Potrošeno $amount${currency.isNotEmpty ? ' $currency' : ''}',
     da: '$amount${currency.isNotEmpty ? ' $currency' : ''} brugt',
   );
   String remainingAmountLabel(String amount, [String currency = '']) => _byLanguage(
@@ -577,23 +577,23 @@ class AppLocalizations {
   );
   String itemsInCategoryThisMonthLabel(String categoryLabel) => _byLanguage(
     en: 'Current month purchases matched to ${categoryLabel.toLowerCase()}.',
-    bs: 'Kupovine iz tekuceg mjeseca povezane sa kategorijom ${categoryLabel.toLowerCase()}.',
+    bs: 'Kupovine iz tekućeg mjeseca povezane sa kategorijom ${categoryLabel.toLowerCase()}.',
     da: 'Denne maneds kob matcher kategorien ${categoryLabel.toLowerCase()}.',
   );
   String noTrackedItemsInCategoryLabel(String categoryLabel) => _byLanguage(
     en: 'No tracked items yet for $categoryLabel in current month.',
-    bs: 'Jos nema pracenih stavki za kategoriju $categoryLabel u tekucom mjesecu.',
+    bs: 'Još nema praćenih stavki za kategoriju $categoryLabel u tekućem mjesecu.',
     da: 'Ingen sporede varer endnu for $categoryLabel i denne maned.',
   );
   String get item => _byLanguage(en: 'Item', bs: 'Stavka', da: 'Vare');
   String get receiptNotFound => _byLanguage(
     en: 'Receipt not found',
-    bs: 'Racun nije pronadjen',
+    bs: 'Račun nije pronađen',
     da: 'Kvittering ikke fundet',
   );
   String usedPercentLabel(int percent) => _byLanguage(
     en: '$percent% used',
-    bs: '$percent% potroseno',
+    bs: '$percent% potrošeno',
     da: '$percent% brugt',
   );
   String remainingBudgetLabel(String amount, [String currency = '']) => _byLanguage(
@@ -603,27 +603,27 @@ class AppLocalizations {
   );
   String get retryHome => _byLanguage(
     en: 'Retry',
-    bs: 'Pokusaj ponovo',
+    bs: 'Pokušaj ponovo',
     da: 'Prov igen',
   );
   String activeBudgetsLabel(int count) => _byLanguage(
     en: '$count active budgets',
-    bs: '$count aktivnih budzeta',
+    bs: '$count aktivnih budžeta',
     da: '$count aktive budgetter',
   );
   String budgetCategoriesHiddenLabel(int count) => _byLanguage(
     en: '$count budget categories hidden',
-    bs: '$count kategorija budzeta sakriveno',
+    bs: '$count kategorija budžeta skriveno',
     da: '$count budgetkategorier skjult',
   );
   String get budgetSheetDescription => _byLanguage(
     en: 'Set monthly limits by category. Save each card when ready.',
-    bs: 'Postavi mjesecne limite po kategoriji. Sacuvaj svaku karticu kada zavrsis.',
+    bs: 'Postavi mjesečne limite po kategoriji. Sačuvaj svaku karticu kada završiš.',
     da: 'Saet manedlige graenser pr. kategori. Gem hvert kort, nar du er klar.',
   );
   String get noBudgetSet => _byLanguage(
     en: 'No budget set',
-    bs: 'Budzet nije postavljen',
+    bs: 'Budžet nije postavljen',
     da: 'Intet budget sat',
   );
   String activeBudgetAmountLabel(String amount, [String currency = '']) => _byLanguage(
@@ -633,142 +633,177 @@ class AppLocalizations {
   );
   String get enterMonthlyBudget => _byLanguage(
     en: 'Enter monthly budget',
-    bs: 'Unesi mjesecni budzet',
+    bs: 'Unesi mjesečni budžet',
     da: 'Indtast manedligt budget',
   );
   String get enterValidBudgetAmount => _byLanguage(
     en: 'Enter a valid budget amount.',
-    bs: 'Unesi ispravan iznos budzeta.',
+    bs: 'Unesi ispravan iznos budžeta.',
     da: 'Indtast et gyldigt budgetbelob.',
   );
   String budgetDeletedLabel(String category) => _byLanguage(
     en: '$category budget deleted.',
-    bs: 'Budzet za $category je obrisan.',
+    bs: 'Budžet za $category je obrisan.',
     da: '$category-budget slettet.',
   );
   String budgetSavedLabel(String category) => _byLanguage(
     en: '$category budget saved.',
-    bs: 'Budzet za $category je sacuvan.',
+    bs: 'Budžet za $category je sačuvan.',
     da: '$category-budget gemt.',
   );
   String get settingsExportDescription => _byLanguage(
     en: 'Share all saved receipts as CSV, PDF, or a prefilled email draft.',
-    bs: 'Podijeli sve sacuvane racune kao CSV, PDF ili unaprijed popunjen email.',
+    bs: 'Podijeli sve sačuvane račune kao CSV, PDF ili unaprijed popunjen e-mail.',
     da: 'Del alle gemte kvitteringer som CSV, PDF eller et forudfyldt e-mailudkast.',
   );
   String get localDeviceDataDescription => _byLanguage(
     en: 'Manage on-device data with backup export, restore, and full reset.',
-    bs: 'Upravljaj lokalnim podacima kroz izvoz backupa, vracanje i potpuno brisanje.',
+    bs: 'Upravljaj lokalnim podacima kroz izvoz sigurnosne kopije, vraćanje i potpuno brisanje.',
     da: 'Administrer lokale data med backup-eksport, gendannelse og fuld nulstilling.',
   );
-  String get preparingBackup => _byLanguage(en: 'Preparing backup...', bs: 'Priprema backup...', da: 'Forbereder backup...');
-  String get exportBackup => _byLanguage(en: 'Export backup', bs: 'Izvezi backup', da: 'Eksporter backup');
-  String get importingBackup => _byLanguage(en: 'Importing backup...', bs: 'Uvoz backupa...', da: 'Importerer backup...');
-  String get importBackup => _byLanguage(en: 'Import backup', bs: 'Uvezi backup', da: 'Importer backup');
+  String get preparingBackup => _byLanguage(en: 'Preparing backup...', bs: 'Priprema sigurnosne kopije...', da: 'Forbereder backup...');
+  String get exportBackup => _byLanguage(en: 'Export backup', bs: 'Izvezi sigurnosnu kopiju', da: 'Eksporter backup');
+  String get importingBackup => _byLanguage(en: 'Importing backup...', bs: 'Uvoz sigurnosne kopije...', da: 'Importerer backup...');
+  String get importBackup => _byLanguage(en: 'Import backup', bs: 'Uvezi sigurnosnu kopiju', da: 'Importer backup');
   String get clearingData => _byLanguage(en: 'Clearing data...', bs: 'Brisanje podataka...', da: 'Rydder data...');
-  String get clearLocalData => _byLanguage(en: 'Clear local data', bs: 'Obrisi lokalne podatke', da: 'Ryd lokale data');
+  String get clearLocalData => _byLanguage(en: 'Clear local data', bs: 'Obriši lokalne podatke', da: 'Ryd lokale data');
   String get csvExportTitle => _byLanguage(en: 'CSV export', bs: 'CSV izvoz', da: 'CSV-eksport');
-  String get csvExportSubtitle => _byLanguage(en: 'Spreadsheet-friendly export for all saved receipts.', bs: 'Izvoz prilagodjen tabelama za sve sacuvane racune.', da: 'Regnearksvenlig eksport for alle gemte kvitteringer.');
+  String get csvExportSubtitle => _byLanguage(en: 'Spreadsheet-friendly export for all saved receipts.', bs: 'Izvoz prilagođen tabelama za sve sačuvane račune.', da: 'Regnearksvenlig eksport for alle gemte kvitteringer.');
   String get exportCsv => _byLanguage(en: 'Export CSV', bs: 'Izvezi CSV', da: 'Eksporter CSV');
-  String get preparingCsv => _byLanguage(en: 'Preparing CSV...', bs: 'Priprema CSV...', da: 'Forbereder CSV...');
-  String get pdfReportTitle => _byLanguage(en: 'PDF report', bs: 'PDF izvjestaj', da: 'PDF-rapport');
-  String get pdfReportSubtitle => _byLanguage(en: 'Readable summary report with receipt totals and items.', bs: 'Citljiv sazetak sa ukupnim iznosima i stavkama racuna.', da: 'Laesbar oversigtsrapport med kvitteringstotaler og varer.');
+  String get preparingCsv => _byLanguage(en: 'Preparing CSV...', bs: 'Priprema CSV-a...', da: 'Forbereder CSV...');
+  String get pdfReportTitle => _byLanguage(en: 'PDF report', bs: 'PDF izvještaj', da: 'PDF-rapport');
+  String get pdfReportSubtitle => _byLanguage(en: 'Readable summary report with receipt totals and items.', bs: 'Čitljiv sažetak sa ukupnim iznosima i stavkama računa.', da: 'Laesbar oversigtsrapport med kvitteringstotaler og varer.');
   String get exportPdf => _byLanguage(en: 'Export PDF', bs: 'Izvezi PDF', da: 'Eksporter PDF');
-  String get preparingPdf => _byLanguage(en: 'Preparing PDF...', bs: 'Priprema PDF...', da: 'Forbereder PDF...');
-  String get emailDraftTitle => _byLanguage(en: 'Email draft', bs: 'Email nacrt', da: 'E-mailudkast');
-  String get emailDraftSubtitle => _byLanguage(en: 'Open mail app with a prefilled receipt report and attachments.', bs: 'Otvori mail aplikaciju sa unaprijed popunjenim izvjestajem i prilozima.', da: 'Abn mailappen med en forudfyldt kvitteringsrapport og vedhaeftninger.');
-  String get composeEmail => _byLanguage(en: 'Compose email', bs: 'Napisi email', da: 'Skriv e-mail');
-  String get openingMail => _byLanguage(en: 'Opening mail...', bs: 'Otvaranje maila...', da: 'Abner mail...');
-  String get builtInKeyActive => _byLanguage(en: 'Built-in key active', bs: 'Ugradjeni kljuc aktivan', da: 'Indbygget nogle aktiv');
-  String get pasteGoogleAiKey => _byLanguage(en: 'Paste your Google AI API key', bs: 'Zalijepi svoj Google AI API kljuc', da: 'Indsaet din Google AI API-nogle');
-  String get defaultKeyHiddenHelper => _byLanguage(en: 'Default key is hidden. Enter a custom key to override.', bs: 'Podrazumijevani kljuc je skriven. Unesi vlastiti kljuc za zamjenu.', da: 'Standardnoglen er skjult. Indtast en brugerdefineret nogel for at tilsidesaette den.');
-  String get apiKey => _byLanguage(en: 'API key', bs: 'API kljuc', da: 'API-nogle');
+  String get preparingPdf => _byLanguage(en: 'Preparing PDF...', bs: 'Priprema PDF-a...', da: 'Forbereder PDF...');
+  String get emailDraftTitle => _byLanguage(en: 'Email draft', bs: 'Nacrt e-maila', da: 'E-mailudkast');
+  String get emailDraftSubtitle => _byLanguage(en: 'Open mail app with a prefilled receipt report and attachments.', bs: 'Otvori aplikaciju za e-mail sa unaprijed popunjenim izvještajem i prilozima.', da: 'Abn mailappen med en forudfyldt kvitteringsrapport og vedhaeftninger.');
+  String get composeEmail => _byLanguage(en: 'Compose email', bs: 'Napiši e-mail', da: 'Skriv e-mail');
+  String get openingMail => _byLanguage(en: 'Opening mail...', bs: 'Otvaranje e-maila...', da: 'Abner mail...');
+  String get builtInKeyActive => _byLanguage(en: 'Built-in key active', bs: 'Ugrađeni ključ aktivan', da: 'Indbygget nogle aktiv');
+  String get pasteGoogleAiKey => _byLanguage(en: 'Paste your Google AI API key', bs: 'Zalijepi svoj Google AI API ključ', da: 'Indsaet din Google AI API-nogle');
+  String get defaultKeyHiddenHelper => _byLanguage(en: 'Default key is hidden. Enter a custom key to override.', bs: 'Zadani ključ je skriven. Unesi vlastiti ključ za zamjenu.', da: 'Standardnoglen er skjult. Indtast en brugerdefineret nogel for at tilsidesaette den.');
+  String get apiKey => _byLanguage(en: 'API key', bs: 'API ključ', da: 'API-nogle');
   String get model => _byLanguage(en: 'Model', bs: 'Model', da: 'Model');
-  String get modelSelectionDescription => _byLanguage(en: 'Pick which Gemma model handles receipt extraction.', bs: 'Izaberi koji Gemma model obradjuje izdvajanje racuna.', da: 'Vaelg hvilken Gemma-model der handterer kvitteringsudtraek.');
-  String get deeperThinking => _byLanguage(en: 'Deeper thinking', bs: 'Dublje razmisljanje', da: 'Dybere taenkning');
-  String get deeperThinkingOn => _byLanguage(en: 'Slower scans, more accurate parsing for tricky receipts.', bs: 'Sporije skeniranje, preciznije parsiranje za zahtjevne racune.', da: 'Langsommere scanninger, mere praecis parsing for svaere kvitteringer.');
-  String get deeperThinkingOff => _byLanguage(en: 'Fast scans with minimal reasoning. Best default for clear receipts.', bs: 'Brzo skeniranje sa minimalnim razmisljanjem. Najbolji izbor za jasne racune.', da: 'Hurtige scanninger med minimal taenkning. Bedste standardvalg for tydelige kvitteringer.');
-  String aiModelsAvailableLabel(int count) => _byLanguage(en: 'Key confirmed. $count Gemma models available.', bs: 'Kljuc potvrden. Dostupno $count Gemma modela.', da: 'Nogle bekraeftet. $count Gemma-modeller tilgaengelige.');
-  String get builtInKeyInUse => _byLanguage(en: 'Built-in key in use. Override by entering your own key.', bs: 'Ugradjeni kljuc je u upotrebi. Zamijeni ga unosom vlastitog kljuca.', da: 'Indbygget nogel er i brug. Tilsidesaet den ved at indtaste din egen nogel.');
-  String get savedKeyInvalid => _byLanguage(en: 'Saved key is invalid. Re-enter and confirm again.', bs: 'Sacuvani kljuc nije ispravan. Unesi ga ponovo i potvrdi.', da: 'Den gemte nogel er ugyldig. Indtast og bekraeft igen.');
-  String get noKeySet => _byLanguage(en: 'No key set. Add one to enable scanning.', bs: 'Kljuc nije postavljen. Dodaj ga da omogucis skeniranje.', da: 'Ingen nogel sat. Tilfoj en for at aktivere scanning.');
-  String get loadingSavedAiConfiguration => _byLanguage(en: 'Loading saved AI configuration...', bs: 'Ucitam sacuvanu AI konfiguraciju...', da: 'Indlaeser gemt AI-konfiguration...');
-  String get confirmingKeyWithGoogleAi => _byLanguage(en: 'Confirming key with Google AI...', bs: 'Potvrda kljuca sa Google AI...', da: 'Bekraefter nogle med Google AI...');
-  String get aiConfigurationDescription => _byLanguage(en: 'Connect a Google AI key to scan receipts. Pick a Gemma model and toggle deeper thinking when needed.', bs: 'Povezi Google AI kljuc za skeniranje racuna. Izaberi Gemma model i ukljuci dublje razmisljanje po potrebi.', da: 'Forbind en Google AI-nogle for at scanne kvitteringer. Vaelg en Gemma-model og sla dybere taenkning til ved behov.');
+  String get modelSelectionDescription => _byLanguage(en: 'Pick which Gemma model handles receipt extraction.', bs: 'Odaberi koji Gemma model obrađuje ekstrakciju računa.', da: 'Vaelg hvilken Gemma-model der handterer kvitteringsudtraek.');
+  String get deeperThinking => _byLanguage(en: 'Deeper thinking', bs: 'Dublje razmišljanje', da: 'Dybere taenkning');
+  String get deeperThinkingOn => _byLanguage(en: 'Slower scans, more accurate parsing for tricky receipts.', bs: 'Sporije skeniranje, preciznije parsiranje za zahtjevne račune.', da: 'Langsommere scanninger, mere praecis parsing for svaere kvitteringer.');
+  String get deeperThinkingOff => _byLanguage(en: 'Fast scans with minimal reasoning. Best default for clear receipts.', bs: 'Brzo skeniranje sa minimalnim razmišljanjem. Najbolji izbor za jasne račune.', da: 'Hurtige scanninger med minimal taenkning. Bedste standardvalg for tydelige kvitteringer.');
+  String aiModelsAvailableLabel(int count) => _byLanguage(en: 'Key confirmed. $count Gemma models available.', bs: 'Ključ potvrđen. Dostupno $count Gemma modela.', da: 'Nogle bekraeftet. $count Gemma-modeller tilgaengelige.');
+  String get builtInKeyInUse => _byLanguage(en: 'Built-in key in use. Override by entering your own key.', bs: 'Ugrađeni ključ je u upotrebi. Zamijeni ga unosom vlastitog ključa.', da: 'Indbygget nogel er i brug. Tilsidesaet den ved at indtaste din egen nogel.');
+  String get savedKeyInvalid => _byLanguage(en: 'Saved key is invalid. Re-enter and confirm again.', bs: 'Sačuvani ključ nije ispravan. Unesi ga ponovo i potvrdi.', da: 'Den gemte nogel er ugyldig. Indtast og bekraeft igen.');
+  String get noKeySet => _byLanguage(en: 'No key set. Add one to enable scanning.', bs: 'Ključ nije postavljen. Dodaj ga da omogućiš skeniranje.', da: 'Ingen nogel sat. Tilfoj en for at aktivere scanning.');
+  String get loadingSavedAiConfiguration => _byLanguage(en: 'Loading saved AI configuration...', bs: 'Učitavam sačuvanu AI konfiguraciju...', da: 'Indlaeser gemt AI-konfiguration...');
+  String get confirmingKeyWithGoogleAi => _byLanguage(en: 'Confirming key with Google AI...', bs: 'Potvrda ključa sa Google AI...', da: 'Bekraefter nogle med Google AI...');
+  String get aiConfigurationDescription => _byLanguage(en: 'Connect a Google AI key to scan receipts. Pick a Gemma model and toggle deeper thinking when needed.', bs: 'Poveži Google AI ključ za skeniranje računa. Odaberi Gemma model i uključi dublje razmišljanje po potrebi.', da: 'Forbind en Google AI-nogle for at scanne kvitteringer. Vaelg en Gemma-model og sla dybere taenkning til ved behov.');
   String get howAiConfigurationWorks => _byLanguage(en: 'How AI configuration works', bs: 'Kako radi AI konfiguracija', da: 'Sadan fungerer AI-konfiguration');
-  String get aiInfoSubtitle => _byLanguage(en: 'How your key, model, and thinking level affect scans.', bs: 'Kako kljuc, model i nivo razmisljanja uticu na skeniranje.', da: 'Hvordan din nogel, model og taenkeniveau paavirker scanninger.');
-  String get bringYourOwnKey => _byLanguage(en: 'Bring your own key', bs: 'Koristi svoj kljuc', da: 'Brug din egen nogel');
-  String get bringYourOwnKeyBody => _byLanguage(en: 'Receipt sends image data directly to Google AI using your API key. No middleman.', bs: 'Aplikacija salje podatke slike direktno Google AI koristeci tvoj API kljuc. Bez posrednika.', da: 'Appen sender billeddata direkte til Google AI med din API-nogle. Ingen mellemmand.');
-  String get staysOnDevice => _byLanguage(en: 'Stays on device', bs: 'Ostaje na uredjaju', da: 'Bliver pa enheden');
-  String get staysOnDeviceBody => _byLanguage(en: 'Your key is stored locally only. It never leaves the app except in requests to Google AI.', bs: 'Tvoj kljuc se cuva samo lokalno. Ne napusta aplikaciju osim u zahtjevima prema Google AI.', da: 'Din nogel gemmes kun lokalt. Den forlader kun appen i anmodninger til Google AI.');
-  String get quotaIsYours => _byLanguage(en: '15,000 free requests per day', bs: '15,000 zahtjeva dnevno.', da: 'Kvoten er din');
-  String get quotaIsYoursBody => _byLanguage(en: 'Receipt scan calls count against your own Google AI quota and billing.', bs: 'Pozivi za skeniranje racuna trose tvoju Google AI kvotu i naplatu.', da: 'Kvitteringsscanninger taeller mod din egen Google AI-kvote og fakturering.');
-  String get pickGemmaModel => _byLanguage(en: 'Pick a Gemma model', bs: 'Izaberi Gemma model', da: 'Vaelg en Gemma-model');
-  String get pickGemmaModelBody => _byLanguage(en: 'After confirming a key, Receipt loads compatible Gemma models you can pick from.', bs: 'Nakon potvrde kljuca aplikacija ucitava kompatibilne Gemma modele koje mozes izabrati.', da: 'Efter bekraeftelse af en nogel indlaeser appen kompatible Gemma-modeller, du kan vaelge imellem.');
+  String get aiInfoSubtitle => _byLanguage(en: 'How your key, model, and thinking level affect scans.', bs: 'Kako ključ, model i nivo razmišljanja utječu na skeniranje.', da: 'Hvordan din nogel, model og taenkeniveau paavirker scanninger.');
+  String get bringYourOwnKey => _byLanguage(en: 'Bring your own key', bs: 'Koristi vlastiti ključ', da: 'Brug din egen nogel');
+  String get bringYourOwnKeyBody => _byLanguage(en: 'Receipt sends image data directly to Google AI using your API key. No middleman.', bs: 'Aplikacija šalje podatke slike direktno Google AI koristeći tvoj API ključ. Bez posrednika.', da: 'Appen sender billeddata direkte til Google AI med din API-nogle. Ingen mellemmand.');
+  String get staysOnDevice => _byLanguage(en: 'Stays on device', bs: 'Ostaje na uređaju', da: 'Bliver pa enheden');
+  String get staysOnDeviceBody => _byLanguage(en: 'Your key is stored locally only. It never leaves the app except in requests to Google AI.', bs: 'Tvoj ključ se čuva samo lokalno. Ne napušta aplikaciju osim u zahtjevima prema Google AI.', da: 'Din nogel gemmes kun lokalt. Den forlader kun appen i anmodninger til Google AI.');
+  String get quotaIsYours => _byLanguage(en: '15,000 free requests per day', bs: '15.000 besplatnih zahtjeva dnevno', da: 'Kvoten er din');
+  String get quotaIsYoursBody => _byLanguage(en: 'Receipt scan calls count against your own Google AI quota and billing.', bs: 'Pozivi za skeniranje računa troše tvoju Google AI kvotu i naplatu.', da: 'Kvitteringsscanninger taeller mod din egen Google AI-kvote og fakturering.');
+  String get pickGemmaModel => _byLanguage(en: 'Pick a Gemma model', bs: 'Odaberi Gemma model', da: 'Vaelg en Gemma-model');
+  String get pickGemmaModelBody => _byLanguage(en: 'After confirming a key, Receipt loads compatible Gemma models you can pick from.', bs: 'Nakon potvrde ključa aplikacija učitava kompatibilne Gemma modele koje možeš odabrati.', da: 'Efter bekraeftelse af en nogel indlaeser appen kompatible Gemma-modeller, du kan vaelge imellem.');
   String get quickSteps => _byLanguage(en: 'Quick steps', bs: 'Brzi koraci', da: 'Hurtige trin');
-  String get quickStep1 => _byLanguage(en: '1. Get a Google AI Studio API key.', bs: '1. Nabavi Google AI Studio API kljuc.', da: '1. Hent en Google AI Studio API-nogle.');
-  String get quickStep2 => _byLanguage(en: '2. Paste it above and tap Confirm.', bs: '2. Zalijepi ga iznad i dodirni Potvrdi.', da: '2. Indsaet den ovenfor og tryk Bekraeft.');
-  String get quickStep3 => _byLanguage(en: '3. Pick a Gemma model from the dropdown.', bs: '3. Izaberi Gemma model iz padajuceg menija.', da: '3. Vaelg en Gemma-model fra rullemenuen.');
-  String get quickStep4 => _byLanguage(en: '4. Optional: enable deeper thinking for tricky receipts.', bs: '4. Opcionalno: ukljuci dublje razmisljanje za zahtjevne racune.', da: '4. Valgfrit: aktiver dybere taenkning for svaere kvitteringer.');
+  String get quickStep1 => _byLanguage(en: '1. Get a Google AI Studio API key.', bs: '1. Nabavi Google AI Studio API ključ.', da: '1. Hent en Google AI Studio API-nogle.');
+  String get quickStep2 => _byLanguage(en: '2. Paste it above and tap Confirm.', bs: '2. Zalijepi ga gore i dodirni Potvrdi.', da: '2. Indsaet den ovenfor og tryk Bekraeft.');
+  String get quickStep3 => _byLanguage(en: '3. Pick a Gemma model from the dropdown.', bs: '3. Odaberi Gemma model iz padajućeg izbornika.', da: '3. Vaelg en Gemma-model fra rullemenuen.');
+  String get quickStep4 => _byLanguage(en: '4. Optional: enable deeper thinking for tricky receipts.', bs: '4. Opcionalno: uključi dublje razmišljanje za zahtjevne račune.', da: '4. Valgfrit: aktiver dybere taenkning for svaere kvitteringer.');
   String get gotIt => _byLanguage(en: 'Got it', bs: 'Razumijem', da: 'Forstaet');
   String get aiConfigurationFailed => _byLanguage(en: 'AI configuration failed', bs: 'AI konfiguracija nije uspjela', da: 'AI-konfiguration mislykkedes');
-  String get addApiKeyBeforeConfirming => _byLanguage(en: 'Add an API key before confirming.', bs: 'Dodaj API kljuc prije potvrde.', da: 'Tilfoj en API-nogle for bekraeftelse.');
-  String get aiConfigurationConfirmFailed => _byLanguage(en: 'Could not confirm AI configuration. Try again.', bs: 'Nije moguce potvrditi AI konfiguraciju. Pokusaj ponovo.', da: 'Kunne ikke bekraefte AI-konfiguration. Prov igen.');
-  String get backupFailed => _byLanguage(en: 'Backup failed', bs: 'Backup nije uspio', da: 'Backup mislykkedes');
-  String backupReadyLabel(int receiptCount, int attachmentCount) => _byLanguage(en: 'Backup ready. Receipts: $receiptCount, attachments: $attachmentCount.', bs: 'Backup spreman. Racuni: $receiptCount, prilozi: $attachmentCount.', da: 'Backup klar. Kvitteringer: $receiptCount, vedhaeftninger: $attachmentCount.');
+  String get addApiKeyBeforeConfirming => _byLanguage(en: 'Add an API key before confirming.', bs: 'Dodaj API ključ prije potvrde.', da: 'Tilfoj en API-nogle for bekraeftelse.');
+  String get aiConfigurationConfirmFailed => _byLanguage(en: 'Could not confirm AI configuration. Try again.', bs: 'Nije moguće potvrditi AI konfiguraciju. Pokušaj ponovo.', da: 'Kunne ikke bekraefte AI-konfiguration. Prov igen.');
+  String get backupFailed => _byLanguage(en: 'Backup failed', bs: 'Sigurnosna kopija nije uspjela', da: 'Backup mislykkedes');
+  String backupReadyLabel(int receiptCount, int attachmentCount) => _byLanguage(en: 'Backup ready. Receipts: $receiptCount, attachments: $attachmentCount.', bs: 'Sigurnosna kopija spremna. Računi: $receiptCount, prilozi: $attachmentCount.', da: 'Backup klar. Kvitteringer: $receiptCount, vedhaeftninger: $attachmentCount.');
   String get exportFailed => _byLanguage(en: 'Export failed', bs: 'Izvoz nije uspio', da: 'Eksport mislykkedes');
   String exportReadyLabel(String formatLabel) => _byLanguage(en: '$formatLabel export ready.', bs: '$formatLabel izvoz je spreman.', da: '$formatLabel-eksport klar.');
-  String get mailAppOpenedWithExport => _byLanguage(en: 'Mail app opened with receipt export.', bs: 'Mail aplikacija je otvorena sa izvozom racuna.', da: 'Mailappen blev abnet med kvitteringseksport.');
-  String get mailAppOpenedManualAttachments => _byLanguage(en: 'Mail app opened. Attachments may need manual add.', bs: 'Mail aplikacija je otvorena. Prilozi ce mozda trebati rucno dodati.', da: 'Mailappen blev abnet. Vedhaeftninger skal muligvis tilfojes manuelt.');
-  String get emailUnavailable => _byLanguage(en: 'Email unavailable', bs: 'Email nije dostupan', da: 'E-mail ikke tilgaengelig');
-  String get noMailAppAvailable => _byLanguage(en: 'No mail app available on this device.', bs: 'Na ovom uredjaju nema dostupne mail aplikacije.', da: 'Ingen mailapp tilgaengelig pa denne enhed.');
-  String get emailExportFailed => _byLanguage(en: 'Email export failed', bs: 'Email izvoz nije uspio', da: 'E-maileksport mislykkedes');
-  String get importBackupQuestion => _byLanguage(en: 'Import backup?', bs: 'Uvesti backup?', da: 'Importer backup?');
-  String get importBackupWarning => _byLanguage(en: 'This replaces all current local receipts, budgets, and settings on this device.', bs: 'Ovo zamjenjuje sve trenutne lokalne racune, budzete i postavke na ovom uredjaju.', da: 'Dette erstatter alle nuvaerende lokale kvitteringer, budgetter og indstillinger pa denne enhed.');
-  String get restoreFailed => _byLanguage(en: 'Restore failed', bs: 'Vracanje nije uspjelo', da: 'Gendannelse mislykkedes');
-  String backupRestoredLabel(int receiptCount, int attachmentCount) => _byLanguage(en: 'Backup restored. Receipts: $receiptCount, attachments: $attachmentCount.', bs: 'Backup vracen. Racuni: $receiptCount, prilozi: $attachmentCount.', da: 'Backup gendannet. Kvitteringer: $receiptCount, vedhaeftninger: $attachmentCount.');
+  String get mailAppOpenedWithExport => _byLanguage(en: 'Mail app opened with receipt export.', bs: 'Aplikacija za e-mail otvorena sa izvozom računa.', da: 'Mailappen blev abnet med kvitteringseksport.');
+  String get mailAppOpenedManualAttachments => _byLanguage(en: 'Mail app opened. Attachments may need manual add.', bs: 'Aplikacija za e-mail otvorena. Prilozi će možda trebati ručno dodati.', da: 'Mailappen blev abnet. Vedhaeftninger skal muligvis tilfojes manuelt.');
+  String get emailUnavailable => _byLanguage(en: 'Email unavailable', bs: 'E-mail nije dostupan', da: 'E-mail ikke tilgaengelig');
+  String get noMailAppAvailable => _byLanguage(en: 'No mail app available on this device.', bs: 'Na ovom uređaju nema dostupne aplikacije za e-mail.', da: 'Ingen mailapp tilgaengelig pa denne enhed.');
+  String get emailExportFailed => _byLanguage(en: 'Email export failed', bs: 'Izvoz e-maila nije uspio', da: 'E-maileksport mislykkedes');
+  String get importBackupQuestion => _byLanguage(en: 'Import backup?', bs: 'Uvesti sigurnosnu kopiju?', da: 'Importer backup?');
+  String get importBackupWarning => _byLanguage(en: 'This replaces all current local receipts, budgets, and settings on this device.', bs: 'Ovo zamjenjuje sve trenutne lokalne račune, budžete i postavke na ovom uređaju.', da: 'Dette erstatter alle nuvaerende lokale kvitteringer, budgetter og indstillinger pa denne enhed.');
+  String get restoreFailed => _byLanguage(en: 'Restore failed', bs: 'Vraćanje nije uspjelo', da: 'Gendannelse mislykkedes');
+  String backupRestoredLabel(int receiptCount, int attachmentCount) => _byLanguage(en: 'Backup restored. Receipts: $receiptCount, attachments: $attachmentCount.', bs: 'Sigurnosna kopija vraćena. Računi: $receiptCount, prilozi: $attachmentCount.', da: 'Backup gendannet. Kvitteringer: $receiptCount, vedhaeftninger: $attachmentCount.');
   String get clearLocalDataQuestion => _byLanguage(en: 'Clear local data?', bs: 'Obrisati lokalne podatke?', da: 'Ryd lokale data?');
-  String get clearLocalDataWarning => _byLanguage(en: 'This deletes receipts, budgets, and app settings from this device.', bs: 'Ovo brise racune, budzete i postavke aplikacije sa ovog uredjaja.', da: 'Dette sletter kvitteringer, budgetter og appindstillinger fra denne enhed.');
+  String get clearLocalDataWarning => _byLanguage(en: 'This deletes receipts, budgets, and app settings from this device.', bs: 'Ovo briše račune, budžete i postavke aplikacije sa ovog uređaja.', da: 'Dette sletter kvitteringer, budgetter og appindstillinger fra denne enhed.');
   String get localDataCleared => _byLanguage(en: 'Local data cleared.', bs: 'Lokalni podaci obrisani.', da: 'Lokale data ryddet.');
   String get clearFailed => _byLanguage(en: 'Clear failed', bs: 'Brisanje nije uspjelo', da: 'Rydning mislykkedes');
-  String get privacyPolicyPlaceholder => _byLanguage(en: 'Privacy policy details will be added in a future phase.', bs: 'Detalji pravila privatnosti ce biti dodani u narednoj fazi.', da: 'Detaljer om privatlivspolitik tilfojes i en fremtidig fase.');
-  String get termsOfServicePlaceholder => _byLanguage(en: 'Terms of service details will be added in a future phase.', bs: 'Detalji uslova koristenja ce biti dodani u narednoj fazi.', da: 'Detaljer om servicevilkar tilfojes i en fremtidig fase.');
-  String get unknownError => _byLanguage(en: 'Unknown error.', bs: 'Nepoznata greska.', da: 'Ukendt fejl.');
-  String get deleteReceiptQuestion => _byLanguage(en: 'Delete Receipt?', bs: 'Obrisati racun?', da: 'Slet kvittering?');
-  String get deleteReceiptWarning => _byLanguage(en: 'This action cannot be undone. This will permanently delete this receipt from your history.', bs: 'Ovu radnju nije moguce ponistiti. Racun ce trajno biti obrisan iz historije.', da: 'Denne handling kan ikke fortrydes. Denne kvittering slettes permanent fra din historik.');
-  String fileSavedLabel(String formatLabel, String path) => _byLanguage(en: '$formatLabel saved: $path', bs: '$formatLabel sacuvan: $path', da: '$formatLabel gemt: $path');
-  String get editReceipt => _byLanguage(en: 'Edit Receipt', bs: 'Uredi racun', da: 'Rediger kvittering');
-  String get receiptUpdated => _byLanguage(en: 'Receipt updated.', bs: 'Racun azuriran.', da: 'Kvittering opdateret.');
+  String get privacyPolicyPlaceholder => _byLanguage(en: 'Privacy policy details will be added in a future phase.', bs: 'Detalji pravila privatnosti će biti dodani u narednoj fazi.', da: 'Detaljer om privatlivspolitik tilfojes i en fremtidig fase.');
+  String get termsOfServicePlaceholder => _byLanguage(en: 'Terms of service details will be added in a future phase.', bs: 'Detalji uvjeta korištenja će biti dodani u narednoj fazi.', da: 'Detaljer om servicevilkar tilfojes i en fremtidig fase.');
+  String get unknownError => _byLanguage(en: 'Unknown error.', bs: 'Nepoznata greška.', da: 'Ukendt fejl.');
+  String get deleteReceiptQuestion => _byLanguage(en: 'Delete Receipt?', bs: 'Obrisati račun?', da: 'Slet kvittering?');
+  String get deleteReceiptWarning => _byLanguage(en: 'This action cannot be undone. This will permanently delete this receipt from your history.', bs: 'Ovu radnju nije moguće poništiti. Račun će trajno biti obrisan iz historije.', da: 'Denne handling kan ikke fortrydes. Denne kvittering slettes permanent fra din historik.');
+  String fileSavedLabel(String formatLabel, String path) => _byLanguage(en: '$formatLabel saved: $path', bs: '$formatLabel sačuvan: $path', da: '$formatLabel gemt: $path');
+  String get editReceipt => _byLanguage(en: 'Edit Receipt', bs: 'Uredi račun', da: 'Rediger kvittering');
+  String get receiptUpdated => _byLanguage(en: 'Receipt updated.', bs: 'Račun ažuriran.', da: 'Kvittering opdateret.');
   String get changeItemCategory => _byLanguage(en: 'Change item category', bs: 'Promijeni kategoriju stavke', da: 'Aendr varekategori');
   String get itemName => _byLanguage(en: 'Item name', bs: 'Naziv stavke', da: 'Varenavn');
-  String get saveChanges => _byLanguage(en: 'Save changes', bs: 'Sacuvaj izmjene', da: 'Gem aendringer');
-  String itemUpdatedLabel(String itemName) => _byLanguage(en: '$itemName updated.', bs: '$itemName azuriran.', da: '$itemName opdateret.');
-  String get noReceiptImageAvailable => _byLanguage(en: 'No receipt image available.', bs: 'Slika racuna nije dostupna.', da: 'Intet kvitteringsbillede tilgaengeligt.');
-  String get unableToLoadImage => _byLanguage(en: 'Unable to load image.', bs: 'Nije moguce ucitati sliku.', da: 'Kan ikke indlaese billede.');
+  String get saveChanges => _byLanguage(en: 'Save changes', bs: 'Sačuvaj izmjene', da: 'Gem aendringer');
+  String itemUpdatedLabel(String itemName) => _byLanguage(en: '$itemName updated.', bs: '$itemName ažuriran.', da: '$itemName opdateret.');
+  String get noReceiptImageAvailable => _byLanguage(en: 'No receipt image available.', bs: 'Slika računa nije dostupna.', da: 'Intet kvitteringsbillede tilgaengeligt.');
+  String get unableToLoadImage => _byLanguage(en: 'Unable to load image.', bs: 'Nije moguće učitati sliku.', da: 'Kan ikke indlaese billede.');
   String get scanImageUploadFailedTitle => _byLanguage(en: 'Image upload failed', bs: 'Otpremanje slike nije uspjelo', da: 'Billedupload mislykkedes');
-  String get scanImageUploadFailedMessage => _byLanguage(en: 'Could not read selected image. Please try another image.', bs: 'Nije moguce procitati izabranu sliku. Pokusaj drugu sliku.', da: 'Kunne ikke laese det valgte billede. Prov et andet billede.');
-  String get scanNoImageSelectedTitle => _byLanguage(en: 'No image selected', bs: 'Nijedna slika nije izabrana', da: 'Intet billede valgt');
-  String get scanNoImageSelectedMessage => _byLanguage(en: 'Select image first, then tap scan.', bs: 'Prvo izaberi sliku, pa zatim dodirni skeniraj.', da: 'Vaelg forst et billede, og tryk derefter scan.');
-  String get scanFinishedNotice => _byLanguage(en: 'Receipt scan finished.', bs: 'Skeniranje racuna zavrseno.', da: 'Kvitteringsscanning faerdig.');
-  String get scanUnexpectedFailureTitle => _byLanguage(en: 'Unexpected scan failure', bs: 'Neocekivana greska pri skeniranju', da: 'Uventet scanningsfejl');
-  String get scanUnexpectedFailureMessage => _byLanguage(en: 'Something went wrong during scan.', bs: 'Doslo je do greske tokom skeniranja.', da: 'Noget gik galt under scanning.');
-  String get scanFailedNotice => _byLanguage(en: 'Receipt scan failed.', bs: 'Skeniranje racuna nije uspjelo.', da: 'Kvitteringsscanning mislykkedes.');
-  String get scanSaveFailedTitle => _byLanguage(en: 'Save failed', bs: 'Cuvanje nije uspjelo', da: 'Gemming mislykkedes');
-  String get scanSaveFailedMessage => _byLanguage(en: 'Could not save receipt. Try again.', bs: 'Nije moguce sacuvati racun. Pokusaj ponovo.', da: 'Kunne ikke gemme kvittering. Prov igen.');
-  String get notReceiptTitle => _byLanguage(en: 'Not a receipt', bs: 'Nije racun', da: 'Ikke en kvittering');
-  String notReceiptMessage(String reason) => _byLanguage(en: reason.isEmpty ? 'Selected image is not a receipt. Try a clear receipt photo.' : 'Selected image is not a receipt. $reason', bs: reason.isEmpty ? 'Izabrana slika nije racun. Pokusaj jasnu fotografiju racuna.' : 'Izabrana slika nije racun. $reason', da: reason.isEmpty ? 'Det valgte billede er ikke en kvittering. Prov et tydeligt kvitteringsfoto.' : 'Det valgte billede er ikke en kvittering. $reason');
+  String get scanImageUploadFailedMessage => _byLanguage(en: 'Could not read selected image. Please try another image.', bs: 'Nije moguće pročitati odabranu sliku. Pokušaj drugu sliku.', da: 'Kunne ikke laese det valgte billede. Prov et andet billede.');
+  String get scanNoImageSelectedTitle => _byLanguage(en: 'No image selected', bs: 'Nijedna slika nije odabrana', da: 'Intet billede valgt');
+  String get scanNoImageSelectedMessage => _byLanguage(en: 'Select image first, then tap scan.', bs: 'Prvo odaberi sliku, pa zatim dodirni skeniraj.', da: 'Vaelg forst et billede, og tryk derefter scan.');
+  String get scanFinishedNotice => _byLanguage(en: 'Receipt scan finished.', bs: 'Skeniranje računa završeno.', da: 'Kvitteringsscanning faerdig.');
+  String get scanUnexpectedFailureTitle => _byLanguage(en: 'Unexpected scan failure', bs: 'Neočekivana greška pri skeniranju', da: 'Uventet scanningsfejl');
+  String get scanUnexpectedFailureMessage => _byLanguage(en: 'Something went wrong during scan.', bs: 'Došlo je do greške tokom skeniranja.', da: 'Noget gik galt under scanning.');
+  String get scanFailedNotice => _byLanguage(en: 'Receipt scan failed.', bs: 'Skeniranje računa nije uspjelo.', da: 'Kvitteringsscanning mislykkedes.');
+  String get scanSaveFailedTitle => _byLanguage(en: 'Save failed', bs: 'Čuvanje nije uspjelo', da: 'Gemming mislykkedes');
+  String get scanSaveFailedMessage => _byLanguage(en: 'Could not save receipt. Try again.', bs: 'Nije moguće sačuvati račun. Pokušaj ponovo.', da: 'Kunne ikke gemme kvittering. Prov igen.');
+  String get scanLowConfidenceDialogTitle => _byLanguage(
+    en: 'Check low-confidence scan',
+    bs: 'Provjeri sken niske pouzdanosti',
+    da: 'Tjek scanning med lav sikkerhed',
+  );
+  String get scanLowConfidenceDialogMessage => _byLanguage(
+    en: 'Confidence is below 90%. Check the total, then confirm if everything looks right.',
+    bs: 'Pouzdanost je ispod 90%. Provjeri ukupni iznos pa potvrdi ako sve izgleda ispravno.',
+    da: 'Sikkerheden er under 90%. Tjek totalen, og bekraeft hvis alt ser rigtigt ud.',
+  );
+  String get scanLowConfidenceOpenThinkingMode => _byLanguage(
+    en: 'Open Thinking AI',
+    bs: 'Otvori Thinking AI',
+    da: 'Abn Thinking AI',
+  );
+  String get scanLowConfidenceConfirmSave => _byLanguage(
+    en: 'Confirm receipt',
+    bs: 'Potvrdi račun',
+    da: 'Bekraeft kvittering',
+  );
+  String get scanLowConfidenceThinkingModeHint => _byLanguage(
+    en: 'Need more help on tricky bills? ',
+    bs: 'Trebaš više pomoći za zahtjevne račune? ',
+    da: 'Har du brug for mere hjaelp til svaere kvitteringer? ',
+  );
+  String get scanLowConfidenceThinkingModeNudge => _byLanguage(
+    en: 'Low-confidence scans keep happening. Consider turning this on by default. ',
+    bs: 'Skenovi niske pouzdanosti se ponavljaju. Razmisli da ovo uključiš kao zadano. ',
+    da: 'Scanninger med lav sikkerhed sker igen. Overvej at sla dette til som standard. ',
+  );
+  String get scanLowConfidenceThinkingModeLink => _byLanguage(
+    en: 'Open Thinking AI settings.',
+    bs: 'Otvori Thinking AI postavke.',
+    da: 'Abn Thinking AI-indstillinger.',
+  );
+  String get notReceiptTitle => _byLanguage(en: 'Not a receipt', bs: 'Nije račun', da: 'Ikke en kvittering');
+  String notReceiptMessage(String reason) => _byLanguage(en: reason.isEmpty ? 'Selected image is not a receipt. Try a clear receipt photo.' : 'Selected image is not a receipt. $reason', bs: reason.isEmpty ? 'Odabrana slika nije račun. Pokušaj jasnu fotografiju računa.' : 'Odabrana slika nije račun. $reason', da: reason.isEmpty ? 'Det valgte billede er ikke en kvittering. Prov et tydeligt kvitteringsfoto.' : 'Det valgte billede er ikke en kvittering. $reason');
   String get imageQualityIssueTitle => _byLanguage(en: 'Image quality issue', bs: 'Problem s kvalitetom slike', da: 'Problem med billedkvalitet');
-  String imageQualityIssueMessage(String reason) => _byLanguage(en: reason.isEmpty ? 'Receipt image is not clear enough. Try a sharper photo.' : 'Receipt image is not clear enough. $reason', bs: reason.isEmpty ? 'Slika racuna nije dovoljno jasna. Pokusaj ostriju fotografiju.' : 'Slika racuna nije dovoljno jasna. $reason', da: reason.isEmpty ? 'Kvitteringsbilledet er ikke tydeligt nok. Prov et skarpere foto.' : 'Kvitteringsbilledet er ikke tydeligt nok. $reason');
+  String imageQualityIssueMessage(String reason) => _byLanguage(en: reason.isEmpty ? 'Receipt image is not clear enough. Try a sharper photo.' : 'Receipt image is not clear enough. $reason', bs: reason.isEmpty ? 'Slika računa nije dovoljno jasna. Pokušaj oštriju fotografiju.' : 'Slika računa nije dovoljno jasna. $reason', da: reason.isEmpty ? 'Kvitteringsbilledet er ikke tydeligt nok. Prov et skarpere foto.' : 'Kvitteringsbilledet er ikke tydeligt nok. $reason');
   String get scanFailedTitle => _byLanguage(en: 'Scan failed', bs: 'Skeniranje nije uspjelo', da: 'Scanning mislykkedes');
-  String get scanFailedMessage => _byLanguage(en: 'Could not parse receipt data.', bs: 'Nije moguce obraditi podatke racuna.', da: 'Kunne ikke parse kvitteringsdata.');
-  String get cannotSaveReceiptTitle => _byLanguage(en: 'Cannot save receipt', bs: 'Nije moguce sacuvati racun', da: 'Kan ikke gemme kvittering');
-  String get cannotSaveReceiptMessage => _byLanguage(en: 'Receipt fields invalid. Fix values before saving.', bs: 'Polja racuna nisu ispravna. Ispravi vrijednosti prije cuvanja.', da: 'Kvitteringsfelter er ugyldige. Ret vaerdierne for gemning.');
+  String get scanFailedMessage => _byLanguage(en: 'Could not parse receipt data.', bs: 'Nije moguće obraditi podatke računa.', da: 'Kunne ikke parse kvitteringsdata.');
+  String get cannotSaveReceiptTitle => _byLanguage(en: 'Cannot save receipt', bs: 'Nije moguće sačuvati račun', da: 'Kan ikke gemme kvittering');
+  String get cannotSaveReceiptMessage => _byLanguage(en: 'Receipt fields invalid. Fix values before saving.', bs: 'Polja računa nisu ispravna. Ispravi vrijednosti prije čuvanja.', da: 'Kvitteringsfelter er ugyldige. Ret vaerdierne for gemning.');
   String get invalidJsonResponseTitle => _byLanguage(en: 'Invalid JSON response', bs: 'Neispravan JSON odgovor', da: 'Ugyldigt JSON-svar');
-  String get invalidJsonResponseMessage => _byLanguage(en: 'AI returned broken JSON. Please retry scan.', bs: 'AI je vratio neispravan JSON. Pokusaj ponovo skenirati.', da: 'AI returnerede ugyldig JSON. Prov at scanne igen.');
+  String get invalidJsonResponseMessage => _byLanguage(en: 'AI returned broken JSON. Please retry scan.', bs: 'AI je vratio neispravan JSON. Pokušaj ponovo skenirati.', da: 'AI returnerede ugyldig JSON. Prov at scanne igen.');
   String get aiResponseFailedTitle => _byLanguage(en: 'AI response failed', bs: 'AI odgovor nije uspio', da: 'AI-svar mislykkedes');
-  String get aiResponseFailedMessage => _byLanguage(en: 'Could not get valid AI response for this image.', bs: 'Nije moguce dobiti ispravan AI odgovor za ovu sliku.', da: 'Kunne ikke hente et gyldigt AI-svar for dette billede.');
+  String get aiResponseFailedMessage => _byLanguage(en: 'Could not get valid AI response for this image.', bs: 'Nije moguće dobiti ispravan AI odgovor za ovu sliku.', da: 'Kunne ikke hente et gyldigt AI-svar for dette billede.');
   String get currencyConversionFailedTitle => _byLanguage(en: 'Currency conversion failed', bs: 'Konverzija valute nije uspjela', da: 'Valutaomregning mislykkedes');
-  String currencyConversionFailedMessage(String from, String to) => _byLanguage(en: 'Could not convert $from to $to. Check your internet connection and try again.', bs: 'Nije moguce konvertovati $from u $to. Provjeri internet vezu i pokusaj ponovo.', da: 'Kunne ikke omregne $from til $to. Tjek din internetforbindelse og prov igen.');
+  String currencyConversionFailedMessage(String from, String to) => _byLanguage(en: 'Could not convert $from to $to. Check your internet connection and try again.', bs: 'Nije moguće konvertovati $from u $to. Provjeri internetsku vezu i pokušaj ponovo.', da: 'Kunne ikke omregne $from til $to. Tjek din internetforbindelse og prov igen.');
 
   String get currency => _byLanguage(
     en: 'Currency',
@@ -777,12 +812,12 @@ class AppLocalizations {
   );
   String get currencyDescription => _byLanguage(
     en: 'Set the default currency for budgets and spending summaries.',
-    bs: 'Postavi zadanu valutu za budzete i preglede potrosnje.',
+    bs: 'Postavi zadanu valutu za budžete i preglede potrošnje.',
     da: 'Indstil standardvalutaen for budgetter og forbrugsoversigter.',
   );
   String get currencyCustomHint => _byLanguage(
     en: 'Or type a custom currency code',
-    bs: 'Ili unesi prilagodeni kod valute',
+    bs: 'Ili unesi prilagođeni kod valute',
     da: 'Eller skriv en brugerdefineret valutakode',
   );
   String currencySavedLabel(String code) => _byLanguage(
@@ -792,19 +827,19 @@ class AppLocalizations {
   );
   String get currencyLockedDescription => _byLanguage(
     en: 'Your home currency is locked to keep your spending history consistent. Changing it would invalidate past receipt amounts and budget totals.',
-    bs: 'Tvoja osnovna valuta je zakljucana radi konzistentnosti historije potrosnje. Promjena bi onemogucila usporedbu istorijskih iznosa i budzeta.',
+    bs: 'Tvoja osnovna valuta je zaključana radi konzistentnosti historije potrošnje. Promjena bi onemogućila usporedbu historijskih iznosa i budžeta.',
     da: 'Din hjemvaluta er laast for at holde din forbrugshistorik konsistent. En aendring ville ugyldiggore tidligere kviteringsbelob og budgettotaler.',
   );
   String get currencyLockedResetHint => _byLanguage(
     en: 'Need a different currency? Use "Clear all data" in the Data section below.',
-    bs: 'Trebaš drugu valutu? Koristi "Obriši sve podatke" u sekciji Podaci ispod.',
+    bs: 'Trebaš drugu valutu? Koristi "Obriši sve podatke" u odjeljku Podaci ispod.',
     da: 'Har du brug for en anden valuta? Brug "Slet alle data" i afsnittet Data nedenfor.',
   );
 
   // ── Home view switcher ─────────────────────────────────────────────────────
   String get homeViewSwitcherHome => _byLanguage(
     en: 'Home',
-    bs: 'Pocetna',
+    bs: 'Početna',
     da: 'Hjem',
   );
   String get homeViewSwitcherTrip => _byLanguage(
@@ -821,7 +856,7 @@ class AppLocalizations {
   );
   String tripInfoCardSubtitle(String homeCode) => _byLanguage(
     en: 'End the trip to convert receipts back to $homeCode.',
-    bs: 'Zavrsi putovanje da pretvoris racune u $homeCode.',
+    bs: 'Završi putovanje da pretvoriš račune u $homeCode.',
     da: 'Afslut turen for at omregne kvitteringer tilbage til $homeCode.',
   );
 
@@ -840,29 +875,29 @@ class AppLocalizations {
   // ── Scan travel banner ─────────────────────────────────────────────────────
   String scanTravelBannerTitle(String code) => _byLanguage(
     en: 'Scanning in $code',
-    bs: 'Skeniras u $code',
+    bs: 'Skenirate u $code',
     da: 'Scanner i $code',
   );
   String scanTravelBannerSubtitle(String homeCode) => _byLanguage(
     en: 'Receipts save to this trip and convert to $homeCode when you end it.',
-    bs: 'Racuni se cuvaju u putovanju i pretvaraju u $homeCode kad zavrsis.',
+    bs: 'Računi se čuvaju u putovanju i pretvaraju u $homeCode kad završiš.',
     da: 'Kvitteringer gemmes pa turen og omregnes til $homeCode, nar du afslutter.',
   );
 
   // ── Travel mode ────────────────────────────────────────────────────────────
   String get travelModeIdleTitle => _byLanguage(
     en: 'Travel mode',
-    bs: 'Putni nacin',
+    bs: 'Putni način',
     da: 'Rejsetilstand',
   );
   String get travelModeIdleSubtitle => _byLanguage(
-    en: 'Scan in a different currency while you’re away. We’ll convert it back to your home currency when the trip ends.',
-    bs: 'Skeniraj u drugoj valuti dok si na putu. Pretvorit cemo u tvoju zadanu valutu kad putovanje zavrsi.',
+    en: "Scan in a different currency while you're away. We'll convert it back to your home currency when the trip ends.",
+    bs: 'Skeniraj u drugoj valuti dok si na putu. Pretvorit ćemo u tvoju zadanu valutu kad putovanje završi.',
     da: 'Scan i en anden valuta, mens du er pa rejse. Vi omregner det tilbage til din hjemmevaluta, nar turen slutter.',
   );
   String get travelModeStartTrip => _byLanguage(
     en: 'Start a trip',
-    bs: 'Pocni putovanje',
+    bs: 'Započni putovanje',
     da: 'Start tur',
   );
   String get travelModeInfoButton => _byLanguage(
@@ -872,22 +907,22 @@ class AppLocalizations {
   );
   String get travelModeActiveLabel => _byLanguage(
     en: 'Travel mode',
-    bs: 'Putni nacin',
+    bs: 'Putni način',
     da: 'Rejsetilstand',
   );
   String get travelModeScanningIn => _byLanguage(
     en: 'scanning in',
-    bs: 'skeniras u',
+    bs: 'skenirate u',
     da: 'scanner i',
   );
   String get travelModeSpentSoFar => _byLanguage(
     en: 'SPENT SO FAR',
-    bs: 'POTROSENO',
+    bs: 'POTROŠENO',
     da: 'BRUGT INDTIL NU',
   );
   String travelModeReceiptCount(int count) => _byLanguage(
     en: '$count receipt${count == 1 ? '' : 's'}',
-    bs: '$count racun${count == 1 ? '' : 'a'}',
+    bs: '$count račun${count == 1 ? '' : 'a'}',
     da: '$count kvittering${count == 1 ? '' : 'er'}',
   );
   String travelModeDayBadge(int day) => _byLanguage(
@@ -897,17 +932,17 @@ class AppLocalizations {
   );
   String get travelModeEndTrip => _byLanguage(
     en: 'End trip',
-    bs: 'Zavrsi',
+    bs: 'Završi putovanje',
     da: 'Slut tur',
   );
   String get travelModeViewReceipts => _byLanguage(
     en: 'View trip receipts',
-    bs: 'Prikazi racune',
+    bs: 'Prikaži račune',
     da: 'Se turkvitteringer',
   );
   String get travelModeSheetTitle => _byLanguage(
     en: 'Trip receipts',
-    bs: 'Racuni s putovanja',
+    bs: 'Računi s putovanja',
     da: 'Turkvitteringer',
   );
   String travelModeSheetSubtitle(String code) => _byLanguage(
@@ -917,83 +952,83 @@ class AppLocalizations {
   );
   String get travelModeSheetItems => _byLanguage(
     en: 'RECEIPTS',
-    bs: 'RACUNI',
+    bs: 'RAČUNI',
     da: 'KVITTERINGER',
   );
   String get travelModeSheetHint => _byLanguage(
     en: 'Tap any receipt to open details.',
-    bs: 'Dodirni racun za detalje.',
+    bs: 'Dodirni račun za detalje.',
     da: 'Tryk pa en kvittering for detaljer.',
   );
   String get travelModeSheetEmptyTitle => _byLanguage(
     en: 'No trip receipts yet',
-    bs: 'Jos nema racuna',
+    bs: 'Još nema računa s putovanja',
     da: 'Ingen turkvitteringer endnu',
   );
   String travelModeSheetEmptySubtitle(String code) => _byLanguage(
     en: 'Start scanning in $code and they will land here.',
-    bs: 'Pocni skenirati u $code i pojavit ce se ovdje.',
+    bs: 'Počni skenirati u $code i pojavit će se ovdje.',
     da: 'Start scanning i $code, sa lander de her.',
   );
 
   String get travelStartSheetTitle => _byLanguage(
     en: 'Pick your trip currency',
-    bs: 'Izaberi valutu putovanja',
+    bs: 'Odaberi valutu putovanja',
     da: 'Vaelg din rejsevaluta',
   );
   String get travelStartSheetSubtitle => _byLanguage(
     en: 'All scans during the trip will be saved in this currency.',
-    bs: 'Svi skenovi tokom putovanja cuvat ce se u ovoj valuti.',
+    bs: 'Sva skeniranja tokom putovanja čuvat će se u ovoj valuti.',
     da: 'Alle scanninger under turen gemmes i denne valuta.',
   );
   String get travelStartSheetConfirm => _byLanguage(
     en: 'Start trip',
-    bs: 'Pocni',
+    bs: 'Započni',
     da: 'Start',
   );
   String get travelModeInfoTitle => _byLanguage(
     en: 'How travel mode works',
-    bs: 'Kako radi putni nacin',
+    bs: 'Kako radi putni način',
     da: 'Sadan fungerer rejsetilstand',
   );
   String get travelModeInfoSubtitle => _byLanguage(
     en: 'Use it when you want to scan receipts in a temporary trip currency.',
-    bs: 'Koristi ovo kad zelis skenirati racune u privremenoj valuti putovanja.',
+    bs: 'Koristi ovo kad želiš skenirati račune u privremenoj valuti putovanja.',
     da: 'Brug dette, nar du vil scanne kvitteringer i en midlertidig rejsevaluta.',
   );
   String get travelModeInfoStep1Title => _byLanguage(
     en: 'Choose the trip currency',
-    bs: 'Izaberi valutu putovanja',
+    bs: 'Odaberi valutu putovanja',
     da: 'Vaelg rejsevaluta',
   );
   String get travelModeInfoStep1Body => _byLanguage(
     en: 'Start travel mode and pick the currency you will spend in during the trip.',
-    bs: 'Pokreni putni nacin i izaberi valutu u kojoj ces trositi tokom putovanja.',
+    bs: 'Pokreni putni način i odaberi valutu u kojoj ćeš trošiti tokom putovanja.',
     da: 'Start rejsetilstand og vaelg den valuta, du bruger under turen.',
   );
   String get travelModeInfoStep2Title => _byLanguage(
     en: 'Scan receipts as usual',
-    bs: 'Skeniraj racune kao i inace',
+    bs: 'Skeniraj račune kao i inače',
     da: 'Scan kvitteringer som normalt',
   );
   String get travelModeInfoStep2Body => _byLanguage(
     en: 'Each receipt is saved in that trip currency and grouped into the active trip.',
-    bs: 'Svaki racun se cuva u toj valuti i povezuje s aktivnim putovanjem.',
+    bs: 'Svaki račun se čuva u toj valuti i povezuje s aktivnim putovanjem.',
     da: 'Hver kvittering gemmes i rejsevalutaen og knyttes til den aktive tur.',
   );
   String get travelModeInfoStep3Title => _byLanguage(
     en: 'End trip and convert',
-    bs: 'Zavrsi putovanje i pretvori',
+    bs: 'Završi putovanje i pretvori',
     da: 'Afslut turen og omregn',
   );
   String get travelModeInfoStep3Body => _byLanguage(
     en: 'When the trip ends, convert all trip receipts back to your home currency in one step.',
-    bs: 'Kad putovanje zavrsi, pretvori sve racune s putovanja nazad u svoju domacu valutu jednim korakom.',
+    bs: 'Kad putovanje završi, pretvori sve račune s putovanja nazad u svoju domaću valutu u jednom koraku.',
     da: 'Nar turen slutter, omregner du alle turkvitteringer tilbage til din hjemmevaluta i et trin.',
   );
   String get travelModeInfoNote => _byLanguage(
     en: 'You can choose a quick today-rate conversion or a more accurate per-day conversion when ending the trip.',
-    bs: 'Pri zavrsetku putovanja mozes izabrati brzu konverziju po danasnjem kursu ili precizniju po danima.',
+    bs: 'Pri završetku putovanja možeš odabrati brzu konverziju po današnjem kursu ili precizniju po danima.',
     da: 'Nar du afslutter turen, kan du vaelge en hurtig omregning med dagens kurs eller en mere praecis daglig omregning.',
   );
   String get travelModeInfoConfirm => _byLanguage(
@@ -1003,30 +1038,30 @@ class AppLocalizations {
   );
   String travelModeStartedSnackbar(String code) => _byLanguage(
     en: 'Travel mode started — scanning in $code.',
-    bs: 'Putni nacin aktivan — skeniras u $code.',
+    bs: 'Putni način aktivan — skenirate u $code.',
     da: 'Rejsetilstand startet — scanner i $code.',
   );
   String travelModeEndedSnackbar(String from, String to) => _byLanguage(
     en: 'Trip ended — converted $from to $to.',
-    bs: 'Putovanje zavrseno — pretvoreno $from u $to.',
+    bs: 'Putovanje završeno — pretvoreno $from u $to.',
     da: 'Tur afsluttet — omregnet $from til $to.',
   );
 
   // End-trip confirm dialog
   String get tripEndDialogTitle => _byLanguage(
     en: 'End your trip?',
-    bs: 'Zavrsiti putovanje?',
+    bs: 'Završiti putovanje?',
     da: 'Afslutte turen?',
   );
   String tripEndDialogIntro(int receipts, String from, String to) =>
       _byLanguage(
         en: '$receipts receipt${receipts == 1 ? '' : 's'} in $from will be converted to $to.',
-        bs: '$receipts racun${receipts == 1 ? '' : 'a'} u $from bit ce pretvoren u $to.',
+        bs: '$receipts račun${receipts == 1 ? '' : 'a'} u $from bit će pretvoren u $to.',
         da: '$receipts kvittering${receipts == 1 ? '' : 'er'} i $from bliver omregnet til $to.',
       );
   String get tripEndDialogConfirm => _byLanguage(
     en: 'Convert and finish',
-    bs: 'Pretvori i zavrsi',
+    bs: 'Pretvori i završi',
     da: 'Omregn og afslut',
   );
   String get tripEndStrategyPerDayTitle => _byLanguage(
@@ -1035,52 +1070,52 @@ class AppLocalizations {
     da: 'Daglige kurser',
   );
   String get tripEndStrategyPerDaySubtitle => _byLanguage(
-    en: 'Most accurate. Uses each receipt’s purchase date.',
-    bs: 'Najtacnije. Koristi datum kupovine za svaki racun.',
+    en: "Most accurate. Uses each receipt's purchase date.",
+  bs: 'Najtačnije. Koristi datum kupovine za svaki račun.',
     da: 'Mest praecist. Bruger koebsdato for hver kvittering.',
   );
   String get tripEndStrategyTodayTitle => _byLanguage(
-    en: 'Today’s rate',
-    bs: 'Danasnji kurs',
+    en: "Today's rate",
+    bs: 'Današnji kurs',
     da: 'Dagens kurs',
   );
   String get tripEndStrategyTodaySubtitle => _byLanguage(
     en: 'Fast. Same rate applied to every receipt.',
-    bs: 'Brzo. Isti kurs primijenjen na svaki racun.',
+    bs: 'Brzo. Isti kurs primijenjen na svaki račun.',
     da: 'Hurtig. Samme kurs anvendes for alle kvitteringer.',
   );
 
   // End-trip loading dialog
   String get tripEndLoadingFetchingRate => _byLanguage(
     en: 'Fetching exchange rate',
-    bs: 'Dohvacanje kursa',
+    bs: 'Dohvatanje kursa',
     da: 'Henter valutakurs',
   );
   String tripEndLoadingFetchingDate(String date) => _byLanguage(
     en: 'Fetching rate for $date',
-    bs: 'Dohvacanje kursa za $date',
+    bs: 'Dohvatanje kursa za $date',
     da: 'Henter kurs for $date',
   );
   String get tripEndLoadingConverting => _byLanguage(
     en: 'Converting trip receipts',
-    bs: 'Pretvaranje racuna',
+    bs: 'Pretvaranje računa',
     da: 'Omregner kvitteringer',
   );
   String get tripEndLoadingFinishing => _byLanguage(
     en: 'Finishing up',
-    bs: 'Zavrsavam',
+    bs: 'Završavam',
     da: 'Afslutter',
   );
 
   // Onboarding
   String get onboardingCurrencyTitle => _byLanguage(
     en: 'Pick your home currency',
-    bs: 'Izaberi zadanu valutu',
+    bs: 'Odaberi zadanu valutu',
     da: 'Vaelg din hjemmevaluta',
   );
   String get onboardingCurrencySubtitle => _byLanguage(
     en: 'All your spending and budgets will live in this currency. You can\'t change it later without wiping your data.',
-    bs: 'Sva potrosnja i budzeti bit ce u ovoj valuti. Kasnije se moze promijeniti samo brisanjem svih podataka.',
+    bs: 'Sva potrošnja i budžeti bit će u ovoj valuti. Kasnije se može promijeniti samo brisanjem svih podataka.',
     da: 'Alt forbrug og alle budgetter vil vaere i denne valuta. Den kan kun aendres ved at slette dine data.',
   );
   String get onboardingCurrencyContinue => _byLanguage(
@@ -1096,15 +1131,15 @@ class AppLocalizations {
       case 'fuel':
         return _byLanguage(en: 'Fuel', bs: 'Gorivo', da: 'Braendstof');
       case 'household':
-        return _byLanguage(en: 'Household', bs: 'Domacinstvo', da: 'Husholdning');
+        return _byLanguage(en: 'Household', bs: 'Domaćinstvo', da: 'Husholdning');
       case 'pets':
-        return _byLanguage(en: 'Pets', bs: 'Ljubimci', da: 'Kaledyr');
+        return _byLanguage(en: 'Pets', bs: 'Kućni ljubimci', da: 'Kaledyr');
       case 'clothing':
-        return _byLanguage(en: 'Clothing', bs: 'Odjeca', da: 'Toj');
+        return _byLanguage(en: 'Clothing', bs: 'Odjeća', da: 'Toj');
       case 'pharmacy':
         return _byLanguage(en: 'Pharmacy', bs: 'Apoteka', da: 'Apotek');
       case 'dental':
-        return _byLanguage(en: 'Dental', bs: 'Dentalno', da: 'Tandlaege');
+        return _byLanguage(en: 'Dental', bs: 'Stomatologija', da: 'Tandlaege');
       case 'night out':
         return _byLanguage(en: 'Night Out', bs: 'Izlazak', da: 'Bytur');
       case 'cigarettes':

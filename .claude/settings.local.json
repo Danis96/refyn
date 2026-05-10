@@ -17,7 +17,8 @@
       "Read(//Users/danispreldzic/Desktop/Danis/PROJECTS/athanor/assets/fonts/**)",
       "Read(//Users/danispreldzic/Desktop/Danis/PROJECTS/athanor/**)",
       "Bash(mkdir -p /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/assets/fonts && cp /Users/danispreldzic/Desktop/Danis/PROJECTS/athanor/assets/fonts/NotoSans-*.ttf /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/assets/fonts/ && ls /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/assets/fonts/)",
-      "Bash(grep -rn \"WigglyLoader.indeterminate\\(\" /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/.dart_tool 2>/dev/null | head -3; echo \"---\"; find ~ -path \"*wiggly_loaders*lib*.dart\" 2>/dev/null | head -5)"
+      "Bash(grep -rn \"WigglyLoader.indeterminate\\(\" /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/.dart_tool 2>/dev/null | head -3; echo \"---\"; find ~ -path \"*wiggly_loaders*lib*.dart\" 2>/dev/null | head -5)",
+      "Bash(grep -n \"' ok'\\\\|\\\\\"ok\\\\\"\\\\| ok \\\\|'ok'\\\\b\\\\| ok$\\\\|get ok\\\\b\\\\|'Ok'\\\\|'OK'\" /Users/danispreldzic/Desktop/Danis/PROJECTS/reciept/lib/l10n/app_localizations.dart)"
     ]
   }
 }

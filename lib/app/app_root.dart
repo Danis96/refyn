@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:refyn/app/core/config/app_config.dart';
 import 'package:refyn/app/features/ai/domain/repositories/ai_configuration_repository.dart';
 import 'package:refyn/app/features/ai/infrastructure/app_settings_ai_configuration_repository.dart';
 import 'package:refyn/app/features/budgets/repository/monthly_budget_sync_repository.dart';
@@ -25,22 +25,18 @@ import 'features/history/repository/history_repository.dart';
 import 'features/scan/controllers/scan_controller.dart';
 import 'features/scan/repository/scan_repository.dart';
 import 'features/settings/controllers/settings_controller.dart';
+import 'features/settings/controllers/settings_spotlight_controller.dart';
 import 'features/settings/repository/settings_repository.dart';
 import 'my_app.dart';
 
 class AppRoot extends StatelessWidget {
-  const AppRoot({super.key, this.database});
-
-  static const String _gemmaModelFallback = String.fromEnvironment(
-    'GEMMA_MODEL',
-    defaultValue: 'gemma-4-26b-a4b-it',
-  );
-  static const String _gemmaBaseUrlFallback = String.fromEnvironment(
-    'GEMMA_API_BASE_URL',
-    defaultValue: 'https://generativelanguage.googleapis.com/v1beta',
-  );
+  const AppRoot({super.key, this.database, AppConfig? appConfig})
+      : _appConfig = appConfig;
 
   final AppDatabase? database;
+  final AppConfig? _appConfig;
+
+  AppConfig get _config => _appConfig ?? AppConfig.fromEnvironment();
 
   @override
   Widget build(BuildContext context) {
@@ -197,38 +193,23 @@ class AppRoot extends StatelessWidget {
                 context.read<AiConfigurationRepository>(),
           )..loadSettings(),
         ),
+        ChangeNotifierProvider<SettingsSpotlightController>(
+          create: (_) => SettingsSpotlightController(),
+        ),
       ],
       child: const MyApp(),
     );
   }
 
   String get _gemmaApiKey {
-    final String fromEnv = dotenv.isInitialized
-        ? (dotenv.env['GEMMA_API_KEY']?.trim() ?? '')
-        : '';
-    if (fromEnv.isNotEmpty) {
-      return fromEnv;
+    final fromConfig = _config.gemmaApiKey.trim();
+    if (fromConfig.isNotEmpty) {
+      return fromConfig;
     }
     return const String.fromEnvironment('GEMMA_API_KEY');
   }
 
-  String get _gemmaModel {
-    final String fromEnv = dotenv.isInitialized
-        ? (dotenv.env['GEMMA_MODEL']?.trim() ?? '')
-        : '';
-    if (fromEnv.isNotEmpty) {
-      return fromEnv;
-    }
-    return _gemmaModelFallback;
-  }
+  String get _gemmaModel => _config.gemmaModel;
 
-  String get _gemmaBaseUrl {
-    final String fromEnv = dotenv.isInitialized
-        ? (dotenv.env['GEMMA_API_BASE_URL']?.trim() ?? '')
-        : '';
-    if (fromEnv.isNotEmpty) {
-      return fromEnv;
-    }
-    return _gemmaBaseUrlFallback;
-  }
+  String get _gemmaBaseUrl => _config.gemmaApiBaseUrl;
 }

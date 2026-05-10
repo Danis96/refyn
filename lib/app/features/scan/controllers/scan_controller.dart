@@ -35,8 +35,10 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
   AppLifecycleState _appLifecycleState = AppLifecycleState.resumed;
   ScanForegroundNotice? _pendingForegroundNotice;
   int _activeScanRequestId = 0;
+  int _lowConfidenceScanCount = 0;
 
-  static const double _lowConfidenceThreshold = 0.65;
+  static const double lowConfidenceThreshold = 0.95;
+  static const int thinkingModeSuggestionTriggerCount = 2;
 
   ScanViewState get state => _state;
   String? get selectedImagePath => _selectedImagePath;
@@ -48,7 +50,10 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
   bool get isLowConfidence =>
       (_pendingReceiptDraft ?? _lastScannedReceipt)?.confidence != null &&
       ((_pendingReceiptDraft ?? _lastScannedReceipt)!.confidence <
-          _lowConfidenceThreshold);
+          lowConfidenceThreshold);
+  int get lowConfidenceScanCount => _lowConfidenceScanCount;
+  bool get shouldSuggestThinkingMode =>
+      _lowConfidenceScanCount >= thinkingModeSuggestionTriggerCount;
   int get loadingStep => _loadingStep;
   bool get busy => _busy;
   bool get savingDraft => _savingDraft;
@@ -166,6 +171,9 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
       }
       _pendingReceiptDraft = scanned;
       _lastScannedReceipt = scanned;
+      if (scanned.confidence < lowConfidenceThreshold) {
+        _lowConfidenceScanCount++;
+      }
       _state = ScanViewState.success;
       _queueForegroundNoticeIfBackgrounded(
         ScanForegroundNotice(
@@ -342,5 +350,18 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @visibleForTesting
+  void debugSetDraftReceipt(ReceiptModel? receipt) {
+    _pendingReceiptDraft = receipt;
+    _lastScannedReceipt = receipt;
+    notifyListeners();
+  }
+
+  @visibleForTesting
+  void debugSetLowConfidenceScanCount(int count) {
+    _lowConfidenceScanCount = count;
+    notifyListeners();
   }
 }

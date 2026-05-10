@@ -1,17 +1,29 @@
-import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:refyn/database/app_database.dart';
-
-import 'package:refyn/app/app_root.dart';
+import 'package:refyn/app/features/dashboard/ui/widgets/bottom_navigation_tabs.dart';
+import 'package:refyn/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('shows bottom navigation tabs', (WidgetTester tester) async {
-    final AppDatabase testDatabase = AppDatabase(NativeDatabase.memory());
+  testWidgets('shows bottom navigation destinations', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          AppLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          bottomNavigationBar: BottomNavigationTabs(
+            currentIndex: 1,
+            onDestinationSelected: (_) {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
 
-    await tester.pumpWidget(AppRoot(database: testDatabase));
-    await tester.pump(const Duration(milliseconds: 300));
-
-    expect(find.text('Home'), findsWidgets);
+    expect(find.text('Home'), findsOneWidget);
     expect(find.text('Scan'), findsOneWidget);
     expect(find.text('History'), findsOneWidget);
     expect(find.text('Settings'), findsOneWidget);
