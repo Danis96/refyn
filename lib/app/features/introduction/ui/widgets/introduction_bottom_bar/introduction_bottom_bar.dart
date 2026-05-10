@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 
 class IntroductionBottomBar extends StatelessWidget {
   const IntroductionBottomBar({
@@ -35,8 +36,11 @@ class IntroductionBottomBar extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
                   isLastPage
-                      ? 'Ready to scan with Refyn'
-                      : '${currentIndex + 1}/$totalSteps features previewed',
+                      ? context.l10n.onboardingReadyToScan
+                      : context.l10n.onboardingFeaturesPreviewed(
+                          currentIndex + 1,
+                          totalSteps,
+                        ),
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w700,
@@ -64,7 +68,11 @@ class IntroductionBottomBar extends StatelessWidget {
                             : Icons.arrow_forward_rounded,
                       ),
                     const SizedBox(width: 10),
-                    Text(isLastPage ? 'Open Refyn' : 'Next'),
+                    Text(
+                      isLastPage
+                          ? context.l10n.onboardingOpenRefyn
+                          : context.l10n.next,
+                    ),
                   ],
                 ),
               ),

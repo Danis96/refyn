@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:refyn/generated/assets.dart';
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/theme/app_colors.dart';
 import 'package:wiggly_loaders/wiggly_loaders.dart';
 
@@ -62,12 +63,10 @@ class _IntroductionFlowView extends StatelessWidget {
                   onCompleted: () {},
                 )
               : provider.shouldShowHomeCurrencyPicker
-                  ? const HomeCurrencyPickerPage(
-                      key: ValueKey<String>('home-currency'),
-                    )
-                  : const DashboardShellPage(
-                      key: ValueKey<String>('dashboard'),
-                    ),
+              ? const HomeCurrencyPickerPage(
+                  key: ValueKey<String>('home-currency'),
+                )
+              : const DashboardShellPage(key: ValueKey<String>('dashboard')),
         );
       },
     );
@@ -91,11 +90,14 @@ class _IntroductionBootstrapLoader extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               SizedBox(
-                  width: 100,
-                  child: WigglyLinearLoader.indeterminate(progressColor: AppColors.lightBackground, )),
+                width: 100,
+                child: WigglyLinearLoader.indeterminate(
+                  progressColor: AppColors.lightBackground,
+                ),
+              ),
               const SizedBox(height: 14),
               Text(
-                'Preparing Refyn',
+                context.l10n.preparingRefyn,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),

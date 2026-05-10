@@ -193,7 +193,7 @@ class DashboardRepository {
         );
 
     if (sorted.first.spentAmount <= 0) {
-      return 'No spending';
+      return AppLocalizations.current.noSpending;
     }
     return sorted.first.label;
   }

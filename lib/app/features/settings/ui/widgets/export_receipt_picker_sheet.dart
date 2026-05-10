@@ -5,10 +5,7 @@ import 'package:refyn/app/models/receipt/receipt_model.dart';
 import 'package:refyn/theme/app_spacing.dart';
 
 class ExportReceiptPickerSheet extends StatefulWidget {
-  const ExportReceiptPickerSheet({
-    super.key,
-    required this.receipts,
-  });
+  const ExportReceiptPickerSheet({super.key, required this.receipts});
 
   final List<ReceiptModel> receipts;
 
@@ -233,7 +230,7 @@ class _SheetHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              allSelected ? context.l10n.cancel : 'All',
+              allSelected ? context.l10n.cancel : context.l10n.all,
               style: theme.textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: allSelected
@@ -267,7 +264,7 @@ class _ReceiptTile extends StatelessWidget {
 
     final String merchant = receipt.merchant.name.isNotEmpty
         ? receipt.merchant.name
-        : 'Unknown';
+        : context.l10n.unknownMerchant;
     final String date = DateFormat.yMMMd().format(receipt.createdAt);
     final String total =
         '${receipt.totals.total.toStringAsFixed(2)} ${receipt.currency}';
@@ -283,16 +280,12 @@ class _ReceiptTile extends StatelessWidget {
               ? colorScheme.primaryContainer.withValues(
                   alpha: isDark ? 0.36 : 0.48,
                 )
-              : colorScheme.onSurface.withValues(
-                  alpha: isDark ? 0.08 : 0.03,
-                ),
+              : colorScheme.onSurface.withValues(alpha: isDark ? 0.08 : 0.03),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: selected
                 ? colorScheme.primary.withValues(alpha: 0.5)
-                : colorScheme.onSurface.withValues(
-                    alpha: isDark ? 0.16 : 0.08,
-                  ),
+                : colorScheme.onSurface.withValues(alpha: isDark ? 0.16 : 0.08),
           ),
         ),
         child: Row(
@@ -302,9 +295,7 @@ class _ReceiptTile extends StatelessWidget {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: selected
-                    ? colorScheme.primary
-                    : Colors.transparent,
+                color: selected ? colorScheme.primary : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: selected

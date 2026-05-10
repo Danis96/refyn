@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/app/models/receipt/receipt_item_model.dart';
 import 'package:refyn/app/models/receipt/receipt_model.dart';
 import 'package:refyn/theme/app_spacing.dart';
@@ -128,7 +129,7 @@ class ReceiptPaperCard extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final bool isTripReceipt = receipt.travelSessionId != null;
     final String merchant = receipt.merchant.name.trim().isEmpty
-        ? 'STORE'
+        ? context.l10n.receiptPaperStore.toUpperCase()
         : receipt.merchant.name.trim().toUpperCase();
     final int itemCount = receipt.items.length;
     final int quantityCount = receipt.items
@@ -242,7 +243,9 @@ class ReceiptPaperCard extends StatelessWidget {
                           ),
                           const SizedBox(height: AppSpacing.md),
                           ReceiptTotalsRow(
-                            label: 'ITEMS ($itemCount)',
+                            label: context.l10n
+                                .receiptPaperItemsLabel(itemCount)
+                                .toUpperCase(),
                             value: '$quantityCount x',
                             emphasized: false,
                           ),
@@ -278,14 +281,16 @@ class ReceiptPaperCard extends StatelessWidget {
                                       ),
                                       const SizedBox(height: AppSpacing.xs),
                                       ReceiptTotalsRow(
-                                        label: 'SUBTOTAL:',
+                                        label:
+                                            '${context.l10n.receiptPaperSubtotal.toUpperCase()}:',
                                         value:
                                             '${ReceiptPaperMoney.format(receipt.totals.subtotal ?? 0)} ${ReceiptPaperMoney.currencyLabel(receipt.currency)}',
                                         emphasized: false,
                                       ),
                                       const SizedBox(height: 4),
                                       ReceiptTotalsRow(
-                                        label: 'TAX:',
+                                        label:
+                                            '${context.l10n.receiptPaperTax.toUpperCase()}:',
                                         value:
                                             '${ReceiptPaperMoney.format(receipt.totals.vatAmount ?? 0)} ${ReceiptPaperMoney.currencyLabel(receipt.currency)}',
                                         emphasized: false,
@@ -308,7 +313,8 @@ class ReceiptPaperCard extends StatelessWidget {
                           ),
                           const SizedBox(height: AppSpacing.sm),
                           ReceiptTotalsRow(
-                            label: 'TOTAL:',
+                            label:
+                                '${context.l10n.receiptPaperTotal.toUpperCase()}:',
                             value:
                                 '${ReceiptPaperMoney.format(receipt.totals.total)} ${ReceiptPaperMoney.currencyLabel(receipt.currency)}',
                             emphasized: true,
@@ -343,7 +349,8 @@ class ReceiptPaperCard extends StatelessWidget {
                                       ? CrossFadeState.showSecond
                                       : CrossFadeState.showFirst,
                                   firstChild: Text(
-                                    'SHOW MORE',
+                                    context.l10n.receiptPaperShowMore
+                                        .toUpperCase(),
                                     style: ReceiptPaperText.buttonStyle(context)
                                         .copyWith(
                                           color: theme.colorScheme.onSurface
@@ -351,7 +358,8 @@ class ReceiptPaperCard extends StatelessWidget {
                                         ),
                                   ),
                                   secondChild: Text(
-                                    'SHOW LESS',
+                                    context.l10n.receiptPaperShowLess
+                                        .toUpperCase(),
                                     style: ReceiptPaperText.buttonStyle(context)
                                         .copyWith(
                                           color: theme.colorScheme.onSurface
@@ -395,17 +403,23 @@ class ReceiptPaperCard extends StatelessWidget {
                                         ),
                                         const SizedBox(height: AppSpacing.sm),
                                         if (isTripReceipt) ...<Widget>[
-                                          const ReceiptPaperText.footer(
-                                            'TRIP RECEIPT',
+                                          ReceiptPaperText.footer(
+                                            context.l10n.receiptPaperTripReceipt
+                                                .toUpperCase(),
                                           ),
                                           const SizedBox(height: 4),
                                         ],
                                         ReceiptPaperText.footer(
-                                          'RECEIPT ID: ${receipt.id}',
+                                          context.l10n
+                                              .receiptPaperReceiptIdLabel(
+                                                receipt.id,
+                                              )
+                                              .toUpperCase(),
                                         ),
                                         const SizedBox(height: 4),
-                                        const ReceiptPaperText.footer(
-                                          'THANK YOU!',
+                                        ReceiptPaperText.footer(
+                                          context.l10n.receiptPaperThankYou
+                                              .toUpperCase(),
                                         ),
                                       ],
                                     )
@@ -472,7 +486,9 @@ class ReceiptItemRow extends StatelessWidget {
     final String quantityLabel = item.quantity % 1 == 0
         ? item.quantity.toStringAsFixed(0)
         : item.quantity.toStringAsFixed(2);
-    final String name = item.name.trim().isEmpty ? 'Item' : item.name.trim();
+    final String name = item.name.trim().isEmpty
+        ? context.l10n.item
+        : item.name.trim();
 
     return Row(
       children: <Widget>[
@@ -548,7 +564,7 @@ class ReceiptConfidencePill extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        '$percent% SCAN CONFIDENCE',
+        context.l10n.receiptPaperScanConfidenceLabel(percent),
         style: ReceiptPaperText.confidence(
           context,
           color: high ? const Color(0xFF2F9B53) : const Color(0xFFBE8A14),
@@ -606,7 +622,7 @@ class _TripScanStamp extends StatelessWidget {
           ),
         ),
         child: Text(
-          'SCANNED ON TRIP',
+          context.l10n.receiptPaperScannedOnTrip.toUpperCase(),
           style: ReceiptPaperText.confidence(
             context,
             color: const Color(0xFFDE6834),
@@ -641,12 +657,15 @@ class ReceiptPaperText extends StatelessWidget {
   Widget build(BuildContext context) {
     TextStyle? resolvedStyle = style;
     if (resolvedStyle == null) {
-      if (textAlign == TextAlign.center && text.contains('STORE')) {
+      final String store = context.l10n.receiptPaperStore.toUpperCase();
+      final String receiptId = context.l10n.receiptPaperReceiptId.toUpperCase();
+      final String thankYou = context.l10n.receiptPaperThankYou.toUpperCase();
+
+      if (textAlign == TextAlign.center && text.contains(store)) {
         resolvedStyle = headerStyle(context);
-      } else if (textAlign == TextAlign.center &&
-          text.contains('RECEIPT ID:')) {
+      } else if (textAlign == TextAlign.center && text.contains(receiptId)) {
         resolvedStyle = footerStyle(context);
-      } else if (textAlign == TextAlign.center && text == 'THANK YOU!') {
+      } else if (textAlign == TextAlign.center && text == thankYou) {
         resolvedStyle = footerStyle(context);
       } else if (textAlign == TextAlign.center) {
         resolvedStyle = metaStyle(context);

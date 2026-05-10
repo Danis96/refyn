@@ -158,7 +158,7 @@ class _StartupSplashScreen extends StatelessWidget {
               ),
               const SizedBox(height: 14),
               Text(
-                'Preparing Refyn',
+                AppLocalizations.of(context).preparingRefyn,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),

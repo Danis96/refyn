@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:refyn/app/models/receipt/receipt_model.dart';
+import 'package:refyn/l10n/app_localizations.dart';
 
 class ReceiptReportEmailDraft {
   const ReceiptReportEmailDraft({
@@ -19,6 +20,7 @@ class ReceiptReportEmailBuilder {
   const ReceiptReportEmailBuilder._();
 
   static ReceiptReportEmailDraft build(List<ReceiptModel> receipts) {
+    final AppLocalizations l10n = AppLocalizations.current;
     final DateTime now = DateTime.now();
     final List<String> attachmentPaths = <String>{
       for (final ReceiptModel receipt in receipts)
@@ -26,7 +28,7 @@ class ReceiptReportEmailBuilder {
     }.toList(growable: false);
 
     final String subject =
-        'Receipt report - ${DateFormat('dd.MM.yyyy').format(now)}';
+        '${l10n.exportReportTitle} - ${DateFormat('dd.MM.yyyy').format(now)}';
 
     final String htmlBody =
         '''
@@ -34,8 +36,8 @@ class ReceiptReportEmailBuilder {
   <body style="margin:0;padding:24px;background:#f5f7fb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#101828;">
     <div style="max-width:720px;margin:0 auto;background:#ffffff;border-radius:24px;padding:28px;border:1px solid #d0d5dd;">
       <div style="padding:18px 20px;border-radius:18px;background:linear-gradient(135deg,#ecfdf3 0%,#f0f9ff 100%);">
-        <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#0f766e;font-weight:700;">Receipt export</div>
-        <div style="margin-top:8px;font-size:22px;font-weight:800;color:#101828;">${receipts.length} saved receipts</div>
+        <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#0f766e;font-weight:700;">${l10n.export}</div>
+        <div style="margin-top:8px;font-size:22px;font-weight:800;color:#101828;">${receipts.length} ${l10n.savedReceipts}</div>
       </div>
       <div style="height:18px;"></div>
       ${receipts.map(_buildReceiptSection).join('<div style="height:14px;"></div>')}
@@ -59,11 +61,11 @@ class ReceiptReportEmailBuilder {
     DateTime generatedAt,
   ) {
     final StringBuffer buffer = StringBuffer()
-      ..writeln('Receipt Export Report')
+      ..writeln(AppLocalizations.current.exportReportTitle)
       ..writeln(
-        'Generated on: ${DateFormat('dd.MM.yyyy HH:mm').format(generatedAt)}',
+        '${AppLocalizations.current.generatedOn}: ${DateFormat('dd.MM.yyyy HH:mm').format(generatedAt)}',
       )
-      ..writeln('Receipts: ${receipts.length}')
+      ..writeln('${AppLocalizations.current.receipts}: ${receipts.length}')
       ..writeln();
 
     for (int index = 0; index < receipts.length; index++) {
@@ -71,14 +73,20 @@ class ReceiptReportEmailBuilder {
       buffer
         ..writeln(receipt.merchant.name)
         ..writeln(
-          'Total: ${receipt.totals.total.toStringAsFixed(2)} ${receipt.currency}',
+          '${AppLocalizations.current.scanTotal}: ${receipt.totals.total.toStringAsFixed(2)} ${receipt.currency}',
         )
         ..writeln(
-          'Created: ${DateFormat('dd.MM.yyyy HH:mm').format(receipt.createdAt)}',
+          '${AppLocalizations.current.created}: ${DateFormat('dd.MM.yyyy HH:mm').format(receipt.createdAt)}',
         )
-        ..writeln('Receipt no.: ${_readValue(receipt.receiptInfo.number)}')
-        ..writeln('Payment: ${_readValue(receipt.payment.method)}')
-        ..writeln('Items: ${receipt.items.length}');
+        ..writeln(
+          '${AppLocalizations.current.receiptNumber}: ${_readValue(receipt.receiptInfo.number)}',
+        )
+        ..writeln(
+          '${AppLocalizations.current.payment}: ${_readValue(receipt.payment.method)}',
+        )
+        ..writeln(
+          '${AppLocalizations.current.scanItems}: ${receipt.items.length}',
+        );
 
       if (index != receipts.length - 1) {
         buffer
@@ -97,11 +105,11 @@ class ReceiptReportEmailBuilder {
   <tr>
     <td style="padding:18px;">
       <div style="font-size:20px;font-weight:700;color:#101828;">${_escapeHtml(receipt.merchant.name)}</div>
-      <div style="margin-top:6px;font-size:14px;color:#475467;">Total: ${receipt.totals.total.toStringAsFixed(2)} ${_escapeHtml(receipt.currency)}</div>
-      <div style="margin-top:10px;font-size:14px;color:#344054;">Created: ${_escapeHtml(DateFormat('dd.MM.yyyy HH:mm').format(receipt.createdAt))}</div>
-      <div style="margin-top:4px;font-size:14px;color:#344054;">Receipt no.: ${_escapeHtml(_readValue(receipt.receiptInfo.number))}</div>
-      <div style="margin-top:4px;font-size:14px;color:#344054;">Payment: ${_escapeHtml(_readValue(receipt.payment.method))}</div>
-      <div style="margin-top:4px;font-size:14px;color:#344054;">Items: ${receipt.items.length}</div>
+      <div style="margin-top:6px;font-size:14px;color:#475467;">${AppLocalizations.current.scanTotal}: ${receipt.totals.total.toStringAsFixed(2)} ${_escapeHtml(receipt.currency)}</div>
+      <div style="margin-top:10px;font-size:14px;color:#344054;">${AppLocalizations.current.created}: ${_escapeHtml(DateFormat('dd.MM.yyyy HH:mm').format(receipt.createdAt))}</div>
+      <div style="margin-top:4px;font-size:14px;color:#344054;">${AppLocalizations.current.receiptNumber}: ${_escapeHtml(_readValue(receipt.receiptInfo.number))}</div>
+      <div style="margin-top:4px;font-size:14px;color:#344054;">${AppLocalizations.current.payment}: ${_escapeHtml(_readValue(receipt.payment.method))}</div>
+      <div style="margin-top:4px;font-size:14px;color:#344054;">${AppLocalizations.current.scanItems}: ${receipt.items.length}</div>
     </td>
   </tr>
 </table>
@@ -110,7 +118,7 @@ class ReceiptReportEmailBuilder {
 
   static String _readValue(String? value) {
     final String trimmed = value?.trim() ?? '';
-    return trimmed.isEmpty ? 'Not available' : trimmed;
+    return trimmed.isEmpty ? AppLocalizations.current.notAvailable : trimmed;
   }
 
   static bool _hasText(String? value) =>

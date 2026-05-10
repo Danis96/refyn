@@ -12,7 +12,6 @@ class ReceiptActionToolbar extends StatelessWidget {
     required this.onViewImage,
     required this.onEdit,
     required this.onDelete,
-    required this.onShare,
     required this.onExportSelected,
   });
 
@@ -22,7 +21,6 @@ class ReceiptActionToolbar extends StatelessWidget {
   final VoidCallback onViewImage;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
-  final VoidCallback onShare;
   final Future<void> Function(ReceiptExportFormat format) onExportSelected;
 
   @override
@@ -42,7 +40,6 @@ class ReceiptActionToolbar extends StatelessWidget {
             icon: Icons.edit_outlined,
             onTap: deleting ? null : onEdit,
           ),
-          ActionButton(icon: Icons.share_outlined, onTap: onShare),
           ReceiptExportButton(
             exporting: exporting,
             onSelected: onExportSelected,
@@ -121,7 +118,8 @@ class ReceiptExportButton extends StatelessWidget {
 
     return PopupMenuButton<ReceiptExportFormat>(
       tooltip: context.l10n.export,
-      onSelected: onSelected,
+      enabled: !exporting,
+      onSelected: exporting ? null : onSelected,
       itemBuilder: (BuildContext context) =>
           <PopupMenuEntry<ReceiptExportFormat>>[
             PopupMenuItem<ReceiptExportFormat>(
@@ -142,7 +140,9 @@ class ReceiptExportButton extends StatelessWidget {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: colorScheme.surface,
+          color: exporting
+              ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+              : colorScheme.surface,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: colorScheme.outlineVariant.withValues(alpha: 0.7),
