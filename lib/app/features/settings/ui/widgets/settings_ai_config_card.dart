@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:refyn/app/features/settings/controllers/settings_spotlight_controller.dart';
 import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/app/features/settings/action_utils/settings_action_utils.dart';
 import 'package:refyn/app/features/settings/controllers/settings_controller.dart';
@@ -10,7 +11,9 @@ import 'package:refyn/l10n/app_localizations.dart';
 import 'package:wiggly_loaders/wiggly_loaders.dart';
 
 class SettingsAiConfigCard extends StatefulWidget {
-  const SettingsAiConfigCard({super.key});
+  const SettingsAiConfigCard({super.key, this.thinkingModeKey});
+
+  final GlobalKey? thinkingModeKey;
 
   @override
   State<SettingsAiConfigCard> createState() => _SettingsAiConfigCardState();
@@ -19,7 +22,10 @@ class SettingsAiConfigCard extends StatefulWidget {
 class _SettingsAiConfigCardState extends State<SettingsAiConfigCard> {
   late final TextEditingController _apiKeyController;
   SettingsController? _settingsController;
+  SettingsSpotlightController? _spotlightController;
   bool _isExpanded = true;
+  bool _highlightThinkingMode = false;
+  int _lastHandledSpotlightId = 0;
 
   @override
   void initState() {
@@ -32,17 +38,31 @@ class _SettingsAiConfigCardState extends State<SettingsAiConfigCard> {
     super.didChangeDependencies();
     final SettingsController controller = context.read<SettingsController>();
     if (_settingsController == controller) {
+      final SettingsSpotlightController spotlightController =
+          context.read<SettingsSpotlightController>();
+      if (_spotlightController == spotlightController) {
+        return;
+      }
+      _spotlightController?.removeListener(_handleSpotlight);
+      _spotlightController = spotlightController;
+      _spotlightController!.addListener(_handleSpotlight);
       return;
     }
     _settingsController?.removeListener(_syncApiKeyDraft);
     _settingsController = controller;
     _settingsController!.addListener(_syncApiKeyDraft);
+    final SettingsSpotlightController spotlightController =
+        context.read<SettingsSpotlightController>();
+    _spotlightController?.removeListener(_handleSpotlight);
+    _spotlightController = spotlightController;
+    _spotlightController!.addListener(_handleSpotlight);
     _syncApiKeyDraft();
   }
 
   @override
   void dispose() {
     _settingsController?.removeListener(_syncApiKeyDraft);
+    _spotlightController?.removeListener(_handleSpotlight);
     _apiKeyController.dispose();
     super.dispose();
   }
@@ -59,6 +79,28 @@ class _SettingsAiConfigCardState extends State<SettingsAiConfigCard> {
       text: controller.apiKeyDraft,
       selection: TextSelection.collapsed(offset: controller.apiKeyDraft.length),
     );
+  }
+
+  void _handleSpotlight() {
+    final SettingsSpotlightController? controller = _spotlightController;
+    if (!mounted || controller == null) {
+      return;
+    }
+    if (controller.requestId == _lastHandledSpotlightId ||
+        controller.target != SettingsSpotlightTarget.thinkingMode) {
+      return;
+    }
+    _lastHandledSpotlightId = controller.requestId;
+    setState(() {
+      _isExpanded = true;
+      _highlightThinkingMode = true;
+    });
+    Future<void>.delayed(const Duration(milliseconds: 2200), () {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _highlightThinkingMode = false);
+    });
   }
 
   @override
@@ -269,6 +311,9 @@ class _SettingsAiConfigCardState extends State<SettingsAiConfigCard> {
                                 padding: const EdgeInsets.only(top: 18),
                                 child: _ModelSelectionSection(
                                   controller: controller,
+                                  thinkingModeKey: widget.thinkingModeKey,
+                                  highlightThinkingMode:
+                                      _highlightThinkingMode,
                                 ),
                               )
                             : const SizedBox.shrink(),
@@ -355,9 +400,15 @@ class _StatusSwitcher extends StatelessWidget {
 }
 
 class _ModelSelectionSection extends StatelessWidget {
-  const _ModelSelectionSection({required this.controller});
+  const _ModelSelectionSection({
+    required this.controller,
+    required this.thinkingModeKey,
+    required this.highlightThinkingMode,
+  });
 
   final SettingsController controller;
+  final GlobalKey? thinkingModeKey;
+  final bool highlightThinkingMode;
 
   @override
   Widget build(BuildContext context) {
@@ -442,16 +493,25 @@ class _ModelSelectionSection extends StatelessWidget {
                 },
         ),
         const SizedBox(height: 14),
-        _ThinkingToggleTile(controller: controller),
+        _ThinkingToggleTile(
+          key: thinkingModeKey,
+          controller: controller,
+          highlighted: highlightThinkingMode,
+        ),
       ],
     );
   }
 }
 
 class _ThinkingToggleTile extends StatelessWidget {
-  const _ThinkingToggleTile({required this.controller});
+  const _ThinkingToggleTile({
+    super.key,
+    required this.controller,
+    required this.highlighted,
+  });
 
   final SettingsController controller;
+  final bool highlighted;
 
   @override
   Widget build(BuildContext context) {
@@ -461,12 +521,30 @@ class _ThinkingToggleTile extends StatelessWidget {
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 180),
       opacity: controller.isSavingThinkingMode ? 0.7 : 1,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 260),
+        curve: Curves.easeOutCubic,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: SettingsPagePalette.rowBackground(context),
+          color: highlighted
+              ? colorScheme.primary.withValues(alpha: 0.12)
+              : SettingsPagePalette.rowBackground(context),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: SettingsPagePalette.cardBorder(context)),
+          border: Border.all(
+            color: highlighted
+                ? colorScheme.primary
+                : SettingsPagePalette.cardBorder(context),
+            width: highlighted ? 1.4 : 1,
+          ),
+          boxShadow: highlighted
+              ? <BoxShadow>[
+                  BoxShadow(
+                    color: colorScheme.primary.withValues(alpha: 0.16),
+                    blurRadius: 18,
+                    spreadRadius: 1,
+                  ),
+                ]
+              : const <BoxShadow>[],
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

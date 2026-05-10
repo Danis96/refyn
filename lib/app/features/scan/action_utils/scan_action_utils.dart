@@ -4,6 +4,9 @@ import 'package:refyn/app/features/dashboard/controllers/dashboard_controller.da
 import 'package:refyn/app/features/history/controllers/history_controller.dart';
 import 'package:refyn/app/features/scan/controllers/scan_controller.dart';
 import 'package:refyn/app/features/scan/repository/scan_failure.dart';
+import 'package:refyn/app/features/scan/ui/widgets/low_confidence_confirmation_dialog.dart';
+import 'package:refyn/app/features/settings/controllers/settings_controller.dart';
+import 'package:refyn/app/features/settings/controllers/settings_spotlight_controller.dart';
 import 'package:refyn/app/features/travel_mode/controllers/travel_mode_controller.dart';
 import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/app/models/receipt/receipt_model.dart';
@@ -45,12 +48,33 @@ class ScanActionUtils {
 
   static Future<void> onSaveDraft(BuildContext context) async {
     final ScanController scanController = context.read<ScanController>();
+    final SettingsController settingsController = context
+        .read<SettingsController>();
     final DashboardController dashboardController = context
         .read<DashboardController>();
     final HistoryController historyController = context
         .read<HistoryController>();
     final TravelModeController travelModeController = context
         .read<TravelModeController>();
+    if (scanController.isLowConfidence) {
+      final LowConfidenceDialogAction action =
+          await _showLowConfidenceConfirmationDialog(
+            context,
+            shouldSuggestThinkingMode:
+                scanController.shouldSuggestThinkingMode &&
+                !settingsController.isThinkingEnabled,
+          );
+      if (!context.mounted) {
+        return;
+      }
+      if (action == LowConfidenceDialogAction.openThinkingSettings) {
+        _openThinkingSettings(context);
+        return;
+      }
+      if (action != LowConfidenceDialogAction.confirm) {
+        return;
+      }
+    }
 
     await scanController.saveDraftReceipt();
     final bool saved = !scanController.hasPendingReceiptDraft;
@@ -251,5 +275,26 @@ class ScanActionUtils {
         );
       },
     );
+  }
+
+  static void _openThinkingSettings(BuildContext context) {
+    context.read<DashboardController>().setCurrentTab(3);
+    context.read<SettingsSpotlightController>().spotlightThinkingMode();
+  }
+
+  static Future<LowConfidenceDialogAction>
+  _showLowConfidenceConfirmationDialog(
+    BuildContext context, {
+    required bool shouldSuggestThinkingMode,
+  }) async {
+    final LowConfidenceDialogAction? action =
+        await showDialog<LowConfidenceDialogAction>(
+          context: context,
+          builder: (BuildContext dialogContext) =>
+              LowConfidenceConfirmationDialog(
+                shouldSuggestThinkingMode: shouldSuggestThinkingMode,
+              ),
+        );
+    return action ?? LowConfidenceDialogAction.dismiss;
   }
 }

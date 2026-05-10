@@ -102,6 +102,7 @@ class ReceiptDetailsController extends ChangeNotifier {
       rawText: current.rawText,
       rawJson: current.rawJson,
       imagePath: current.imagePath,
+      travelSessionId: current.travelSessionId,
     );
 
     await _repository.saveReceipt(updated);
@@ -155,6 +156,7 @@ class ReceiptDetailsController extends ChangeNotifier {
       rawText: current.rawText,
       rawJson: current.rawJson,
       imagePath: current.imagePath,
+      travelSessionId: current.travelSessionId,
     );
 
     await _repository.saveReceipt(updated);

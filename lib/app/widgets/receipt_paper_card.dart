@@ -43,8 +43,8 @@ class _ReceiptPaperListState extends State<ReceiptPaperList> {
       _expandedReceiptIds = _expandedReceiptIds
           .where(
             (String id) =>
-            widget.receipts.any((ReceiptModel item) => item.id == id),
-      )
+                widget.receipts.any((ReceiptModel item) => item.id == id),
+          )
           .toSet();
       if (widget.expandFirstByDefault &&
           _expandedReceiptIds.isEmpty &&
@@ -58,8 +58,8 @@ class _ReceiptPaperListState extends State<ReceiptPaperList> {
   Widget build(BuildContext context) {
     return Column(
       children: widget.receipts.asMap().entries.map((
-          MapEntry<int, ReceiptModel> entry,
-          ) {
+        MapEntry<int, ReceiptModel> entry,
+      ) {
         final int index = entry.key;
         final ReceiptModel receipt = entry.value;
         final bool expanded = _expandedReceiptIds.contains(receipt.id);
@@ -126,15 +126,16 @@ class ReceiptPaperCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final bool isTripReceipt = receipt.travelSessionId != null;
     final String merchant = receipt.merchant.name.trim().isEmpty
         ? 'STORE'
         : receipt.merchant.name.trim().toUpperCase();
     final int itemCount = receipt.items.length;
     final int quantityCount = receipt.items
         .fold<double>(
-      0,
+          0,
           (double sum, ReceiptItemModel item) => sum + item.quantity,
-    )
+        )
         .round();
 
     return Material(
@@ -142,198 +143,283 @@ class ReceiptPaperCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
         onTap: onOpen == null ? null : () => onOpen!(),
-        child: Container(
+        child: DecoratedBox(
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: ReceiptPaperPalette.border(context)),
+            gradient: isTripReceipt
+                ? LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: <Color>[
+                      theme.colorScheme.surface,
+                      const Color(0xFFFFF7E9),
+                    ],
+                  )
+                : null,
             boxShadow: <BoxShadow>[
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
+                color: isTripReceipt
+                    ? const Color(0xFFDE6834).withValues(alpha: 0.12)
+                    : Colors.black.withValues(alpha: 0.04),
+                blurRadius: isTripReceipt ? 22 : 16,
+                offset: Offset(0, isTripReceipt ? 10 : 6),
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const ReceiptPerforation(),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  AppSpacing.sm,
-                  AppSpacing.md,
-                  AppSpacing.sm,
-                ),
-                child: Column(
-                  children: <Widget>[
-                    heroTag == null
-                        ? ReceiptPaperText.header(merchant)
-                        : Hero(
-                      tag: heroTag!,
-                      child: Material(
-                        color: Colors.transparent,
-                        child: ReceiptPaperText.header(merchant),
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: isTripReceipt
+                    ? ReceiptPaperPalette.tripBorder(context)
+                    : ReceiptPaperPalette.border(context),
+              ),
+            ),
+            child: Stack(
+              children: <Widget>[
+                if (isTripReceipt)
+                  Positioned(
+                    left: 0,
+                    top: 18,
+                    bottom: 18,
+                    child: Container(
+                      width: 7,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.horizontal(
+                          right: Radius.circular(999),
+                        ),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[Color(0xFFDE6834), Color(0xFFF2B35D)],
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    ReceiptPaperText.meta(
-                      DateFormat('EEE, MMM d, yyyy').format(receipt.createdAt),
-                    ),
-                    const SizedBox(height: 2),
-                    ReceiptPaperText.meta(
-                      DateFormat('hh:mm a').format(receipt.createdAt),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Divider(
-                      color: ReceiptPaperPalette.border(context),
-                      height: 1,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    ReceiptTotalsRow(
-                      label: 'ITEMS ($itemCount)',
-                      value: '$quantityCount x',
-                      emphasized: false,
-                    ),
-
-                    // ── Animated expandable items + subtotal/tax section ──
-                    AnimatedSize(
-                      duration: const Duration(milliseconds: 320),
-                      curve: Curves.easeInOutCubic,
-                      alignment: Alignment.topCenter,
+                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    ReceiptPerforation(isTripReceipt: isTripReceipt),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        AppSpacing.sm,
+                        AppSpacing.md,
+                        AppSpacing.sm,
+                      ),
                       child: Column(
-                        children: expanded
-                            ? <Widget>[
-                          const SizedBox(height: AppSpacing.xs),
-                          ...receipt.items.map(
-                                (ReceiptItemModel item) => Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
-                              child: ReceiptItemRow(item: item, currency: receipt.currency),
-                            ),
+                        children: <Widget>[
+                          if (isTripReceipt) ...<Widget>[
+                            const _TripReceiptBadge(),
+                            const SizedBox(height: AppSpacing.sm),
+                          ],
+                          heroTag == null
+                              ? ReceiptPaperText.header(merchant)
+                              : Hero(
+                                  tag: heroTag!,
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: ReceiptPaperText.header(merchant),
+                                  ),
+                                ),
+                          const SizedBox(height: 4),
+                          ReceiptPaperText.meta(
+                            DateFormat(
+                              'EEE, MMM d, yyyy',
+                            ).format(receipt.createdAt),
                           ),
-                          const SizedBox(height: AppSpacing.xs),
+                          const SizedBox(height: 2),
+                          ReceiptPaperText.meta(
+                            DateFormat('hh:mm a').format(receipt.createdAt),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
                           Divider(
-                            color: ReceiptPaperPalette.border(context),
+                            color: isTripReceipt
+                                ? ReceiptPaperPalette.tripBorder(context)
+                                : ReceiptPaperPalette.border(context),
                             height: 1,
                           ),
-                          const SizedBox(height: AppSpacing.xs),
+                          const SizedBox(height: AppSpacing.md),
                           ReceiptTotalsRow(
-                            label: 'SUBTOTAL:',
-                            value:
-                            '${ReceiptPaperMoney.format(receipt.totals.subtotal ?? 0)} ${ReceiptPaperMoney.currencyLabel(receipt.currency)}',
+                            label: 'ITEMS ($itemCount)',
+                            value: '$quantityCount x',
                             emphasized: false,
                           ),
-                          const SizedBox(height: 4),
-                          ReceiptTotalsRow(
-                            label: 'TAX:',
-                            value:
-                            '${ReceiptPaperMoney.format(receipt.totals.vatAmount ?? 0)} ${ReceiptPaperMoney.currencyLabel(receipt.currency)}',
-                            emphasized: false,
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                        ]
-                            : const <Widget>[SizedBox(height: AppSpacing.xs)],
-                      ),
-                    ),
-
-                    Divider(
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.72,
-                      ),
-                      height: 1,
-                      thickness: 1.4,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    ReceiptTotalsRow(
-                      label: 'TOTAL:',
-                      value:
-                      '${ReceiptPaperMoney.format(receipt.totals.total)} ${ReceiptPaperMoney.currencyLabel(receipt.currency)}',
-                      emphasized: true,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    ReceiptConfidencePill(confidence: receipt.confidence),
-                    const SizedBox(height: AppSpacing.sm),
-
-                    // ── Animated toggle button ──
-                    TextButton(
-                      onPressed: onToggleExpanded,
-                      style: TextButton.styleFrom(
-                        foregroundColor: theme.colorScheme.onSurface
-                            .withValues(alpha: 0.52),
-                        textStyle: ReceiptPaperText.buttonStyle(context),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          AnimatedCrossFade(
-                            duration: const Duration(milliseconds: 200),
-                            crossFadeState: expanded
-                                ? CrossFadeState.showSecond
-                                : CrossFadeState.showFirst,
-                            firstChild: Text(
-                              'SHOW MORE',
-                              style: ReceiptPaperText.buttonStyle(context)
-                                  .copyWith(
-                                color: theme.colorScheme.onSurface
-                                    .withValues(alpha: 0.52),
-                              ),
-                            ),
-                            secondChild: Text(
-                              'SHOW LESS',
-                              style: ReceiptPaperText.buttonStyle(context)
-                                  .copyWith(
-                                color: theme.colorScheme.onSurface
-                                    .withValues(alpha: 0.52),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          AnimatedRotation(
-                            turns: expanded ? 0.5 : 0.0,
+                          AnimatedSize(
                             duration: const Duration(milliseconds: 320),
                             curve: Curves.easeInOutCubic,
-                            child: const Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              size: 18,
+                            alignment: Alignment.topCenter,
+                            child: Column(
+                              children: expanded
+                                  ? <Widget>[
+                                      const SizedBox(height: AppSpacing.xs),
+                                      ...receipt.items.map(
+                                        (ReceiptItemModel item) => Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 4,
+                                          ),
+                                          child: ReceiptItemRow(
+                                            item: item,
+                                            currency: receipt.currency,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: AppSpacing.xs),
+                                      Divider(
+                                        color: isTripReceipt
+                                            ? ReceiptPaperPalette.tripBorder(
+                                                context,
+                                              )
+                                            : ReceiptPaperPalette.border(
+                                                context,
+                                              ),
+                                        height: 1,
+                                      ),
+                                      const SizedBox(height: AppSpacing.xs),
+                                      ReceiptTotalsRow(
+                                        label: 'SUBTOTAL:',
+                                        value:
+                                            '${ReceiptPaperMoney.format(receipt.totals.subtotal ?? 0)} ${ReceiptPaperMoney.currencyLabel(receipt.currency)}',
+                                        emphasized: false,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      ReceiptTotalsRow(
+                                        label: 'TAX:',
+                                        value:
+                                            '${ReceiptPaperMoney.format(receipt.totals.vatAmount ?? 0)} ${ReceiptPaperMoney.currencyLabel(receipt.currency)}',
+                                        emphasized: false,
+                                      ),
+                                      const SizedBox(height: AppSpacing.xs),
+                                    ]
+                                  : const <Widget>[
+                                      SizedBox(height: AppSpacing.xs),
+                                    ],
+                            ),
+                          ),
+                          Divider(
+                            color: isTripReceipt
+                                ? ReceiptPaperPalette.tripStrongRule(context)
+                                : theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.72,
+                                  ),
+                            height: 1,
+                            thickness: 1.4,
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          ReceiptTotalsRow(
+                            label: 'TOTAL:',
+                            value:
+                                '${ReceiptPaperMoney.format(receipt.totals.total)} ${ReceiptPaperMoney.currencyLabel(receipt.currency)}',
+                            emphasized: true,
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: <Widget>[
+                              ReceiptConfidencePill(
+                                confidence: receipt.confidence,
+                              ),
+                              if (isTripReceipt) const _TripScanStamp(),
+                            ],
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          TextButton(
+                            onPressed: onToggleExpanded,
+                            style: TextButton.styleFrom(
+                              foregroundColor: theme.colorScheme.onSurface
+                                  .withValues(alpha: 0.52),
+                              textStyle: ReceiptPaperText.buttonStyle(context),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                AnimatedCrossFade(
+                                  duration: const Duration(milliseconds: 200),
+                                  crossFadeState: expanded
+                                      ? CrossFadeState.showSecond
+                                      : CrossFadeState.showFirst,
+                                  firstChild: Text(
+                                    'SHOW MORE',
+                                    style: ReceiptPaperText.buttonStyle(context)
+                                        .copyWith(
+                                          color: theme.colorScheme.onSurface
+                                              .withValues(alpha: 0.52),
+                                        ),
+                                  ),
+                                  secondChild: Text(
+                                    'SHOW LESS',
+                                    style: ReceiptPaperText.buttonStyle(context)
+                                        .copyWith(
+                                          color: theme.colorScheme.onSurface
+                                              .withValues(alpha: 0.52),
+                                        ),
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                AnimatedRotation(
+                                  turns: expanded ? 0.5 : 0.0,
+                                  duration: const Duration(milliseconds: 320),
+                                  curve: Curves.easeInOutCubic,
+                                  child: const Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    size: 18,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          AnimatedSize(
+                            duration: const Duration(milliseconds: 280),
+                            curve: Curves.easeInOutCubic,
+                            alignment: Alignment.topCenter,
+                            child: AnimatedOpacity(
+                              duration: const Duration(milliseconds: 240),
+                              opacity: expanded ? 1.0 : 0.0,
+                              child: expanded
+                                  ? Column(
+                                      children: <Widget>[
+                                        const SizedBox(height: AppSpacing.sm),
+                                        Divider(
+                                          color: isTripReceipt
+                                              ? ReceiptPaperPalette.tripBorder(
+                                                  context,
+                                                )
+                                              : ReceiptPaperPalette.border(
+                                                  context,
+                                                ),
+                                          height: 1,
+                                        ),
+                                        const SizedBox(height: AppSpacing.sm),
+                                        if (isTripReceipt) ...<Widget>[
+                                          const ReceiptPaperText.footer(
+                                            'TRIP RECEIPT',
+                                          ),
+                                          const SizedBox(height: 4),
+                                        ],
+                                        ReceiptPaperText.footer(
+                                          'RECEIPT ID: ${receipt.id}',
+                                        ),
+                                        const SizedBox(height: 4),
+                                        const ReceiptPaperText.footer(
+                                          'THANK YOU!',
+                                        ),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
                             ),
                           ),
                         ],
                       ),
                     ),
-
-                    // ── Animated footer (Receipt ID + Thank You) ──
-                    AnimatedSize(
-                      duration: const Duration(milliseconds: 280),
-                      curve: Curves.easeInOutCubic,
-                      alignment: Alignment.topCenter,
-                      child: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 240),
-                        opacity: expanded ? 1.0 : 0.0,
-                        child: expanded
-                            ? Column(
-                          children: <Widget>[
-                            const SizedBox(height: AppSpacing.sm),
-                            Divider(
-                              color: ReceiptPaperPalette.border(context),
-                              height: 1,
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                            ReceiptPaperText.footer(
-                                'RECEIPT ID: ${receipt.id}'),
-                            const SizedBox(height: 4),
-                            const ReceiptPaperText.footer('THANK YOU!'),
-                          ],
-                        )
-                            : const SizedBox.shrink(),
-                      ),
-                    ),
+                    ReceiptPerforation(isTripReceipt: isTripReceipt),
                   ],
                 ),
-              ),
-              const ReceiptPerforation(),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -342,7 +428,9 @@ class ReceiptPaperCard extends StatelessWidget {
 }
 
 class ReceiptPerforation extends StatelessWidget {
-  const ReceiptPerforation({super.key});
+  const ReceiptPerforation({super.key, required this.isTripReceipt});
+
+  final bool isTripReceipt;
 
   @override
   Widget build(BuildContext context) {
@@ -355,14 +443,16 @@ class ReceiptPerforation extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List<Widget>.generate(
           22,
-              (int index) => Container(
+          (int index) => Container(
             width: 4,
             height: 4,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.18),
+              color: isTripReceipt
+                  ? ReceiptPaperPalette.tripPerforation(context)
+                  : Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.18),
             ),
           ),
         ),
@@ -468,6 +558,65 @@ class ReceiptConfidencePill extends StatelessWidget {
   }
 }
 
+class _TripReceiptBadge extends StatelessWidget {
+  const _TripReceiptBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFE7D1),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: const Color(0xFFDE6834).withValues(alpha: 0.28),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const Icon(
+              Icons.luggage_rounded,
+              size: 14,
+              color: Color(0xFFB45309),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TripScanStamp extends StatelessWidget {
+  const _TripScanStamp();
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.rotate(
+      angle: -0.06,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(
+            color: const Color(0xFFDE6834).withValues(alpha: 0.6),
+            width: 1.4,
+          ),
+        ),
+        child: Text(
+          'SCANNED ON TRIP',
+          style: ReceiptPaperText.confidence(
+            context,
+            color: const Color(0xFFDE6834),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class ReceiptPaperText extends StatelessWidget {
   const ReceiptPaperText._({
     required this.text,
@@ -480,13 +629,13 @@ class ReceiptPaperText extends StatelessWidget {
   final TextStyle? style;
 
   const ReceiptPaperText.header(String text)
-      : this._(text: text, textAlign: TextAlign.center, style: null);
+    : this._(text: text, textAlign: TextAlign.center, style: null);
   const ReceiptPaperText.meta(String text)
-      : this._(text: text, textAlign: TextAlign.center, style: null);
+    : this._(text: text, textAlign: TextAlign.center, style: null);
   const ReceiptPaperText.muted(String text)
-      : this._(text: text, textAlign: TextAlign.left, style: null);
+    : this._(text: text, textAlign: TextAlign.left, style: null);
   const ReceiptPaperText.footer(String text)
-      : this._(text: text, textAlign: TextAlign.center, style: null);
+    : this._(text: text, textAlign: TextAlign.center, style: null);
 
   @override
   Widget build(BuildContext context) {
@@ -588,11 +737,9 @@ class ReceiptPaperText extends StatelessWidget {
   }
 
   static TextStyle buttonStyle(BuildContext context) {
-    return base(context).copyWith(
-      fontSize: 11,
-      fontWeight: FontWeight.w800,
-      letterSpacing: 0.8,
-    );
+    return base(
+      context,
+    ).copyWith(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 0.8);
   }
 }
 
@@ -620,4 +767,21 @@ class ReceiptPaperPalette {
     ).colorScheme.onSurface.withValues(alpha: _dark(context) ? 0.18 : 0.08);
   }
 
+  static Color tripBorder(BuildContext context) {
+    return const Color(
+      0xFFDE6834,
+    ).withValues(alpha: _dark(context) ? 0.42 : 0.22);
+  }
+
+  static Color tripStrongRule(BuildContext context) {
+    return const Color(
+      0xFFB45309,
+    ).withValues(alpha: _dark(context) ? 0.72 : 0.86);
+  }
+
+  static Color tripPerforation(BuildContext context) {
+    return const Color(
+      0xFFDE6834,
+    ).withValues(alpha: _dark(context) ? 0.48 : 0.28);
+  }
 }

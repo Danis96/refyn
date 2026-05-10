@@ -3,21 +3,69 @@ import 'package:provider/provider.dart';
 import 'package:refyn/app/features/export/repository/receipt_export_service.dart';
 import 'package:refyn/app/features/settings/action_utils/settings_action_utils.dart';
 import 'package:refyn/app/features/settings/controllers/settings_controller.dart';
+import 'package:refyn/app/features/settings/controllers/settings_spotlight_controller.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_about_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_ai_config_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_currency_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_export_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_language_card.dart';
-import 'package:refyn/app/features/travel_mode/action_utils/travel_mode_action_utils.dart';
-import 'package:refyn/app/features/travel_mode/ui/widgets/travel_mode_settings_card/travel_mode_settings_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_legal_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_theme_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_title_block.dart';
+import 'package:refyn/app/features/travel_mode/action_utils/travel_mode_action_utils.dart';
+import 'package:refyn/app/features/travel_mode/ui/widgets/travel_mode_settings_card/travel_mode_settings_card.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
   static const String _appVersion = '1.0.0';
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _thinkingModeKey = GlobalKey();
+  SettingsSpotlightController? _spotlightController;
+  int _lastHandledSpotlightId = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final SettingsSpotlightController controller =
+        context.read<SettingsSpotlightController>();
+    if (_spotlightController == controller) {
+      return;
+    }
+    _spotlightController?.removeListener(_handleSpotlight);
+    _spotlightController = controller;
+    _spotlightController!.addListener(_handleSpotlight);
+  }
+
+  void _handleSpotlight() {
+    final SettingsSpotlightController? controller = _spotlightController;
+    if (!mounted || controller == null) {
+      return;
+    }
+    if (controller.requestId == _lastHandledSpotlightId ||
+        controller.target != SettingsSpotlightTarget.thinkingMode) {
+      return;
+    }
+    _lastHandledSpotlightId = controller.requestId;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final BuildContext? targetContext = _thinkingModeKey.currentContext;
+      if (!mounted || targetContext == null) {
+        return;
+      }
+      Scrollable.ensureVisible(
+        targetContext,
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeOutCubic,
+        alignment: 0.2,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +73,7 @@ class SettingsPage extends StatelessWidget {
       builder: (BuildContext context, SettingsController controller, _) {
         return SafeArea(
           child: SingleChildScrollView(
+            controller: _scrollController,
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -56,7 +105,7 @@ class SettingsPage extends StatelessWidget {
                 const SizedBox(height: 14),
                 SettingsCurrencyCard(currencyCode: controller.currencyCode),
                 const SizedBox(height: 14),
-                const SettingsAiConfigCard(),
+                SettingsAiConfigCard(thinkingModeKey: _thinkingModeKey),
                 const SizedBox(height: 14),
                 SettingsExportCard(
                   exporting: controller.exporting,
@@ -83,15 +132,22 @@ class SettingsPage extends StatelessWidget {
                 const SizedBox(height: 14),
                 SettingsLegalCard(
                   onPrivacyPolicyTap: () =>
-                      SettingsActionUtils.showPrivacyPolicy(context)
+                      SettingsActionUtils.showPrivacyPolicy(context),
                 ),
                 const SizedBox(height: 14),
-                const SettingsAboutCard(appVersion: _appVersion),
+                const SettingsAboutCard(appVersion: SettingsPage._appVersion),
               ],
             ),
           ),
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _spotlightController?.removeListener(_handleSpotlight);
+    _scrollController.dispose();
+    super.dispose();
   }
 }
