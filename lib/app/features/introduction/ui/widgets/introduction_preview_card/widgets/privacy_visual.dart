@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'preview_shared.dart';
 
 class PrivacyVisual extends StatefulWidget {
@@ -120,15 +121,19 @@ class _PrivacyVisualState extends State<PrivacyVisual>
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: colorScheme.primary
-                                      .withValues(alpha: 0.30),
+                                  color: colorScheme.primary.withValues(
+                                    alpha: 0.30,
+                                  ),
                                   blurRadius: 10,
                                   offset: const Offset(0, 3),
                                 ),
                               ],
                             ),
-                            child: const Icon(Icons.lock_rounded,
-                                color: Colors.white, size: 15),
+                            child: const Icon(
+                              Icons.lock_rounded,
+                              color: Colors.white,
+                              size: 15,
+                            ),
                           ),
                         ),
                       ),
@@ -143,9 +148,9 @@ class _PrivacyVisualState extends State<PrivacyVisual>
                   opacity: _chip1.value,
                   child: Transform.translate(
                     offset: Offset(-10 * (1 - _chip1.value), 0),
-                    child: const _PrivacyChip(
+                    child: _PrivacyChip(
                       icon: Icons.phone_android_rounded,
-                      label: 'Local storage',
+                      label: context.l10n.introLocalStorage,
                     ),
                   ),
                 ),
@@ -157,9 +162,9 @@ class _PrivacyVisualState extends State<PrivacyVisual>
                   opacity: _chip2.value,
                   child: Transform.translate(
                     offset: Offset(10 * (1 - _chip2.value), 0),
-                    child: const _PrivacyChip(
+                    child: _PrivacyChip(
                       icon: Icons.auto_awesome_rounded,
-                      label: 'AI scanning',
+                      label: context.l10n.introAiScanning,
                     ),
                   ),
                 ),
@@ -170,9 +175,9 @@ class _PrivacyVisualState extends State<PrivacyVisual>
                   opacity: _chip3.value,
                   child: Transform.translate(
                     offset: Offset(0, 10 * (1 - _chip3.value)),
-                    child: const _PrivacyChip(
+                    child: _PrivacyChip(
                       icon: Icons.no_accounts_rounded,
-                      label: 'No accounts',
+                      label: context.l10n.introNoAccounts,
                     ),
                   ),
                 ),

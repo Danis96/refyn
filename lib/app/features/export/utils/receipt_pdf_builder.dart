@@ -4,6 +4,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:refyn/app/models/receipt/receipt_item_model.dart';
 import 'package:refyn/app/models/receipt/receipt_model.dart';
+import 'package:refyn/l10n/app_localizations.dart';
 
 class ReceiptPdfBuilder {
   const ReceiptPdfBuilder._();
@@ -22,6 +23,7 @@ class ReceiptPdfBuilder {
   }
 
   static Future<Uint8List> build(List<ReceiptModel> receipts) async {
+    final AppLocalizations l10n = AppLocalizations.current;
     final pw.Font baseFont = await _loadFont(
       'assets/fonts/NotoSans-Regular.ttf',
     );
@@ -51,17 +53,18 @@ class ReceiptPdfBuilder {
           italic: italicFont,
           boldItalic: boldItalicFont,
         ),
-        header: (pw.Context ctx) => _header(now, receipts.length, totalSpent, currency),
+        header: (pw.Context ctx) =>
+            _header(now, receipts.length, totalSpent, currency, l10n),
         footer: (pw.Context ctx) => _footer(ctx, receipts.length),
         build: (pw.Context ctx) => <pw.Widget>[
-          _sectionLabel('Receipt Overview'),
+          _sectionLabel(l10n.exportReceiptOverview),
           pw.SizedBox(height: 8),
-          _overviewTable(receipts),
+          _overviewTable(receipts, l10n),
           pw.SizedBox(height: 22),
           if (receipts.isNotEmpty) ...<pw.Widget>[
-            _sectionLabel('Full Details'),
+            _sectionLabel(l10n.exportFullDetails),
             pw.SizedBox(height: 10),
-            ...receipts.map(_detailCard),
+            ...receipts.map((receipt) => _detailCard(receipt, l10n)),
           ],
         ],
       ),
@@ -75,6 +78,7 @@ class ReceiptPdfBuilder {
     int receiptCount,
     double totalSpent,
     String currency,
+    AppLocalizations l10n,
   ) {
     return pw.Column(
       children: <pw.Widget>[
@@ -106,7 +110,7 @@ class ReceiptPdfBuilder {
                       ),
                       pw.SizedBox(height: 2),
                       pw.Text(
-                        'Receipt Export Report',
+                        l10n.exportReportTitle,
                         style: pw.TextStyle(
                           fontSize: 18,
                           fontWeight: pw.FontWeight.bold,
@@ -121,7 +125,7 @@ class ReceiptPdfBuilder {
                 crossAxisAlignment: pw.CrossAxisAlignment.end,
                 children: <pw.Widget>[
                   pw.Text(
-                    'Generated on',
+                    l10n.generatedOn,
                     style: pw.TextStyle(fontSize: 8, color: _muted),
                   ),
                   pw.SizedBox(height: 2),
@@ -166,7 +170,10 @@ class ReceiptPdfBuilder {
     );
   }
 
-  static pw.Widget _overviewTable(List<ReceiptModel> receipts) {
+  static pw.Widget _overviewTable(
+    List<ReceiptModel> receipts,
+    AppLocalizations l10n,
+  ) {
     return pw.Table(
       columnWidths: <int, pw.TableColumnWidth>{
         0: const pw.FlexColumnWidth(2.4),
@@ -180,11 +187,11 @@ class ReceiptPdfBuilder {
         pw.TableRow(
           decoration: const pw.BoxDecoration(color: _ink),
           children: <pw.Widget>[
-            _thCell('Merchant'),
-            _thCell('Category'),
-            _thCell('Payment'),
-            _thCell('Date'),
-            _thCell('Total'),
+            _thCell(l10n.scanMerchant),
+            _thCell(l10n.scanCategory),
+            _thCell(l10n.payment),
+            _thCell(l10n.scanDate),
+            _thCell(l10n.scanTotal),
           ],
         ),
         ...receipts.asMap().entries.map((MapEntry<int, ReceiptModel> entry) {
@@ -209,34 +216,34 @@ class ReceiptPdfBuilder {
   }
 
   static pw.Widget _thCell(String text) => pw.Padding(
-        padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        child: pw.Text(
-          text,
-          style: pw.TextStyle(
-            fontSize: 8,
-            fontWeight: pw.FontWeight.bold,
-            color: _white,
-            letterSpacing: 0.5,
-          ),
-        ),
-      );
+    padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+    child: pw.Text(
+      text,
+      style: pw.TextStyle(
+        fontSize: 8,
+        fontWeight: pw.FontWeight.bold,
+        color: _white,
+        letterSpacing: 0.5,
+      ),
+    ),
+  );
 
   static pw.Widget _tdCell(String text, {bool bold = false}) => pw.Padding(
-        padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 7),
-        child: pw.Text(
-          text,
-          style: pw.TextStyle(
-            fontSize: 8,
-            color: _ink,
-            fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
-          ),
-        ),
-      );
+    padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+    child: pw.Text(
+      text,
+      style: pw.TextStyle(
+        fontSize: 8,
+        color: _ink,
+        fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
+      ),
+    ),
+  );
 
-  static pw.Widget _detailCard(ReceiptModel receipt) {
+  static pw.Widget _detailCard(ReceiptModel receipt, AppLocalizations l10n) {
     final String merchantName = _readValue(
       receipt.merchant.name,
-      fallback: 'Unknown merchant',
+      fallback: l10n.unknownMerchant,
     );
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 16),
@@ -297,23 +304,23 @@ class ReceiptPdfBuilder {
             child: pw.Column(
               children: <pw.Widget>[
                 _dataRow(
-                  'Created',
+                  l10n.created,
                   _formatDateTime(receipt.createdAt),
-                  'Receipt no.',
+                  l10n.receiptNumber,
                   _readValue(receipt.receiptInfo.number),
                 ),
                 pw.SizedBox(height: 8),
                 _dataRow(
-                  'Payment',
+                  l10n.payment,
                   _readValue(receipt.payment.method),
-                  'Category',
+                  l10n.scanCategory,
                   _readValue(receipt.category),
                 ),
                 pw.SizedBox(height: 8),
                 _dataRow(
-                  'Confidence',
+                  l10n.scanConfidence,
                   receipt.confidence.toStringAsFixed(2),
-                  'Items',
+                  l10n.scanItems,
                   '${receipt.items.length}',
                 ),
                 if (receipt.items.isNotEmpty) ...<pw.Widget>[
@@ -413,35 +420,35 @@ class ReceiptPdfBuilder {
   }
 
   static pw.Widget _thItem(String text, {pw.TextAlign? align}) => pw.Padding(
-        padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        child: pw.Text(
-          text,
-          textAlign: align,
-          style: pw.TextStyle(
-            fontSize: 7.5,
-            fontWeight: pw.FontWeight.bold,
-            color: _accent,
-            letterSpacing: 0.5,
-          ),
-        ),
-      );
+    padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+    child: pw.Text(
+      text,
+      textAlign: align,
+      style: pw.TextStyle(
+        fontSize: 7.5,
+        fontWeight: pw.FontWeight.bold,
+        color: _accent,
+        letterSpacing: 0.5,
+      ),
+    ),
+  );
 
   static pw.Widget _tdItem(
     String text, {
     pw.TextAlign? align,
     bool bold = false,
   }) => pw.Padding(
-        padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        child: pw.Text(
-          text,
-          textAlign: align,
-          style: pw.TextStyle(
-            fontSize: 8,
-            color: _ink,
-            fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
-          ),
-        ),
-      );
+    padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+    child: pw.Text(
+      text,
+      textAlign: align,
+      style: pw.TextStyle(
+        fontSize: 8,
+        color: _ink,
+        fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
+      ),
+    ),
+  );
 
   static pw.Widget _footer(pw.Context ctx, int total) {
     return pw.Column(

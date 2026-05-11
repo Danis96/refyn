@@ -3,6 +3,7 @@ import 'package:refyn/app/features/export/repository/receipt_export_service.dart
 import 'package:refyn/app/models/receipt/merchant_model.dart';
 import 'package:refyn/app/models/receipt/payment_info_model.dart';
 import 'package:refyn/app/models/receipt/receipt_model.dart';
+import 'package:refyn/l10n/app_localizations.dart';
 
 import '../repository/receipt_details_repository.dart';
 
@@ -37,7 +38,7 @@ class ReceiptDetailsController extends ChangeNotifier {
     try {
       _receipt = await _repository.getReceiptById(_receiptId);
       if (_receipt == null) {
-        _error = 'Receipt not found.';
+        _error = AppLocalizations.current.receiptNotFound;
       }
     } catch (error) {
       _error = error.toString().replaceFirst('Exception: ', '');
@@ -58,7 +59,10 @@ class ReceiptDetailsController extends ChangeNotifier {
   Future<String> exportReceipt(ReceiptExportFormat format) async {
     final ReceiptModel? current = _receipt;
     if (current == null) {
-      throw StateError('Receipt not loaded.');
+      throw StateError(AppLocalizations.current.receiptNotLoaded);
+    }
+    if (_isExporting) {
+      throw StateError('Export already in progress.');
     }
     _isExporting = true;
     notifyListeners();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 
 class IntroductionTopBar extends StatelessWidget {
   const IntroductionTopBar({
@@ -19,10 +20,7 @@ class IntroductionTopBar extends StatelessWidget {
       child: Row(
         children: [
           const Spacer(),
-          TextButton(
-            onPressed: onSkipPressed,
-            child: const Text('Skip'),
-          ),
+          TextButton(onPressed: onSkipPressed, child: Text(context.l10n.skip)),
         ],
       ),
     );

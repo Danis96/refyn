@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/theme/app_colors.dart';
 import 'preview_shared.dart';
 
@@ -69,8 +70,9 @@ class _ExportVisualState extends State<ExportVisual>
                     width: 172,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHigh
-                          .withValues(alpha: 0.94),
+                      color: colorScheme.surfaceContainerHigh.withValues(
+                        alpha: 0.94,
+                      ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: colorScheme.outlineVariant),
                       boxShadow: [
@@ -91,8 +93,9 @@ class _ExportVisualState extends State<ExportVisual>
                               width: 36,
                               height: 36,
                               decoration: BoxDecoration(
-                                color: colorScheme.primary
-                                    .withValues(alpha: 0.12),
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.12,
+                                ),
                                 borderRadius: BorderRadius.circular(11),
                               ),
                               child: Icon(
@@ -107,14 +110,14 @@ class _ExportVisualState extends State<ExportVisual>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'May Report',
+                                    context.l10n.introMayReport,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelLarge
                                         ?.copyWith(fontWeight: FontWeight.w800),
                                   ),
                                   Text(
-                                    '12 receipts',
+                                    context.l10n.introReceiptCountLabel(12),
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelSmall
@@ -137,8 +140,9 @@ class _ExportVisualState extends State<ExportVisual>
                               height: 5,
                               width: 128.0 - i * 22,
                               decoration: BoxDecoration(
-                                color: colorScheme.onSurface
-                                    .withValues(alpha: 0.09),
+                                color: colorScheme.onSurface.withValues(
+                                  alpha: 0.09,
+                                ),
                                 borderRadius: BorderRadius.circular(999),
                               ),
                             ),
@@ -150,14 +154,17 @@ class _ExportVisualState extends State<ExportVisual>
                             FormatBadge(
                               label: 'PDF',
                               color: AppColors.success,
-                              backgroundColor: AppColors.success.withValues(alpha: 0.12),
+                              backgroundColor: AppColors.success.withValues(
+                                alpha: 0.12,
+                              ),
                             ),
                             const SizedBox(width: 6),
                             FormatBadge(
                               label: 'CSV',
                               color: AppColors.success,
-                              backgroundColor:
-                                  AppColors.success.withValues(alpha: 0.12),
+                              backgroundColor: AppColors.success.withValues(
+                                alpha: 0.12,
+                              ),
                             ),
                             const Spacer(),
                             Container(
@@ -167,8 +174,11 @@ class _ExportVisualState extends State<ExportVisual>
                                 color: colorScheme.primary,
                                 borderRadius: BorderRadius.circular(9),
                               ),
-                              child: const Icon(Icons.ios_share_rounded,
-                                  color: Colors.white, size: 16),
+                              child: const Icon(
+                                Icons.ios_share_rounded,
+                                color: Colors.white,
+                                size: 16,
+                              ),
                             ),
                           ],
                         ),
@@ -186,7 +196,9 @@ class _ExportVisualState extends State<ExportVisual>
                     offset: Offset(0, -10 * (1 - _chip.value)),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.success,
                         borderRadius: BorderRadius.circular(999),
@@ -197,14 +209,15 @@ class _ExportVisualState extends State<ExportVisual>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.check_circle_rounded,
-                              color: AppColors.lightBackground, size: 12),
+                          Icon(
+                            Icons.check_circle_rounded,
+                            color: AppColors.lightBackground,
+                            size: 12,
+                          ),
                           const SizedBox(width: 4),
                           Text(
-                            'Ready',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall
+                            context.l10n.introReady,
+                            style: Theme.of(context).textTheme.labelSmall
                                 ?.copyWith(
                                   color: AppColors.lightBackground,
                                   fontWeight: FontWeight.w700,

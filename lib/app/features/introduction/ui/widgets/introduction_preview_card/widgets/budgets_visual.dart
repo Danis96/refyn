@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/theme/app_colors.dart';
 import 'preview_shared.dart';
 
@@ -80,8 +81,9 @@ class _BudgetsVisualState extends State<BudgetsVisual>
                     width: 196,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHigh
-                          .withValues(alpha: 0.94),
+                      color: colorScheme.surfaceContainerHigh.withValues(
+                        alpha: 0.94,
+                      ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: colorScheme.outlineVariant),
                       boxShadow: [
@@ -102,8 +104,9 @@ class _BudgetsVisualState extends State<BudgetsVisual>
                               width: 36,
                               height: 36,
                               decoration: BoxDecoration(
-                                color: colorScheme.primary
-                                    .withValues(alpha: 0.12),
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.12,
+                                ),
                                 borderRadius: BorderRadius.circular(11),
                               ),
                               child: Icon(
@@ -118,9 +121,10 @@ class _BudgetsVisualState extends State<BudgetsVisual>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'May Budget',
-                                    style: theme.textTheme.labelLarge
-                                        ?.copyWith(fontWeight: FontWeight.w800),
+                                    context.l10n.introMayBudget,
+                                    style: theme.textTheme.labelLarge?.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                    ),
                                   ),
                                   Text(
                                     '\$320 / \$500',
@@ -136,14 +140,14 @@ class _BudgetsVisualState extends State<BudgetsVisual>
                         ),
                         const SizedBox(height: 14),
                         _BudgetBar(
-                          label: 'Groceries',
+                          label: context.l10n.categoryLabel('groceries'),
                           progress: 0.72 * _bar1.value,
                           color: colorScheme.primary,
                           amount: '\$180 / \$250',
                         ),
                         const SizedBox(height: 10),
                         _BudgetBar(
-                          label: 'Fuel',
+                          label: context.l10n.categoryLabel('fuel'),
                           progress: 0.56 * _bar2.value,
                           color: AppColors.success,
                           amount: '\$140 / \$250',
@@ -159,11 +163,12 @@ class _BudgetsVisualState extends State<BudgetsVisual>
                 child: Opacity(
                   opacity: _badge.value.clamp(0.0, 1.0),
                   child: Transform.translate(
-                    offset:
-                        Offset(0, -10 * (1 - _badge.value.clamp(0.0, 1.0))),
+                    offset: Offset(0, -10 * (1 - _badge.value.clamp(0.0, 1.0))),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.success,
                         borderRadius: BorderRadius.circular(999),
@@ -181,11 +186,14 @@ class _BudgetsVisualState extends State<BudgetsVisual>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.trending_down_rounded,
-                              color: AppColors.lightBackground, size: 12),
+                          Icon(
+                            Icons.trending_down_rounded,
+                            color: AppColors.lightBackground,
+                            size: 12,
+                          ),
                           const SizedBox(width: 4),
                           Text(
-                            'On track',
+                            context.l10n.introOnTrack,
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: AppColors.lightBackground,
                               fontWeight: FontWeight.w700,
@@ -231,8 +239,9 @@ class _BudgetBar extends StatelessWidget {
           children: [
             Text(
               label,
-              style: theme.textTheme.labelSmall
-                  ?.copyWith(fontWeight: FontWeight.w700),
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             Text(
               amount,

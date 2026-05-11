@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wiggly_loaders/wiggly_loaders.dart';
 import 'package:refyn/app/features/export/repository/receipt_export_service.dart';
 import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/app/features/receipt_details/ui/widgets/receipt_action_toolbar.dart';
@@ -17,7 +18,6 @@ class ReceiptDetailsScaffold extends StatelessWidget {
     required this.onViewImage,
     required this.onEdit,
     required this.onDelete,
-    required this.onShare,
     required this.onExportSelected,
     required this.onEditItemCategory,
   });
@@ -28,7 +28,6 @@ class ReceiptDetailsScaffold extends StatelessWidget {
   final VoidCallback onViewImage;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
-  final VoidCallback onShare;
   final Future<void> Function(ReceiptExportFormat format) onExportSelected;
   final Future<void> Function(int itemIndex) onEditItemCategory;
 
@@ -37,56 +36,97 @@ class ReceiptDetailsScaffold extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
-    return Column(
+    return Stack(
       children: <Widget>[
-        const ReceiptTopBar(),
-        Expanded(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              18,
-              16,
-              28 + MediaQuery.of(context).padding.bottom,
+        Column(
+          children: <Widget>[
+            const ReceiptTopBar(),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  18,
+                  16,
+                  28 + MediaQuery.of(context).padding.bottom,
+                ),
+                child: Column(
+                  children: <Widget>[
+                    ReceiptActionToolbar(
+                      hasImage:
+                          receipt.imagePath != null &&
+                          receipt.imagePath!.trim().isNotEmpty,
+                      deleting: deleting,
+                      exporting: exporting,
+                      onViewImage: onViewImage,
+                      onEdit: onEdit,
+                      onDelete: onDelete,
+                      onExportSelected: onExportSelected,
+                    ),
+                    if (receipt.travelSessionId != null) ...<Widget>[
+                      const SizedBox(height: 16),
+                      const _TripReceiptBanner(),
+                    ],
+                    const SizedBox(height: 22),
+                    ReceiptOverviewCard(receipt: receipt),
+                    const SizedBox(height: 16),
+                    ReceiptItemsCard(
+                      receipt: receipt,
+                      onEditItemCategory: onEditItemCategory,
+                    ),
+                    const SizedBox(height: 16),
+                    ReceiptPaymentSummaryCard(receipt: receipt),
+                    const SizedBox(height: 24),
+                    Text(
+                      context.l10n.keepReceiptForRecords,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            child: Column(
-              children: <Widget>[
-                ReceiptActionToolbar(
-                  hasImage:
-                      receipt.imagePath != null &&
-                      receipt.imagePath!.trim().isNotEmpty,
-                  deleting: deleting,
-                  exporting: exporting,
-                  onViewImage: onViewImage,
-                  onEdit: onEdit,
-                  onDelete: onDelete,
-                  onShare: onShare,
-                  onExportSelected: onExportSelected,
-                ),
-                if (receipt.travelSessionId != null) ...<Widget>[
-                  const SizedBox(height: 16),
-                  const _TripReceiptBanner(),
-                ],
-                const SizedBox(height: 22),
-                ReceiptOverviewCard(receipt: receipt),
-                const SizedBox(height: 16),
-                ReceiptItemsCard(
-                  receipt: receipt,
-                  onEditItemCategory: onEditItemCategory,
-                ),
-                const SizedBox(height: 16),
-                ReceiptPaymentSummaryCard(receipt: receipt),
-                const SizedBox(height: 24),
-                Text(
-                  context.l10n.keepReceiptForRecords,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
+          ],
+        ),
+        if (exporting)
+          Positioned.fill(
+            child: AbsorbPointer(
+              child: ColoredBox(
+                color: colorScheme.surface.withValues(alpha: 0.72),
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: colorScheme.outlineVariant.withValues(
+                          alpha: 0.5,
+                        ),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        WigglyLoader.indeterminate(size: 28, strokeWidth: 2.4),
+                        const SizedBox(height: 10),
+                        Text(
+                          context.l10n.export,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
           ),
-        ),
       ],
     );
   }

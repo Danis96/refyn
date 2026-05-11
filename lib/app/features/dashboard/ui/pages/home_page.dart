@@ -69,14 +69,14 @@ class _HomePageState extends State<HomePage> {
 
             final HomeDashboardModel data =
                 controller.homeData ??
-                const HomeDashboardModel(
+                HomeDashboardModel(
                   totalReceipts: 0,
                   thisMonthReceipts: 0,
                   thisMonthSpending: 0,
                   totalBudget: 0,
                   remainingBudget: 0,
                   currency: 'BAM',
-                  topCategoryLabel: 'No spending',
+                  topCategoryLabel: context.l10n.noSpending,
                   budgetProgress: <DashboardBudgetProgressModel>[],
                   recentReceipts: <ReceiptModel>[],
                 );
@@ -161,9 +161,7 @@ class _AnimatedHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: const BorderRadius.vertical(
-        bottom: Radius.circular(24),
-      ),
+      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
       child: AnimatedCrossFade(
         duration: _kSwapDuration,
         sizeCurve: _kSwapCurve,
@@ -208,18 +206,20 @@ class _AnimatedBody extends StatelessWidget {
             final Offset begin = incomingTrip
                 ? const Offset(0.12, 0)
                 : const Offset(-0.12, 0);
-            final Animation<Offset> slide = Tween<Offset>(
-              begin: begin,
-              end: Offset.zero,
-            ).animate(
-              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-            );
-            final Animation<double> scale = Tween<double>(
-              begin: 0.97,
-              end: 1.0,
-            ).animate(
-              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-            );
+            final Animation<Offset> slide =
+                Tween<Offset>(begin: begin, end: Offset.zero).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                );
+            final Animation<double> scale = Tween<double>(begin: 0.97, end: 1.0)
+                .animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                );
             return FadeTransition(
               opacity: animation,
               child: SlideTransition(
@@ -231,10 +231,7 @@ class _AnimatedBody extends StatelessWidget {
           layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
             return Stack(
               alignment: Alignment.topCenter,
-              children: <Widget>[
-                ...previousChildren,
-                ?currentChild,
-              ],
+              children: <Widget>[...previousChildren, ?currentChild],
             );
           },
           child: mode == HomeViewMode.home
@@ -292,8 +289,7 @@ class _HomeBody extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           HomeRecentReceiptsCard(
             data: data,
-            onViewAll: () =>
-                DashboardActionUtils.onTabSelected(context, 2),
+            onViewAll: () => DashboardActionUtils.onTabSelected(context, 2),
             onOpenReceipt: (ReceiptModel receipt) =>
                 DashboardActionUtils.onOpenReceipt(context, receipt),
           ),

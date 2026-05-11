@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 
 import '../../../../models/introduction_step.dart';
 
@@ -36,7 +37,7 @@ class PreviewHeader extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                'Refyn flow',
+                context.l10n.introRefynFlow,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
@@ -77,7 +78,7 @@ class _LivePill extends StatelessWidget {
           ),
           const SizedBox(width: 6),
           Text(
-            'Live',
+            context.l10n.introLive,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
               color: colorScheme.primary,
               fontWeight: FontWeight.w700,

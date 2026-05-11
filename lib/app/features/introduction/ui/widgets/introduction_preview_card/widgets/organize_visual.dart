@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/theme/app_colors.dart';
 
 class OrganizeVisual extends StatefulWidget {
@@ -65,20 +67,24 @@ class _OrganizeVisualState extends State<OrganizeVisual>
                     offset: Offset(0, -12 * (1 - _header.value)),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHigh
-                            .withValues(alpha: 0.92),
+                        color: colorScheme.surfaceContainerHigh.withValues(
+                          alpha: 0.92,
+                        ),
                         borderRadius: BorderRadius.circular(18),
                         border: Border.all(color: colorScheme.outlineVariant),
                       ),
                       child: Row(
                         children: [
                           Text(
-                            'May 2026',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelLarge
+                            DateFormat(
+                              'MMMM y',
+                              Localizations.localeOf(context).toString(),
+                            ).format(DateTime(2026, 5)),
+                            style: Theme.of(context).textTheme.labelLarge
                                 ?.copyWith(
                                   fontWeight: FontWeight.w800,
                                   color: colorScheme.onSurface,
@@ -86,10 +92,11 @@ class _OrganizeVisualState extends State<OrganizeVisual>
                           ),
                           const Spacer(),
                           _StatusChip(
-                            label: '3 receipts',
+                            label: context.l10n.introReceiptCountLabel(3),
                             color: AppColors.success,
-                            backgroundColor:
-                                AppColors.success.withValues(alpha: 0.12),
+                            backgroundColor: AppColors.success.withValues(
+                              alpha: 0.12,
+                            ),
                           ),
                         ],
                       ),
@@ -103,9 +110,9 @@ class _OrganizeVisualState extends State<OrganizeVisual>
                     offset: Offset(20 * (1 - _row1.value), 0),
                     child: _ReceiptRow(
                       icon: Icons.shopping_bag_rounded,
-                      title: 'Fresh Market',
+                      title: context.l10n.introFreshMarket,
                       amount: '\$42.85',
-                      category: 'Groceries',
+                      category: context.l10n.categoryLabel('groceries'),
                     ),
                   ),
                 ),
@@ -116,9 +123,9 @@ class _OrganizeVisualState extends State<OrganizeVisual>
                     offset: Offset(20 * (1 - _row2.value), 0),
                     child: _ReceiptRow(
                       icon: Icons.local_gas_station_rounded,
-                      title: 'Shell Station',
+                      title: context.l10n.introShellStation,
                       amount: '\$58.20',
-                      category: 'Fuel',
+                      category: context.l10n.categoryLabel('fuel'),
                     ),
                   ),
                 ),
@@ -200,10 +207,9 @@ class _ReceiptRow extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelLarge
-                  ?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           Column(
@@ -211,15 +217,13 @@ class _ReceiptRow extends StatelessWidget {
             children: [
               Text(
                 amount,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium
-                    ?.copyWith(fontWeight: FontWeight.w800),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 3),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: colorScheme.primary.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(999),

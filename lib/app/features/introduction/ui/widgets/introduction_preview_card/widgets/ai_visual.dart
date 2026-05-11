@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'preview_shared.dart';
 
 class AiVisual extends StatefulWidget {
@@ -144,7 +145,7 @@ class _SourceReceiptCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'RECEIPT',
+              context.l10n.introReceiptLabel.toUpperCase(),
               style: theme.textTheme.labelSmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w800,
@@ -154,7 +155,7 @@ class _SourceReceiptCard extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             Text(
-              'FRESH\nMARKET',
+              context.l10n.introFreshMarket.toUpperCase().replaceAll(' ', '\n'),
               style: theme.textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w800,
                 height: 1.0,
@@ -202,10 +203,7 @@ class _SourceReceiptCard extends StatelessWidget {
 }
 
 class _SignalBridge extends StatelessWidget {
-  const _SignalBridge({
-    required this.progress,
-    required this.color,
-  });
+  const _SignalBridge({required this.progress, required this.color});
 
   final double progress;
   final Color color;
@@ -242,9 +240,7 @@ class _SignalBridge extends StatelessWidget {
                 height: active ? 8 : 5,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: active
-                      ? color
-                      : color.withValues(alpha: 0.18),
+                  color: active ? color : color.withValues(alpha: 0.18),
                   boxShadow: active
                       ? <BoxShadow>[
                           BoxShadow(
@@ -312,7 +308,7 @@ class _StructuredResultCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'AI Parse',
+                      context.l10n.introAiParse,
                       style: theme.textTheme.labelLarge?.copyWith(
                         fontWeight: FontWeight.w800,
                         fontSize: 10.5,
@@ -324,15 +320,21 @@ class _StructuredResultCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          const _ResultRow(
-            label: 'Merchant',
-            value: 'Fresh Market',
+          _ResultRow(
+            label: context.l10n.scanMerchant,
+            value: context.l10n.introFreshMarket,
             emphasize: true,
           ),
           const SizedBox(height: 6),
-          const _ResultRow(label: 'Category', value: 'Groceries'),
+          _ResultRow(
+            label: context.l10n.scanCategory,
+            value: context.l10n.categoryLabel('groceries'),
+          ),
           const SizedBox(height: 6),
-          const _ResultRow(label: 'Items', value: '5 detected'),
+          _ResultRow(
+            label: context.l10n.scanItems,
+            value: context.l10n.introDetectedItemsLabel(5),
+          ),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
@@ -343,7 +345,7 @@ class _StructuredResultCard extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  'Total',
+                  context.l10n.scanTotal,
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: colorScheme.onPrimary.withValues(alpha: 0.82),
                     fontWeight: FontWeight.w700,
@@ -398,14 +400,15 @@ class _ResultRow extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           value,
-          style: (emphasize
-                  ? theme.textTheme.titleMedium
-                  : theme.textTheme.labelLarge)
-              ?.copyWith(
-                color: colorScheme.onSurface,
-                fontWeight: FontWeight.w800,
-                fontSize: emphasize ? 11 : 10,
-              ),
+          style:
+              (emphasize
+                      ? theme.textTheme.titleMedium
+                      : theme.textTheme.labelLarge)
+                  ?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.w800,
+                    fontSize: emphasize ? 11 : 10,
+                  ),
         ),
       ],
     );
@@ -443,7 +446,7 @@ class _InsightBadge extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            'Auto-categorized',
+            context.l10n.introAutoCategorized,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: colorScheme.onSurface,
               fontWeight: FontWeight.w800,

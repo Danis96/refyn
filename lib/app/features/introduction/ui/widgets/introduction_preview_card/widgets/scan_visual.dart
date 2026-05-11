@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'preview_shared.dart';
 
 class ScanVisual extends StatefulWidget {
@@ -185,22 +186,38 @@ class _CaptureStage extends StatelessWidget {
             Positioned(
               left: 12,
               top: 12,
-              child: _CornerMark(color: colorScheme.primary, top: true, left: true),
+              child: _CornerMark(
+                color: colorScheme.primary,
+                top: true,
+                left: true,
+              ),
             ),
             Positioned(
               right: 12,
               top: 12,
-              child: _CornerMark(color: colorScheme.primary, top: true, left: false),
+              child: _CornerMark(
+                color: colorScheme.primary,
+                top: true,
+                left: false,
+              ),
             ),
             Positioned(
               left: 12,
               bottom: 12,
-              child: _CornerMark(color: colorScheme.primary, top: false, left: true),
+              child: _CornerMark(
+                color: colorScheme.primary,
+                top: false,
+                left: true,
+              ),
             ),
             Positioned(
               right: 12,
               bottom: 12,
-              child: _CornerMark(color: colorScheme.primary, top: false, left: false),
+              child: _CornerMark(
+                color: colorScheme.primary,
+                top: false,
+                left: false,
+              ),
             ),
           ],
         ),
@@ -236,7 +253,7 @@ class _FloatingReceipt extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'RECEIPT',
+            context.l10n.introReceiptLabel.toUpperCase(),
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w800,
               letterSpacing: 1,
@@ -245,7 +262,7 @@ class _FloatingReceipt extends StatelessWidget {
           ),
           const SizedBox(height: 7),
           Text(
-            'Fresh\nMarket',
+            context.l10n.introFreshMarket.toUpperCase().replaceAll(' ', '\n'),
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
               fontWeight: FontWeight.w800,
               height: 1,
@@ -348,14 +365,10 @@ class _CaptureBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.flash_on_rounded,
-            size: 13,
-            color: colorScheme.primary,
-          ),
+          Icon(Icons.flash_on_rounded, size: 13, color: colorScheme.primary),
           const SizedBox(width: 5),
           Text(
-            'One tap',
+            context.l10n.introOneTap,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w800,
               color: colorScheme.onSurface,
@@ -421,11 +434,7 @@ class _CornerMark extends StatelessWidget {
       width: 18,
       height: 18,
       child: CustomPaint(
-        painter: _CornerMarkPainter(
-          color: color,
-          top: top,
-          left: left,
-        ),
+        painter: _CornerMarkPainter(color: color, top: top, left: left),
       ),
     );
   }
