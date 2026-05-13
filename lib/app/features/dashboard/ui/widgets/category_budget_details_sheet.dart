@@ -25,7 +25,9 @@ class CategoryBudgetDetailsSheet extends StatelessWidget {
     );
     final Color surfaceColor = Theme.of(context).colorScheme.surface;
     final double safeRatio = details.usageRatio.clamp(0, 1).toDouble();
-    final String monthLabel = DateFormat('MMMM yyyy').format(DateTime.now());
+    final String monthLabel = DateFormat.yMMMM(
+      Localizations.localeOf(context).toLanguageTag(),
+    ).format(DateTime.now());
     final String remainingText = details.remainingAmount >= 0
         ? context.l10n.remainingAmountLabel(
             DashboardMoney.formatDecimalConditionally(details.remainingAmount),

@@ -5,40 +5,65 @@ import 'package:refyn/app/features/scan/controllers/scan_controller.dart';
 import 'package:refyn/app/features/scan/controllers/scan_view_state.dart';
 import 'package:refyn/app/features/scan/ui/widgets/recent_scans_section.dart';
 import 'package:refyn/app/features/scan/ui/widgets/scan_header_section.dart';
-import 'package:refyn/app/features/scan/ui/widgets/scan_surface_card.dart';
+import 'package:refyn/app/features/scan/ui/widgets/scan_surface_card/scan_surface_card.dart';
 import 'package:refyn/app/features/scan/ui/widgets/scan_travel_mode_banner.dart';
 import 'package:refyn/app/features/travel_mode/controllers/travel_mode_controller.dart';
 import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 import 'package:refyn/app/models/receipt/receipt_model.dart';
 import 'package:refyn/theme/app_spacing.dart';
 
-class ScanPage extends StatelessWidget {
+class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<ScanController>(
-      builder: (BuildContext context, ScanController controller, Widget? _) {
-        // Listen for failure events and trigger the popup from action utils
-        ScanActionUtils.handleFailure(context, controller);
+  State<ScanPage> createState() => _ScanPageState();
+}
 
-        return const SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _ScanHeaderSection(),
-                _ScanTravelBannerSlot(),
-                SizedBox(height: AppSpacing.md),
-                _ScanSurfaceSection(),
-                SizedBox(height: AppSpacing.lg),
-                _RecentScanSection(),
-              ],
-            ),
-          ),
-        );
-      },
+class _ScanPageState extends State<ScanPage> {
+  ScanController? _controller;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final ScanController controller = context.read<ScanController>();
+    if (!identical(_controller, controller)) {
+      _controller?.removeListener(_onControllerChanged);
+      _controller = controller;
+      controller.addListener(_onControllerChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.removeListener(_onControllerChanged);
+    super.dispose();
+  }
+
+  void _onControllerChanged() {
+    final ScanController? controller = _controller;
+    if (controller == null || !mounted) {
+      return;
+    }
+    ScanActionUtils.handleFailure(context, controller);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const SafeArea(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _ScanHeaderSection(),
+            _ScanTravelBannerSlot(),
+            SizedBox(height: AppSpacing.md),
+            _ScanSurfaceSection(),
+            SizedBox(height: AppSpacing.lg),
+            _RecentScanSection(),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -75,7 +100,7 @@ class _ScanSurfaceSection extends StatelessWidget {
       builder:
           (BuildContext context, _ScanSurfaceViewData data, Widget? child) =>
               ScanSurfaceCard(
-                state: ScanSurfaceStateMapper(data.state).value,
+                state: data.state,
                 imagePath: data.imagePath,
                 imagePaths: data.imagePaths,
                 loadingStep: data.loadingStep,
@@ -121,6 +146,7 @@ class _ScanSurfaceSection extends StatelessWidget {
                 cameraSubtitle: context.l10n.scanCameraSubtitle,
                 supportFormatsText: context.l10n.scanSupportFormats,
                 cancelLabel: context.l10n.cancel,
+                scanningLabel: context.l10n.scanInProgress,
                 loadingSteps: <String>[
                   context.l10n.scanStepUploading,
                   context.l10n.scanStepReading,
@@ -266,26 +292,5 @@ class _ScanSurfaceViewData {
       }
     }
     return true;
-  }
-}
-
-class ScanSurfaceStateMapper {
-  const ScanSurfaceStateMapper(this.state);
-
-  final ScanViewState state;
-
-  ScanSurfaceState get value {
-    switch (state) {
-      case ScanViewState.idle:
-        return ScanSurfaceState.idle;
-      case ScanViewState.imageSelected:
-        return ScanSurfaceState.imageSelected;
-      case ScanViewState.loading:
-        return ScanSurfaceState.loading;
-      case ScanViewState.success:
-        return ScanSurfaceState.success;
-      case ScanViewState.error:
-        return ScanSurfaceState.error;
-    }
   }
 }

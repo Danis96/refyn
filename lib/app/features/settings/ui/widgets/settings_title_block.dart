@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:refyn/app/helpers/extensions/build_context_x.dart';
 
-import '../utils/settings_pallete.dart';
-
 class SettingsTitleBlock extends StatelessWidget {
   const SettingsTitleBlock({super.key});
 

@@ -151,82 +151,94 @@ class ScanActionUtils {
       text: draft.totals.total.toStringAsFixed(2),
     );
 
-    final bool? save = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return StatefulBuilder(
-          builder: (BuildContext _, StateSetter setState) {
-            return AlertDialog(
-              title: Text(context.l10n.scanEditParsedReceipt),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    TextField(
-                      controller: merchantController,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.scanEditMerchant,
-                        border: const OutlineInputBorder(),
+    try {
+      final bool? save = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return StatefulBuilder(
+            builder: (BuildContext _, StateSetter setState) {
+              return AlertDialog(
+                title: Text(context.l10n.scanEditParsedReceipt),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      TextField(
+                        controller: merchantController,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.scanEditMerchant,
+                          border: const OutlineInputBorder(),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: paymentController,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.scanEditPaymentMethod,
-                        border: const OutlineInputBorder(),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: paymentController,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.scanEditPaymentMethod,
+                          border: const OutlineInputBorder(),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: totalController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: totalController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: context.l10n.scanEditTotal,
+                          border: const OutlineInputBorder(),
+                        ),
                       ),
-                      decoration: InputDecoration(
-                        labelText: context.l10n.scanEditTotal,
-                        border: const OutlineInputBorder(),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(false),
-                  child: Text(context.l10n.scanDialogCancel),
-                ),
-                FilledButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(true),
-                  child: Text(context.l10n.scanDialogApply),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(false),
+                    child: Text(context.l10n.scanDialogCancel),
+                  ),
+                  FilledButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(true),
+                    child: Text(context.l10n.scanDialogApply),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
 
-    if (save != true || !context.mounted) {
-      return;
+      if (save != true || !context.mounted) {
+        return;
+      }
+
+      final String merchantInput = merchantController.text.trim();
+      final String paymentInput = paymentController.text.trim();
+      final double? total = double.tryParse(totalController.text.trim());
+      if (merchantInput.isEmpty) {
+        AppSnackBar.error(context, context.l10n.scanMerchantValidationError);
+        return;
+      }
+      if (paymentInput.isEmpty) {
+        AppSnackBar.error(context, context.l10n.scanPaymentValidationError);
+        return;
+      }
+      if (total == null || total <= 0) {
+        AppSnackBar.error(context, context.l10n.scanTotalValidationError);
+        return;
+      }
+
+      controller.updateDraftReceipt(
+        merchantName: merchantInput,
+        paymentMethod: paymentInput,
+        total: total,
+      );
+      AppSnackBar.success(context, context.l10n.scanDraftUpdated);
+    } finally {
+      merchantController.dispose();
+      paymentController.dispose();
+      totalController.dispose();
     }
-
-    final double? total = double.tryParse(totalController.text.trim());
-    if (total == null || total <= 0) {
-      AppSnackBar.error(context, context.l10n.scanTotalValidationError);
-      return;
-    }
-
-    controller.updateDraftReceipt(
-      merchantName: merchantController.text.trim().isEmpty
-          ? draft.merchant.name
-          : merchantController.text.trim(),
-      paymentMethod: paymentController.text.trim().isEmpty
-          ? draft.payment.method
-          : paymentController.text.trim(),
-      total: total,
-    );
-    AppSnackBar.success(context, context.l10n.scanDraftUpdated);
   }
 
   static Future<void> showErrorPopup(

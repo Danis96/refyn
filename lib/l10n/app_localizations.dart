@@ -89,6 +89,7 @@ class AppLocalizations {
       'scanStepDetecting': 'Detecting items',
       'scanStepCategorizing': 'Categorizing receipt',
       'scanStepFinalizing': 'Finalizing data',
+      'scanInProgress': 'Scanning…',
       'scanMerchant': 'Merchant',
       'scanTotal': 'Total',
       'scanDate': 'Date',
@@ -104,6 +105,8 @@ class AppLocalizations {
       'scanReceiptSaved': 'Receipt saved.',
       'scanDraftUpdated': 'Draft updated.',
       'scanTotalValidationError': 'Total must be valid number > 0.',
+      'scanMerchantValidationError': 'Merchant name cannot be empty.',
+      'scanPaymentValidationError': 'Payment method cannot be empty.',
       'scanEditParsedReceipt': 'Edit parsed receipt',
       'scanEditMerchant': 'Merchant',
       'scanEditCategory': 'Category',
@@ -207,6 +210,7 @@ class AppLocalizations {
       'scanStepDetecting': 'Prepoznavanje stavki',
       'scanStepCategorizing': 'Kategorizacija računa',
       'scanStepFinalizing': 'Završna obrada',
+      'scanInProgress': 'Skeniranje…',
       'scanMerchant': 'Prodavač',
       'scanTotal': 'Ukupno',
       'scanDate': 'Datum',
@@ -223,6 +227,8 @@ class AppLocalizations {
       'scanReceiptSaved': 'Račun sačuvan.',
       'scanDraftUpdated': 'Nacrt ažuriran.',
       'scanTotalValidationError': 'Ukupno mora biti broj > 0.',
+      'scanMerchantValidationError': 'Naziv prodavača ne može biti prazan.',
+      'scanPaymentValidationError': 'Način plaćanja ne može biti prazan.',
       'scanEditParsedReceipt': 'Uredi parsirani račun',
       'scanEditMerchant': 'Prodavač',
       'scanEditCategory': 'Kategorija',
@@ -333,6 +339,7 @@ class AppLocalizations {
       'scanStepDetecting': 'Finder varer',
       'scanStepCategorizing': 'Kategoriserer kvittering',
       'scanStepFinalizing': 'Faerdiggor data',
+      'scanInProgress': 'Scanner…',
       'scanMerchant': 'Butik',
       'scanTotal': 'I alt',
       'scanDate': 'Dato',
@@ -349,6 +356,8 @@ class AppLocalizations {
       'scanReceiptSaved': 'Kvittering gemt.',
       'scanDraftUpdated': 'Kladde opdateret.',
       'scanTotalValidationError': 'Belob skal vaere et gyldigt tal > 0.',
+      'scanMerchantValidationError': 'Butiksnavn ma ikke vaere tomt.',
+      'scanPaymentValidationError': 'Betalingsmetode ma ikke vaere tom.',
       'scanEditParsedReceipt': 'Rediger fortolket kvittering',
       'scanEditMerchant': 'Butik',
       'scanEditCategory': 'Kategori',
@@ -461,6 +470,7 @@ class AppLocalizations {
   String get scanStepDetecting => _text('scanStepDetecting');
   String get scanStepCategorizing => _text('scanStepCategorizing');
   String get scanStepFinalizing => _text('scanStepFinalizing');
+  String get scanInProgress => _text('scanInProgress');
   String get scanMerchant => _text('scanMerchant');
   String get scanTotal => _text('scanTotal');
   String get scanDate => _text('scanDate');
@@ -476,6 +486,9 @@ class AppLocalizations {
   String get scanReceiptSaved => _text('scanReceiptSaved');
   String get scanDraftUpdated => _text('scanDraftUpdated');
   String get scanTotalValidationError => _text('scanTotalValidationError');
+  String get scanMerchantValidationError =>
+      _text('scanMerchantValidationError');
+  String get scanPaymentValidationError => _text('scanPaymentValidationError');
   String get scanEditParsedReceipt => _text('scanEditParsedReceipt');
   String get scanEditMerchant => _text('scanEditMerchant');
   String get scanEditCategory => _text('scanEditCategory');
@@ -1060,6 +1073,26 @@ class AppLocalizations {
     en: '$formatLabel export ready.',
     bs: '$formatLabel izvoz je spreman.',
     da: '$formatLabel-eksport klar.',
+  );
+  String get backupShareSubject => _byLanguage(
+    en: 'Receipt backup',
+    bs: 'Sigurnosna kopija računa',
+    da: 'Kvitteringsbackup',
+  );
+  String backupShareBody(int receiptCount, int attachmentCount) => _byLanguage(
+    en: 'Receipt local backup\nReceipts: $receiptCount\nAttachments: $attachmentCount',
+    bs: 'Lokalna sigurnosna kopija računa\nRačuni: $receiptCount\nPrilozi: $attachmentCount',
+    da: 'Lokal kvitteringsbackup\nKvitteringer: $receiptCount\nVedhaeftninger: $attachmentCount',
+  );
+  String exportShareSubject(String formatLabel) => _byLanguage(
+    en: 'Receipt export $formatLabel',
+    bs: 'Izvoz računa $formatLabel',
+    da: 'Kvitteringseksport $formatLabel',
+  );
+  String exportShareBody(String formatLabel) => _byLanguage(
+    en: 'Receipt export ready ($formatLabel).',
+    bs: 'Izvoz računa je spreman ($formatLabel).',
+    da: 'Kvitteringseksport er klar ($formatLabel).',
   );
   String get mailAppOpenedWithExport => _byLanguage(
     en: 'Mail app opened with receipt export.',
