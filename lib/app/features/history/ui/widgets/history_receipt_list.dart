@@ -151,7 +151,7 @@ class HistoryReceiptSummaryCard extends StatelessWidget {
                                           overflow: TextOverflow.ellipsis,
                                           style: theme.textTheme.titleLarge
                                               ?.copyWith(
-                                                fontWeight: FontWeight.w900,
+                                                fontWeight: FontWeight.w600,
                                                 letterSpacing: -0.2,
                                               ),
                                         ),
@@ -422,7 +422,7 @@ class _HistoryReceiptTotalPanel extends StatelessWidget {
           Text(
             amount,
             style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
