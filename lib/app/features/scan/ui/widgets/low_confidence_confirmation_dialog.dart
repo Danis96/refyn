@@ -23,6 +23,7 @@ class LowConfidenceConfirmationDialog extends StatelessWidget {
       color: colorScheme.primary,
       fontWeight: FontWeight.w700,
     );
+    final navigator = Navigator.of(context);
 
     return AlertDialog(
       title: Text(context.l10n.scanLowConfidenceDialogTitle),
@@ -37,9 +38,7 @@ class LowConfidenceConfirmationDialog extends StatelessWidget {
           const SizedBox(height: 10),
           InkWell(
             borderRadius: BorderRadius.circular(8),
-            onTap: () => Navigator.of(
-              context,
-            ).pop(LowConfidenceDialogAction.openThinkingSettings),
+            onTap: () => navigator.pop(LowConfidenceDialogAction.openThinkingSettings),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Text.rich(
@@ -64,21 +63,15 @@ class LowConfidenceConfirmationDialog extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
-          onPressed: () => Navigator.of(
-            context,
-          ).pop(LowConfidenceDialogAction.dismiss),
+          onPressed: () => navigator.pop(LowConfidenceDialogAction.dismiss),
           child: Text(context.l10n.scanErrorDismiss),
         ),
         TextButton(
-          onPressed: () => Navigator.of(
-            context,
-          ).pop(LowConfidenceDialogAction.openThinkingSettings),
+          onPressed: () => navigator.pop(LowConfidenceDialogAction.openThinkingSettings),
           child: Text(context.l10n.scanLowConfidenceOpenThinkingMode),
         ),
         FilledButton(
-          onPressed: () => Navigator.of(
-            context,
-          ).pop(LowConfidenceDialogAction.confirm),
+          onPressed: () => navigator.pop(LowConfidenceDialogAction.confirm),
           child: Text(context.l10n.scanLowConfidenceConfirmSave),
         ),
       ],

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:refyn/app/features/export/repository/receipt_export_service.dart';
 import 'package:refyn/app/features/settings/action_utils/settings_action_utils.dart';
 import 'package:refyn/app/features/settings/controllers/settings_controller.dart';
 import 'package:refyn/app/features/settings/controllers/settings_spotlight_controller.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_about_card.dart';
-import 'package:refyn/app/features/settings/ui/widgets/settings_ai_config_card.dart';
+import 'package:refyn/app/features/settings/ui/widgets/settings_ai_config_card/settings_ai_config_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_currency_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_export_card.dart';
 import 'package:refyn/app/features/settings/ui/widgets/settings_language_card.dart';
@@ -18,8 +19,6 @@ import 'package:refyn/app/features/travel_mode/ui/widgets/travel_mode_settings_c
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
-  static const String _appVersion = '1.0.0';
-
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
@@ -29,6 +28,27 @@ class _SettingsPageState extends State<SettingsPage> {
   final GlobalKey _thinkingModeKey = GlobalKey();
   SettingsSpotlightController? _spotlightController;
   int _lastHandledSpotlightId = 0;
+  String _appVersion = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    try {
+      final PackageInfo info = await PackageInfo.fromPlatform();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _appVersion = info.version;
+      });
+    } catch (_) {
+      // Leave version empty; About card will hide it.
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -128,7 +148,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       SettingsActionUtils.showPrivacyPolicy(context),
                 ),
                 const SizedBox(height: 14),
-                const SettingsAboutCard(appVersion: SettingsPage._appVersion),
+                SettingsAboutCard(appVersion: _appVersion),
               ],
             ),
           ),

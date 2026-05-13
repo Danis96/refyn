@@ -25,6 +25,8 @@ class ScanReceiptImagePreview extends StatelessWidget {
     return Image.file(
       File(imagePath!),
       fit: fit,
+      cacheWidth: 900,
+      filterQuality: FilterQuality.low,
       frameBuilder:
           (
             BuildContext context,

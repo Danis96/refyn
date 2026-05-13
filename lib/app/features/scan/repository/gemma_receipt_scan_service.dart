@@ -21,7 +21,7 @@ class GemmaReceiptScanService {
   GemmaReceiptScanService({
     required AiConfigurationRepository configurationRepository,
     String baseUrl = 'https://generativelanguage.googleapis.com/v1beta',
-    Duration timeout = const Duration(seconds: 1080),
+    Duration timeout = const Duration(seconds: 190),
     HttpClient? httpClient,
     ReceiptAiPromptBuilder? promptBuilder,
     ReceiptImageCompressionService? imageCompressionService,
@@ -47,14 +47,15 @@ class GemmaReceiptScanService {
       return;
     }
 
-    final Uri uri = Uri.parse('$_baseUrl/models?key=${config.apiKey}');
+    final Uri uri = Uri.parse('$_baseUrl/models');
     try {
       final HttpClientRequest request = await _httpClient.getUrl(uri);
+      request.headers.set('x-goog-api-key', config.apiKey);
       final HttpClientResponse response = await request.close();
       await response.drain<void>();
       _logDebug('Warm-up request completed. status=${response.statusCode}');
     } catch (error) {
-      _logDebug('Warm-up request skipped. error=$error');
+      _logDebug('Warm-up request skipped.');
     }
   }
 
@@ -99,12 +100,11 @@ class GemmaReceiptScanService {
       prepared.add(preparedImage);
     }
 
-    final Uri uri = Uri.parse(
-      '$_baseUrl/models/$model:generateContent?key=$apiKey',
-    );
+    final Uri uri = Uri.parse('$_baseUrl/models/$model:generateContent');
 
     final HttpClientRequest request = await _httpClient.postUrl(uri);
     request.headers.contentType = ContentType.json;
+    request.headers.set('x-goog-api-key', apiKey);
 
     final String prompt = _promptBuilder.build(
       defaultCurrency: defaultCurrency,
@@ -140,7 +140,7 @@ class GemmaReceiptScanService {
     };
 
     _logDebug(
-      'Sending request to Gemma. baseUrl=$_baseUrl model=$model promptLength=${prompt.length}',
+      'Sending request to Gemma. model=$model promptLength=${prompt.length}',
     );
     request.write(jsonEncode(body));
 

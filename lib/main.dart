@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,8 +11,25 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _systemOrientation();
   await _loadEnv();
+  await _initializeFirebase(AppConfig.fromEnvironment());
   final appConfig = await _appConfigEnvironment();
   runApp(AppRoot(appConfig: appConfig));
+}
+
+Future<void> _initializeFirebase(AppConfig config) async {
+  final options = config.firebaseOptions;
+  if (options == null) {
+    return;
+  }
+  if (Firebase.apps.isNotEmpty) {
+    return;
+  }
+  try {
+    await Firebase.initializeApp(options: options);
+  } catch (error, stackTrace) {
+    debugPrint('Firebase.initializeApp failed: $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
 }
 
 Future<void> _systemOrientation() async {

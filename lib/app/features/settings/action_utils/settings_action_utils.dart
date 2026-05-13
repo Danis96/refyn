@@ -84,9 +84,11 @@ class SettingsActionUtils {
       await ShareFileHelper.shareFile(
         context: context,
         filePath: result.archivePath,
-        text:
-            'Receipt local backup\nReceipts: ${result.receiptCount}\nAttachments: ${result.attachmentCount}',
-        subject: 'Receipt backup',
+        text: context.l10n.backupShareBody(
+          result.receiptCount,
+          result.attachmentCount,
+        ),
+        subject: context.l10n.backupShareSubject,
         mimeType: 'application/zip',
       );
       if (!context.mounted) {
@@ -157,8 +159,8 @@ class SettingsActionUtils {
       await ShareFileHelper.shareFile(
         context: context,
         filePath: filePath,
-        text: 'Receipt export ready (${meta.label}).',
-        subject: 'Receipt export ${meta.label}',
+        text: context.l10n.exportShareBody(meta.label),
+        subject: context.l10n.exportShareSubject(meta.label),
         mimeType: meta.mimeType,
       );
       if (!context.mounted) {
@@ -361,6 +363,7 @@ class SettingsActionUtils {
     final bool? result = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) {
+        final ColorScheme cs = Theme.of(dialogContext).colorScheme;
         return AlertDialog(
           title: Text(title),
           content: Text(message),
@@ -372,7 +375,8 @@ class SettingsActionUtils {
             FilledButton(
               style: destructive
                   ? FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFFD92D00),
+                      backgroundColor: cs.error,
+                      foregroundColor: cs.onError,
                     )
                   : null,
               onPressed: () => Navigator.of(dialogContext).pop(true),
@@ -408,10 +412,20 @@ class SettingsActionUtils {
   }
 
   static String _normalizeErrorMessage(Object error) {
-    final String raw = error.toString().trim();
-    if (raw.startsWith('Bad state: ')) {
-      return raw.substring('Bad state: '.length).trim();
+    debugPrint('SettingsActionUtils error: $error');
+    if (error is FormatException) {
+      return error.message;
     }
-    return raw.isEmpty ? AppLocalizations.current.unknownError : raw;
+    if (error is Exception) {
+      final String raw = error.toString().trim();
+      const String exceptionPrefix = 'Exception: ';
+      if (raw.startsWith(exceptionPrefix)) {
+        final String message = raw.substring(exceptionPrefix.length).trim();
+        if (message.isNotEmpty && !message.contains('\n')) {
+          return message;
+        }
+      }
+    }
+    return AppLocalizations.current.unknownError;
   }
 }

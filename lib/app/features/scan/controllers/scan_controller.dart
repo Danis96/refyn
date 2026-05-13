@@ -376,8 +376,12 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
+  /// Drives the step ticker up to the second-to-last step, then holds.
+  /// The final step is advanced only when the real API call completes
+  /// (see [scanSelectedImage]). This keeps "Finalizing" visible until the
+  /// receipt actually returns instead of fake-completing on a timer.
   Future<void> _advanceLoadingSteps() async {
-    const List<int> delays = <int>[550, 550, 550, 550, 520];
+    const List<int> delays = <int>[550, 550, 550, 550];
     final int requestId = _activeScanRequestId;
     for (int i = 0; i < delays.length; i++) {
       if (requestId != _activeScanRequestId ||

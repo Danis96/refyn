@@ -26,6 +26,14 @@ class HistoryActionUtils {
     context.read<HistoryController>().setSortOption(option);
   }
 
+  static void onViewModeChanged(BuildContext context, HistoryViewMode mode) {
+    context.read<HistoryController>().setViewMode(mode);
+  }
+
+  static Future<void> onLoadMorePressed(BuildContext context) {
+    return context.read<HistoryController>().loadMoreForCurrentView();
+  }
+
   static void onDateRangeChanged(BuildContext context, DateTimeRange? range) {
     context.read<HistoryController>().setDateRange(range);
   }

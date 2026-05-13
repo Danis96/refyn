@@ -68,7 +68,10 @@ class MailHelper {
           ),
         );
         return true;
-      } catch (_) {}
+      } catch (error, stackTrace) {
+        debugPrint('FlutterEmailSender.send failed: $error');
+        debugPrintStack(stackTrace: stackTrace);
+      }
     }
 
     return _launchMailto(
