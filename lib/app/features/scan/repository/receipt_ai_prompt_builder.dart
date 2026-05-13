@@ -4,7 +4,8 @@ class ReceiptAiPromptBuilder {
   /// [defaultCurrency] is the user's preferred currency. It is passed to the
   /// model only as context so it knows which currency the user expects — the
   /// app does the mismatch comparison and conversion itself.
-  String build({String? defaultCurrency}) => [
+  String build({String? defaultCurrency, int imageCount = 1}) => [
+    if (imageCount > 1) _multiImageSection(imageCount),
     _guardSection,
     _imageQualitySection,
     _taskSection,
@@ -14,6 +15,12 @@ class ReceiptAiPromptBuilder {
       _defaultCurrencyContext(defaultCurrency.trim()),
     _categorySection,
   ].join('\n\n');
+
+  static String _multiImageSection(int count) =>
+      '''
+You are given $count images that are sequential parts of the SAME single receipt (top, middle, bottom or overlapping sections of one long bill).
+Treat them as ONE continuous receipt: merge all line items in reading order, deduplicate any rows that visibly overlap between images, and use the totals/merchant header that appears most clearly.
+Do NOT report this as multiple separate bills. Do NOT trigger the "two or more separate bills" quality issue for this case.''';
 
   // ─── Sections ────────────────────────────────────────────────────────────────
 

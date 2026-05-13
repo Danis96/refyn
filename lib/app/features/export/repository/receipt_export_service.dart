@@ -30,6 +30,15 @@ class ReceiptExportService {
     'item_count',
     'image_path',
     'confidence',
+    'item_index',
+    'item_name',
+    'item_category',
+    'item_unit',
+    'item_quantity',
+    'item_unit_price',
+    'item_discount_percent',
+    'item_discount_amount',
+    'item_final_price',
   ];
 
   Future<String> exportReceipts({
@@ -67,7 +76,7 @@ class ReceiptExportService {
   String _buildCsv(List<ReceiptModel> receipts) {
     final List<String> lines = <String>[_csvHeaders.join(',')];
     for (final ReceiptModel receipt in receipts) {
-      final List<String> values = <String>[
+      final List<String> receiptValues = <String>[
         receipt.id,
         receipt.createdAt.toIso8601String(),
         receipt.country,
@@ -87,7 +96,32 @@ class ReceiptExportService {
         receipt.imagePath ?? '',
         receipt.confidence.toStringAsFixed(4),
       ];
-      lines.add(values.map(_escapeCsv).join(','));
+
+      if (receipt.items.isEmpty) {
+        final List<String> values = <String>[
+          ...receiptValues,
+          '', '', '', '', '', '', '', '', '',
+        ];
+        lines.add(values.map(_escapeCsv).join(','));
+        continue;
+      }
+
+      for (int i = 0; i < receipt.items.length; i++) {
+        final item = receipt.items[i];
+        final List<String> values = <String>[
+          ...receiptValues,
+          (i + 1).toString(),
+          item.name,
+          item.category,
+          item.unit ?? '',
+          item.quantity.toString(),
+          item.unitPrice?.toStringAsFixed(2) ?? '',
+          item.discountPercent?.toStringAsFixed(2) ?? '',
+          item.discountAmount?.toStringAsFixed(2) ?? '',
+          item.finalPrice.toStringAsFixed(2),
+        ];
+        lines.add(values.map(_escapeCsv).join(','));
+      }
     }
     return lines.join('\n');
   }

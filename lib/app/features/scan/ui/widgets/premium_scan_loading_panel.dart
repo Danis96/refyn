@@ -3,16 +3,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-///
-/// Layout — compact horizontal card:
-///   ┌──────────────────────────────────────────┐
-///   │  ┌──────────┐  header + % + progress     │
-///   │  │  image   │  ─────────────────────      │
-///   │  │ + scan   │  • step 1                   │
-///   │  │ overlay  │  • step 2  ← active         │
-///   │  └──────────┘  ○ step 3                   │
-///   └──────────────────────────────────────────┘
-///
 /// Entry sequence (1 100 ms one-shot):
 ///   0 – 420 ms   card slides up from below + scale pop (easeOutBack)
 ///   220 – 720 ms scan overlay wipes left→right across thumbnail
@@ -25,18 +15,21 @@ import 'package:flutter/material.dart';
 ///   5 particles orbit the centre (4 s)
 ///   progress-bar shimmer (1.5 s)
 ///
-/// 100 % theme-aware — every colour comes from [ColorScheme].
 class PremiumScanLoadingPanel extends StatefulWidget {
   const PremiumScanLoadingPanel({
     super.key,
     required this.imagePath,
     required this.loadingStep,
     required this.steps,
+    required this.onCancel,
+    required this.cancelLabel,
   });
 
   final String? imagePath;
   final int loadingStep;
   final List<String> steps;
+  final VoidCallback onCancel;
+  final String cancelLabel;
 
   @override
   State<PremiumScanLoadingPanel> createState() =>
@@ -45,7 +38,9 @@ class PremiumScanLoadingPanel extends StatefulWidget {
 
 class _PremiumScanLoadingPanelState extends State<PremiumScanLoadingPanel>
     with TickerProviderStateMixin {
-  // ── One-shot entry ───────────────────────────────────────────
+  static const double _thumbnailWidth = 92;
+  static const double _thumbnailHeight = 124;
+
   late final AnimationController _entryCtrl;
   late final Animation<double> _cardSlide;
   late final Animation<double> _cardScale;
@@ -74,21 +69,25 @@ class _PremiumScanLoadingPanelState extends State<PremiumScanLoadingPanel>
       curve: const Interval(0.0, 0.42, curve: Curves.easeOutBack),
     );
 
-    _cardScale = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween(begin: 0.80, end: 1.04)
-            .chain(CurveTween(curve: Curves.easeOut)),
-        weight: 45,
-      ),
-      TweenSequenceItem(
-        tween: Tween(begin: 1.04, end: 1.0)
-            .chain(CurveTween(curve: Curves.easeIn)),
-        weight: 55,
-      ),
-    ]).animate(CurvedAnimation(
-      parent: _entryCtrl,
-      curve: const Interval(0.0, 0.50),
-    ));
+    _cardScale =
+        TweenSequence<double>([
+          TweenSequenceItem(
+            tween: Tween(
+              begin: 0.80,
+              end: 1.04,
+            ).chain(CurveTween(curve: Curves.easeOut)),
+            weight: 45,
+          ),
+          TweenSequenceItem(
+            tween: Tween(
+              begin: 1.04,
+              end: 1.0,
+            ).chain(CurveTween(curve: Curves.easeIn)),
+            weight: 55,
+          ),
+        ]).animate(
+          CurvedAnimation(parent: _entryCtrl, curve: const Interval(0.0, 0.50)),
+        );
 
     _scanReveal = CurvedAnimation(
       parent: _entryCtrl,
@@ -100,13 +99,13 @@ class _PremiumScanLoadingPanelState extends State<PremiumScanLoadingPanel>
       curve: const Interval(0.40, 0.80, curve: Curves.easeOut),
     );
 
-    _panelSlide = Tween<Offset>(
-      begin: const Offset(0.10, 0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _entryCtrl,
-      curve: const Interval(0.40, 0.82, curve: Curves.easeOutCubic),
-    ));
+    _panelSlide = Tween<Offset>(begin: const Offset(0.10, 0), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _entryCtrl,
+            curve: const Interval(0.40, 0.82, curve: Curves.easeOutCubic),
+          ),
+        );
 
     _scanCtrl = AnimationController(
       vsync: this,
@@ -148,8 +147,9 @@ class _PremiumScanLoadingPanelState extends State<PremiumScanLoadingPanel>
     final bool isDark = theme.brightness == Brightness.dark;
 
     final int clamped = widget.loadingStep.clamp(0, widget.steps.length);
-    final double progress =
-    widget.steps.isEmpty ? 0 : clamped / widget.steps.length;
+    final double progress = widget.steps.isEmpty
+        ? 0
+        : clamped / widget.steps.length;
 
     // All colours from the theme
     final Color accent = cs.primary;
@@ -168,8 +168,9 @@ class _PremiumScanLoadingPanelState extends State<PremiumScanLoadingPanel>
               scale: _cardScale.value,
               child: Container(
                 decoration: BoxDecoration(
-                  color: cs.surfaceContainerHighest
-                      .withValues(alpha: isDark ? 0.55 : 0.45),
+                  color: cs.surfaceContainerHighest.withValues(
+                    alpha: isDark ? 0.55 : 0.45,
+                  ),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: accent.withValues(alpha: 0.20),
@@ -183,22 +184,26 @@ class _PremiumScanLoadingPanelState extends State<PremiumScanLoadingPanel>
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // ── Compact scan thumbnail ───────────────────
-                    _ScanThumbnail(
-                      imagePath: widget.imagePath,
-                      scanReveal: _scanReveal,
-                      scanAnim: _scanCtrl,
-                      pulseAnim: _pulseCtrl,
-                      orbitAnim: _orbitCtrl,
-                      accent: accent,
-                      scanBg: scanBg,
+                    Column(
+                      children: [
+                        _ScanThumbnail(
+                          imagePath: widget.imagePath,
+                          scanReveal: _scanReveal,
+                          scanAnim: _scanCtrl,
+                          pulseAnim: _pulseCtrl,
+                          orbitAnim: _orbitCtrl,
+                          accent: accent,
+                          scanBg: scanBg,
+                        ),
+                      ],
                     ),
 
-                    const SizedBox(width: 14),
+                    const SizedBox(width: 10),
 
                     // ── Right panel ─────────────────────────────
                     Expanded(
@@ -210,6 +215,8 @@ class _PremiumScanLoadingPanelState extends State<PremiumScanLoadingPanel>
                             steps: widget.steps,
                             loadingStep: clamped,
                             progress: progress,
+                            onCancel: widget.onCancel,
+                            cancelLabel: widget.cancelLabel,
                             pulseAnim: _pulseCtrl,
                             shimmerAnim: _shimmerCtrl,
                             entryValue: _entryCtrl.value,
@@ -217,8 +224,7 @@ class _PremiumScanLoadingPanelState extends State<PremiumScanLoadingPanel>
                             onSurface: cs.onSurface,
                             secondary: cs.secondary,
                             tertiaryColor: cs.tertiary,
-                            progressBg:
-                            cs.secondary.withValues(alpha: 0.14),
+                            progressBg: cs.secondary.withValues(alpha: 0.14),
                           ),
                         ),
                       ),
@@ -235,7 +241,7 @@ class _PremiumScanLoadingPanelState extends State<PremiumScanLoadingPanel>
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  Scan Thumbnail  (110 × 148 px compact card on the left)
+//  Scan Thumbnail
 // ══════════════════════════════════════════════════════════════════
 
 class _ScanThumbnail extends StatelessWidget {
@@ -260,10 +266,10 @@ class _ScanThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 110,
-      height: 148,
+      width: _PremiumScanLoadingPanelState._thumbnailWidth,
+      height: _PremiumScanLoadingPanelState._thumbnailHeight,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -288,12 +294,9 @@ class _ScanThumbnail extends StatelessWidget {
                     fit: StackFit.expand,
                     children: [
                       // Tinted backing
-                      ColoredBox(
-                        color: scanBg.withValues(alpha: 0.80),
-                      ),
+                      ColoredBox(color: scanBg.withValues(alpha: 0.80)),
                       // Dot grid
-                      CustomPaint(
-                          painter: _DotGridPainter(accent)),
+                      CustomPaint(painter: _DotGridPainter(accent)),
                       // Orbiting particles
                       AnimatedBuilder(
                         animation: orbitAnim,
@@ -305,8 +308,7 @@ class _ScanThumbnail extends StatelessWidget {
                         ),
                       ),
                       // Corner brackets
-                      CustomPaint(
-                          painter: _BracketPainter(accent)),
+                      CustomPaint(painter: _BracketPainter(accent)),
                       // Sweeping scan line
                       AnimatedBuilder(
                         animation: scanAnim,
@@ -343,10 +345,10 @@ class _ScanThumbnail extends StatelessWidget {
                 final double v = scanReveal.value;
                 if (v <= 0 || v >= 1) return const SizedBox.shrink();
                 return Positioned(
-                  left: v * 110 - 12,
+                  left: v * _PremiumScanLoadingPanelState._thumbnailWidth - 10,
                   top: 0,
                   bottom: 0,
-                  width: 24,
+                  width: 20,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -378,8 +380,11 @@ class _FallbackBg extends StatelessWidget {
     return ColoredBox(
       color: color,
       child: Center(
-        child: Icon(Icons.receipt_long_outlined,
-            size: 36, color: accent.withValues(alpha: 0.35)),
+        child: Icon(
+          Icons.receipt_long_outlined,
+          size: 36,
+          color: accent.withValues(alpha: 0.35),
+        ),
       ),
     );
   }
@@ -394,6 +399,8 @@ class _RightPanel extends StatelessWidget {
     required this.steps,
     required this.loadingStep,
     required this.progress,
+    required this.onCancel,
+    required this.cancelLabel,
     required this.pulseAnim,
     required this.shimmerAnim,
     required this.entryValue,
@@ -407,6 +414,8 @@ class _RightPanel extends StatelessWidget {
   final List<String> steps;
   final int loadingStep;
   final double progress;
+  final VoidCallback onCancel;
+  final String cancelLabel;
   final Animation<double> pulseAnim;
   final Animation<double> shimmerAnim;
   final double entryValue;
@@ -438,7 +447,8 @@ class _RightPanel extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(
                       color: accent.withValues(
-                          alpha: 0.45 + pulseAnim.value * 0.45),
+                        alpha: 0.45 + pulseAnim.value * 0.45,
+                      ),
                       blurRadius: 5 + pulseAnim.value * 5,
                       spreadRadius: 0.5,
                     ),
@@ -446,12 +456,14 @@ class _RightPanel extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: 5),
             Expanded(
               child: Text(
                 'Scanning…',
-                style: tt.titleSmall
-                    ?.copyWith(fontWeight: FontWeight.w700),
+                style: tt.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
               ),
             ),
             Text(
@@ -464,7 +476,7 @@ class _RightPanel extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 7),
+        const SizedBox(height: 6),
 
         // Slim progress bar
         _ProgressBar(
@@ -475,18 +487,19 @@ class _RightPanel extends StatelessWidget {
           bgColor: progressBg,
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
 
         // Steps — stagger in as entryValue crosses each threshold
         ...List.generate(steps.length, (i) {
           final bool done = i < loadingStep;
-          final bool active =
-              i == loadingStep && loadingStep < steps.length;
+          final bool active = i == loadingStep && loadingStep < steps.length;
 
           // Each step appears ~70 ms after the previous
           final double start = 0.52 + i * 0.07;
-          final double localT =
-          ((entryValue - start) / (1.0 - start)).clamp(0.0, 1.0);
+          final double localT = ((entryValue - start) / (1.0 - start)).clamp(
+            0.0,
+            1.0,
+          );
           final double opacity = Curves.easeOut.transform(localT);
 
           return Transform.translate(
@@ -505,6 +518,30 @@ class _RightPanel extends StatelessWidget {
             ),
           );
         }),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: onCancel,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: onSurface,
+              backgroundColor: accent.withValues(alpha: 0.06),
+              side: BorderSide(color: accent.withValues(alpha: 0.16)),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              minimumSize: const Size(0, 38),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: const VisualDensity(horizontal: -1, vertical: -2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            icon: const Icon(Icons.close_rounded, size: 16),
+            label: Text(
+              cancelLabel,
+              style: tt.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -531,56 +568,56 @@ class _ProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final double filled =
-          constraints.maxWidth * progress.clamp(0.0, 1.0);
-      return Container(
-        height: 6,
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(999),
-        ),
-        child: Stack(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 350),
-              curve: Curves.easeOutCubic,
-              width: filled,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(999),
-                gradient: LinearGradient(
-                  colors: [accent, tertiaryColor],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double filled = constraints.maxWidth * progress.clamp(0.0, 1.0);
+        return Container(
+          height: 6,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Stack(
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeOutCubic,
+                width: filled,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(999),
+                  gradient: LinearGradient(colors: [accent, tertiaryColor]),
                 ),
               ),
-            ),
-            if (progress > 0 && progress < 1)
-              AnimatedBuilder(
-                animation: shimmerAnim,
-                builder: (_, __) {
-                  final double sx =
-                      shimmerAnim.value * filled - 20;
-                  return Positioned(
-                    left: sx,
-                    top: 0,
-                    bottom: 0,
-                    width: 40,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                          Colors.transparent,
-                          Colors.white.withValues(alpha: 0.40),
-                          Colors.transparent,
-                        ]),
+              if (progress > 0 && progress < 1)
+                AnimatedBuilder(
+                  animation: shimmerAnim,
+                  builder: (_, __) {
+                    final double sx = shimmerAnim.value * filled - 20;
+                    return Positioned(
+                      left: sx,
+                      top: 0,
+                      bottom: 0,
+                      width: 40,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.transparent,
+                              Colors.white.withValues(alpha: 0.40),
+                              Colors.transparent,
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-          ],
-        ),
-      );
-    });
+                    );
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -611,16 +648,14 @@ class _StepRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextTheme tt = Theme.of(context).textTheme;
     // Done colour: tint the theme accent toward green
-    final Color doneColor =
-    Color.lerp(accent, const Color(0xFF22C77A), 0.68)!;
+    final Color doneColor = Color.lerp(accent, const Color(0xFF22C77A), 0.68)!;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 5),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 260),
         curve: Curves.easeOutCubic,
-        padding:
-        const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
         decoration: BoxDecoration(
           color: active ? accent.withValues(alpha: 0.09) : null,
           borderRadius: BorderRadius.circular(8),
@@ -631,55 +666,52 @@ class _StepRow extends StatelessWidget {
               width: 16,
               height: 16,
               child: done
-                  ? Icon(Icons.check_circle_rounded,
-                  color: doneColor, size: 16)
+                  ? Icon(Icons.check_circle_rounded, color: doneColor, size: 16)
                   : active
                   ? AnimatedBuilder(
-                animation: pulseAnim,
-                builder: (_, __) {
-                  final double s = 0.70 +
-                      (pulseAnim.value - 0.5).abs() * 0.60;
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        width: 15 * s,
-                        height: 15 * s,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: accent
-                              .withValues(alpha: 0.22),
-                        ),
-                      ),
-                      Container(
-                        width: 7,
-                        height: 7,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: accent,
-                          boxShadow: [
-                            BoxShadow(
-                              color: accent.withValues(
-                                  alpha: 0.55),
-                              blurRadius: 5,
-                              spreadRadius: 1,
+                      animation: pulseAnim,
+                      builder: (_, __) {
+                        final double s =
+                            0.70 + (pulseAnim.value - 0.5).abs() * 0.60;
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 15 * s,
+                              height: 15 * s,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: accent.withValues(alpha: 0.22),
+                              ),
+                            ),
+                            Container(
+                              width: 7,
+                              height: 7,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: accent,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: accent.withValues(alpha: 0.55),
+                                    blurRadius: 5,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              )
+                        );
+                      },
+                    )
                   : Container(
-                width: 6,
-                height: 6,
-                margin: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: secondary.withValues(alpha: 0.30),
-                ),
-              ),
+                      width: 6,
+                      height: 6,
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: secondary.withValues(alpha: 0.30),
+                      ),
+                    ),
             ),
             const SizedBox(width: 7),
             Expanded(
@@ -688,8 +720,7 @@ class _StepRow extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: tt.bodySmall?.copyWith(
-                  fontWeight:
-                  active ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                   color: done
                       ? onSurface.withValues(alpha: 0.70)
                       : active
@@ -778,8 +809,7 @@ class _ScanLinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final double t =
-    progress < 0.5 ? progress * 2 : (1 - progress) * 2;
+    final double t = progress < 0.5 ? progress * 2 : (1 - progress) * 2;
     final double y =
         size.height * 0.10 + Curves.easeInOut.transform(t) * size.height * 0.80;
 
@@ -790,10 +820,7 @@ class _ScanLinePainter extends CustomPainter {
         ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            color.withValues(alpha: 0.0),
-            color.withValues(alpha: 0.08),
-          ],
+          colors: [color.withValues(alpha: 0.0), color.withValues(alpha: 0.08)],
         ).createShader(Rect.fromLTWH(0, 0, size.width, y)),
     );
 
@@ -867,10 +894,13 @@ class _PulseRingPainter extends CustomPainter {
       5.5,
       Paint()
         ..color = color
-        ..maskFilter =
-        MaskFilter.blur(BlurStyle.normal, 3 + pulse * 3),
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 3 + pulse * 3),
     );
-    canvas.drawCircle(c, 3.2, Paint()..color = Colors.white.withValues(alpha: 0.90));
+    canvas.drawCircle(
+      c,
+      3.2,
+      Paint()..color = Colors.white.withValues(alpha: 0.90),
+    );
   }
 
   @override
@@ -898,22 +928,17 @@ class _OrbitPainter extends CustomPainter {
     final double maxR = math.min(size.width, size.height) / 2;
 
     for (final p in _ps) {
-      final double angle =
-          (progress * p.sp + p.ph) * 2 * math.pi;
-      final Offset pos = c +
-          Offset(
-            math.cos(angle) * maxR * p.rf,
-            math.sin(angle) * maxR * p.rf,
-          );
-      final double alpha =
-          0.35 + 0.45 * math.sin(angle + math.pi / 2).abs();
+      final double angle = (progress * p.sp + p.ph) * 2 * math.pi;
+      final Offset pos =
+          c +
+          Offset(math.cos(angle) * maxR * p.rf, math.sin(angle) * maxR * p.rf);
+      final double alpha = 0.35 + 0.45 * math.sin(angle + math.pi / 2).abs();
       canvas.drawCircle(
         pos,
         p.sz,
         Paint()
           ..color = color.withValues(alpha: alpha)
-          ..maskFilter =
-          MaskFilter.blur(BlurStyle.normal, p.sz * 0.9),
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, p.sz * 0.9),
       );
     }
   }
@@ -923,10 +948,11 @@ class _OrbitPainter extends CustomPainter {
 }
 
 class _Op {
-  const _Op(
-      {required this.rf,
-        required this.sz,
-        required this.sp,
-        required this.ph});
+  const _Op({
+    required this.rf,
+    required this.sz,
+    required this.sp,
+    required this.ph,
+  });
   final double rf, sz, sp, ph;
 }

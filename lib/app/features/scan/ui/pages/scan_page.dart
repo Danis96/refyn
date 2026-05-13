@@ -64,6 +64,7 @@ class _ScanSurfaceSection extends StatelessWidget {
       selector: (_, ScanController controller) => _ScanSurfaceViewData(
         state: controller.state,
         imagePath: controller.selectedImagePath,
+        imagePaths: controller.selectedImagePaths,
         loadingStep: controller.loadingStep,
         errorMessage: controller.errorMessage,
         result: controller.lastScannedReceipt,
@@ -73,54 +74,61 @@ class _ScanSurfaceSection extends StatelessWidget {
       ),
       builder:
           (BuildContext context, _ScanSurfaceViewData data, Widget? child) =>
-          ScanSurfaceCard(
-            state: ScanSurfaceStateMapper(data.state).value,
-            imagePath: data.imagePath,
-            loadingStep: data.loadingStep,
-            errorMessage: data.errorMessage,
-            result: data.result,
-            hasDraft: data.hasDraft,
-            lowConfidence: data.lowConfidence,
-            savingDraft: data.savingDraft,
-            onGallery: () => ScanActionUtils.onOpenGallery(context),
-            onCamera: () => ScanActionUtils.onOpenCamera(context),
-            onScan: () => ScanActionUtils.onScan(context),
-            onRetry: () => ScanActionUtils.onRetryScan(context),
-            onReset: () => ScanActionUtils.onReset(context),
-            onScanAnother: () => ScanActionUtils.onScanAnother(context),
-            onEditDraft: () => ScanActionUtils.onEditDraft(context),
-            onSaveDraft: () => ScanActionUtils.onSaveDraft(context),
-            scanButtonText: context.l10n.scanReceiptButton,
-            retryLabel: context.l10n.scanRetry,
-            pickAnotherImageLabel: context.l10n.scanPickAnotherImage,
-            resetLabel: context.l10n.scanReset,
-            scanAnotherLabel: context.l10n.scanAnother,
-            saveReceiptLabel: context.l10n.scanSaveReceipt,
-            editBeforeSaveLabel: context.l10n.scanEditBeforeSave,
-            savingLabel: context.l10n.scanSaving,
-            lowConfidenceWarningLabel: context.l10n.scanLowConfidenceWarning,
-            successTitle: context.l10n.scanSuccessTitle,
-            errorTitle: context.l10n.scanErrorTitle,
-            errorFallback: context.l10n.scanErrorFallback,
-            merchantLabel: context.l10n.scanMerchant,
-            totalLabel: context.l10n.scanTotal,
-            dateLabel: context.l10n.scanDate,
-            categoryLabel: context.l10n.scanCategory,
-            itemsLabel: context.l10n.scanItems,
-            confidenceLabel: context.l10n.scanConfidence,
-            uploadTitle: context.l10n.scanUploadTitle,
-            uploadSubtitle: context.l10n.scanUploadSubtitle,
-            cameraTitle: context.l10n.scanCameraTitle,
-            cameraSubtitle: context.l10n.scanCameraSubtitle,
-            supportFormatsText: context.l10n.scanSupportFormats,
-            loadingSteps: <String>[
-              context.l10n.scanStepUploading,
-              context.l10n.scanStepReading,
-              context.l10n.scanStepDetecting,
-              context.l10n.scanStepCategorizing,
-              context.l10n.scanStepFinalizing,
-            ],
-          ),
+              ScanSurfaceCard(
+                state: ScanSurfaceStateMapper(data.state).value,
+                imagePath: data.imagePath,
+                imagePaths: data.imagePaths,
+                loadingStep: data.loadingStep,
+                errorMessage: data.errorMessage,
+                result: data.result,
+                hasDraft: data.hasDraft,
+                lowConfidence: data.lowConfidence,
+                savingDraft: data.savingDraft,
+                onGallery: () => ScanActionUtils.onOpenGallery(context),
+                onCamera: () => ScanActionUtils.onOpenCamera(context),
+                onAddPage: () => ScanActionUtils.onAddPage(context),
+                onRemoveImage: (int index) =>
+                    ScanActionUtils.onRemoveImage(context, index),
+                onScan: () => ScanActionUtils.onScan(context),
+                onCancelScan: () => ScanActionUtils.onCancelScan(context),
+                onRetry: () => ScanActionUtils.onRetryScan(context),
+                onReset: () => ScanActionUtils.onReset(context),
+                onScanAnother: () => ScanActionUtils.onScanAnother(context),
+                onEditDraft: () => ScanActionUtils.onEditDraft(context),
+                onSaveDraft: () => ScanActionUtils.onSaveDraft(context),
+                scanButtonText: context.l10n.scanReceiptButton,
+                retryLabel: context.l10n.scanRetry,
+                pickAnotherImageLabel: context.l10n.scanPickAnotherImage,
+                resetLabel: context.l10n.scanReset,
+                scanAnotherLabel: context.l10n.scanAnother,
+                saveReceiptLabel: context.l10n.scanSaveReceipt,
+                editBeforeSaveLabel: context.l10n.scanEditBeforeSave,
+                savingLabel: context.l10n.scanSaving,
+                lowConfidenceWarningLabel:
+                    context.l10n.scanLowConfidenceWarning,
+                successTitle: context.l10n.scanSuccessTitle,
+                errorTitle: context.l10n.scanErrorTitle,
+                errorFallback: context.l10n.scanErrorFallback,
+                merchantLabel: context.l10n.scanMerchant,
+                totalLabel: context.l10n.scanTotal,
+                dateLabel: context.l10n.scanDate,
+                categoryLabel: context.l10n.scanCategory,
+                itemsLabel: context.l10n.scanItems,
+                confidenceLabel: context.l10n.scanConfidence,
+                uploadTitle: context.l10n.scanUploadTitle,
+                uploadSubtitle: context.l10n.scanUploadSubtitle,
+                cameraTitle: context.l10n.scanCameraTitle,
+                cameraSubtitle: context.l10n.scanCameraSubtitle,
+                supportFormatsText: context.l10n.scanSupportFormats,
+                cancelLabel: context.l10n.cancel,
+                loadingSteps: <String>[
+                  context.l10n.scanStepUploading,
+                  context.l10n.scanStepReading,
+                  context.l10n.scanStepDetecting,
+                  context.l10n.scanStepCategorizing,
+                  context.l10n.scanStepFinalizing,
+                ],
+              ),
     );
   }
 }
@@ -145,15 +153,16 @@ class _ScanTravelBannerSlot extends StatelessWidget {
           return FadeTransition(
             opacity: animation,
             child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, -0.08),
-                end: Offset.zero,
-              ).animate(
-                CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.easeOutCubic,
-                ),
-              ),
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(0, -0.08),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  ),
               child: child,
             ),
           );
@@ -181,12 +190,12 @@ class _RecentScanSection extends StatelessWidget {
       selector: (_, ScanController controller) => controller.recentReceipts,
       builder:
           (BuildContext context, List<ReceiptModel> receipts, Widget? child) =>
-          RecentScansSection(
-            title: context.l10n.scanRecentTitle,
-            emptyText: context.l10n.noReceiptsYet,
-            emptyHintText: context.l10n.scanRecentEmptyHint,
-            receipts: receipts,
-          ),
+              RecentScansSection(
+                title: context.l10n.scanRecentTitle,
+                emptyText: context.l10n.noReceiptsYet,
+                emptyHintText: context.l10n.scanRecentEmptyHint,
+                receipts: receipts,
+              ),
     );
   }
 }
@@ -195,6 +204,7 @@ class _ScanSurfaceViewData {
   const _ScanSurfaceViewData({
     required this.state,
     required this.imagePath,
+    required this.imagePaths,
     required this.loadingStep,
     required this.errorMessage,
     required this.result,
@@ -205,6 +215,7 @@ class _ScanSurfaceViewData {
 
   final ScanViewState state;
   final String? imagePath;
+  final List<String> imagePaths;
   final int loadingStep;
   final String? errorMessage;
   final ReceiptModel? result;
@@ -220,6 +231,7 @@ class _ScanSurfaceViewData {
     return other is _ScanSurfaceViewData &&
         other.state == state &&
         other.imagePath == imagePath &&
+        _listEquals(other.imagePaths, imagePaths) &&
         other.loadingStep == loadingStep &&
         other.errorMessage == errorMessage &&
         other.result == result &&
@@ -232,6 +244,7 @@ class _ScanSurfaceViewData {
   int get hashCode => Object.hash(
     state,
     imagePath,
+    Object.hashAll(imagePaths),
     loadingStep,
     errorMessage,
     result,
@@ -239,6 +252,21 @@ class _ScanSurfaceViewData {
     lowConfidence,
     savingDraft,
   );
+
+  static bool _listEquals(List<String> a, List<String> b) {
+    if (identical(a, b)) {
+      return true;
+    }
+    if (a.length != b.length) {
+      return false;
+    }
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
 
 class ScanSurfaceStateMapper {

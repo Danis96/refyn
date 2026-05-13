@@ -6,8 +6,14 @@ import 'package:refyn/app/features/budgets/repository/category_budget_catalog.da
 import 'package:refyn/app/features/export/repository/receipt_export_service.dart';
 import 'package:refyn/app/features/receipt_details/controllers/receipt_details_controller.dart';
 import 'package:refyn/app/helpers/extensions/build_context_x.dart';
+import 'package:refyn/app/models/receipt/fiscal_info_model.dart';
+import 'package:refyn/app/models/receipt/merchant_model.dart';
+import 'package:refyn/app/models/receipt/payment_info_model.dart';
 import 'package:refyn/app/models/receipt/receipt_item_model.dart';
 import 'package:refyn/app/models/receipt/receipt_model.dart';
+import 'package:refyn/app/models/receipt/receipt_info_model.dart';
+import 'package:refyn/app/models/receipt/receipt_parsing_utils.dart';
+import 'package:refyn/app/models/receipt/receipt_totals_model.dart';
 import 'package:refyn/app/widgets/app_snackbar.dart';
 import 'package:refyn/theme/app_spacing.dart';
 
@@ -112,69 +118,318 @@ class ReceiptDetailsActionUtils {
     ReceiptDetailsController controller,
     ReceiptModel receipt,
   ) async {
-    final TextEditingController merchantController = TextEditingController(
-      text: receipt.merchant.name,
-    );
-    final TextEditingController paymentController = TextEditingController(
-      text: receipt.payment.method,
-    );
+    final _ReceiptEditorDraft draft = _ReceiptEditorDraft.fromReceipt(receipt);
 
-    final bool? save = await showDialog<bool>(
+    final bool? save = await showModalBottomSheet<bool>(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
       builder: (BuildContext dialogContext) {
+        bool saving = false;
+
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            final navigator = Navigator.of(dialogContext);
+            final ThemeData theme = Theme.of(context);
+            final ColorScheme colorScheme = theme.colorScheme;
+            final NavigatorState navigator = Navigator.of(dialogContext);
 
-            return AlertDialog(
-              title: Text(context.l10n.editReceipt),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
+            return Container(
+              decoration: BoxDecoration(
+                color: colorScheme.surface,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(28),
+                ),
+              ),
+              padding: EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                12,
+                AppSpacing.md,
+                AppSpacing.md + MediaQuery.of(dialogContext).viewInsets.bottom,
+              ),
+              child: Column(
                 children: <Widget>[
-                  TextField(
-                    controller: merchantController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.merchant,
-                      border: OutlineInputBorder(),
+                  Container(
+                    width: 44,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(999),
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
-                  TextField(
-                    controller: paymentController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.paymentMethod,
-                      border: OutlineInputBorder(),
+                  const SizedBox(height: 18),
+                  Expanded(
+                    child: ListView(
+                      children: <Widget>[
+                        Text(
+                          context.l10n.editReceipt,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'IDs, image path, travel link locked.',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        const _EditorSectionTitle('Basics'),
+                        _EditorTextField(
+                          controller: draft.countryController,
+                          label: 'Country',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.currencyController,
+                          label: 'Currency',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.categoryController,
+                          label: 'Category',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.confidenceController,
+                          label: 'Confidence',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        const _EditorSectionTitle('Merchant'),
+                        _EditorTextField(
+                          controller: draft.merchantNameController,
+                          label: 'Merchant name',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.storeNameController,
+                          label: 'Store name',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.addressController,
+                          label: 'Address',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.cityController,
+                          label: 'City',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.jibController,
+                          label: 'JIB',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.pibController,
+                          label: 'PIB',
+                        ),
+                        const SizedBox(height: 18),
+                        const _EditorSectionTitle('Receipt'),
+                        _EditorTextField(
+                          controller: draft.receiptTypeController,
+                          label: 'Receipt type',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.receiptNumberController,
+                          label: 'Receipt number',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.receiptDateController,
+                          label: 'Date',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.receiptTimeController,
+                          label: 'Time',
+                        ),
+                        const SizedBox(height: 18),
+                        const _EditorSectionTitle('Totals'),
+                        _EditorTextField(
+                          controller: draft.totalController,
+                          label: 'Total',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.subtotalController,
+                          label: 'Subtotal',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.discountTotalController,
+                          label: 'Discount total',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.taxableAmountController,
+                          label: 'Taxable amount',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.vatRateController,
+                          label: 'VAT rate',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.vatAmountController,
+                          label: 'VAT amount',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        const _EditorSectionTitle('Payment'),
+                        _EditorTextField(
+                          controller: draft.paymentMethodController,
+                          label: 'Payment method',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.paymentPaidController,
+                          label: 'Paid',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.paymentChangeController,
+                          label: 'Change',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        const _EditorSectionTitle('Fiscal'),
+                        _EditorTextField(
+                          controller: draft.fiscalIbfmController,
+                          label: 'IBFM',
+                        ),
+                        const SizedBox(height: 12),
+                        _EditorTextField(
+                          controller: draft.fiscalVerificationCodeController,
+                          label: 'Verification code',
+                        ),
+                        SwitchListTile.adaptive(
+                          contentPadding: EdgeInsets.zero,
+                          value: draft.fiscalQrPresent,
+                          title: const Text('QR present'),
+                          onChanged: (bool value) {
+                            setState(() => draft.fiscalQrPresent = value);
+                          },
+                        ),
+                        const SizedBox(height: 18),
+                        Row(
+                          children: <Widget>[
+                            Text(
+                              'Items',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const Spacer(),
+                            OutlinedButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  draft.items.add(
+                                    _ReceiptItemEditorDraft.empty(),
+                                  );
+                                });
+                              },
+                              icon: const Icon(Icons.add),
+                              label: const Text('Add item'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        for (int index = 0; index < draft.items.length; index++)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _ReceiptItemEditorCard(
+                              index: index,
+                              draft: draft.items[index],
+                              onRemove: () {
+                                setState(() {
+                                  draft.items[index].dispose();
+                                  draft.items.removeAt(index);
+                                });
+                              },
+                            ),
+                          ),
+                      ],
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: saving ? null : () => navigator.pop(false),
+                          child: Text(context.l10n.cancel),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: saving
+                              ? null
+                              : () async {
+                                  setState(() => saving = true);
+                                  try {
+                                    await controller.saveEditedReceipt(
+                                      draft.toReceipt(receipt),
+                                    );
+                                    if (!context.mounted) {
+                                      return;
+                                    }
+                                    navigator.pop(true);
+                                  } finally {
+                                    if (context.mounted) {
+                                      setState(() => saving = false);
+                                    }
+                                  }
+                                },
+                          child: Text(
+                            saving ? 'Saving...' : context.l10n.saveChanges,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => navigator.pop(false),
-                  child: Text(context.l10n.cancel),
-                ),
-                FilledButton(
-                  onPressed: () => navigator.pop(true),
-                  child: Text(context.l10n.save),
-                ),
-              ],
             );
           },
         );
       },
     );
 
-    if (save != true || !context.mounted) return;
+    draft.dispose();
 
-    await controller.updateBasics(
-      merchantName: merchantController.text.trim().isEmpty
-          ? receipt.merchant.name
-          : merchantController.text.trim(),
-      paymentMethod: paymentController.text.trim().isEmpty
-          ? receipt.payment.method
-          : paymentController.text.trim(),
-    );
-    if (!context.mounted) return;
+    if (save != true || !context.mounted) return;
     AppSnackBar.success(context, context.l10n.receiptUpdated);
   }
 
@@ -380,4 +635,471 @@ class ReceiptDetailsActionUtils {
       },
     );
   }
+}
+
+class _ReceiptEditorDraft {
+  _ReceiptEditorDraft({
+    required this.countryController,
+    required this.currencyController,
+    required this.categoryController,
+    required this.confidenceController,
+    required this.merchantNameController,
+    required this.storeNameController,
+    required this.addressController,
+    required this.cityController,
+    required this.jibController,
+    required this.pibController,
+    required this.receiptTypeController,
+    required this.receiptNumberController,
+    required this.receiptDateController,
+    required this.receiptTimeController,
+    required this.totalController,
+    required this.subtotalController,
+    required this.discountTotalController,
+    required this.taxableAmountController,
+    required this.vatRateController,
+    required this.vatAmountController,
+    required this.paymentMethodController,
+    required this.paymentPaidController,
+    required this.paymentChangeController,
+    required this.fiscalIbfmController,
+    required this.fiscalVerificationCodeController,
+    required this.items,
+    required this.fiscalQrPresent,
+  });
+
+  factory _ReceiptEditorDraft.fromReceipt(ReceiptModel receipt) {
+    return _ReceiptEditorDraft(
+      countryController: TextEditingController(text: receipt.country),
+      currencyController: TextEditingController(text: receipt.currency),
+      categoryController: TextEditingController(text: receipt.category),
+      confidenceController: TextEditingController(
+        text: receipt.confidence.toString(),
+      ),
+      merchantNameController: TextEditingController(
+        text: receipt.merchant.name,
+      ),
+      storeNameController: TextEditingController(
+        text: receipt.merchant.storeName ?? '',
+      ),
+      addressController: TextEditingController(
+        text: receipt.merchant.address ?? '',
+      ),
+      cityController: TextEditingController(text: receipt.merchant.city ?? ''),
+      jibController: TextEditingController(text: receipt.merchant.jib ?? ''),
+      pibController: TextEditingController(text: receipt.merchant.pib ?? ''),
+      receiptTypeController: TextEditingController(
+        text: receipt.receiptInfo.type,
+      ),
+      receiptNumberController: TextEditingController(
+        text: receipt.receiptInfo.number ?? '',
+      ),
+      receiptDateController: TextEditingController(
+        text: receipt.receiptInfo.date ?? '',
+      ),
+      receiptTimeController: TextEditingController(
+        text: receipt.receiptInfo.time ?? '',
+      ),
+      totalController: TextEditingController(
+        text: receipt.totals.total.toString(),
+      ),
+      subtotalController: TextEditingController(
+        text: receipt.totals.subtotal?.toString() ?? '',
+      ),
+      discountTotalController: TextEditingController(
+        text: receipt.totals.discountTotal?.toString() ?? '',
+      ),
+      taxableAmountController: TextEditingController(
+        text: receipt.totals.taxableAmount?.toString() ?? '',
+      ),
+      vatRateController: TextEditingController(
+        text: receipt.totals.vatRate?.toString() ?? '',
+      ),
+      vatAmountController: TextEditingController(
+        text: receipt.totals.vatAmount?.toString() ?? '',
+      ),
+      paymentMethodController: TextEditingController(
+        text: receipt.payment.method,
+      ),
+      paymentPaidController: TextEditingController(
+        text: receipt.payment.paid?.toString() ?? '',
+      ),
+      paymentChangeController: TextEditingController(
+        text: receipt.payment.change?.toString() ?? '',
+      ),
+      fiscalIbfmController: TextEditingController(
+        text: receipt.fiscal?.ibfm ?? '',
+      ),
+      fiscalVerificationCodeController: TextEditingController(
+        text: receipt.fiscal?.verificationCode ?? '',
+      ),
+      items: receipt.items
+          .map(_ReceiptItemEditorDraft.fromItem)
+          .toList(growable: true),
+      fiscalQrPresent: receipt.fiscal?.qrPresent ?? false,
+    );
+  }
+
+  final TextEditingController countryController;
+  final TextEditingController currencyController;
+  final TextEditingController categoryController;
+  final TextEditingController confidenceController;
+  final TextEditingController merchantNameController;
+  final TextEditingController storeNameController;
+  final TextEditingController addressController;
+  final TextEditingController cityController;
+  final TextEditingController jibController;
+  final TextEditingController pibController;
+  final TextEditingController receiptTypeController;
+  final TextEditingController receiptNumberController;
+  final TextEditingController receiptDateController;
+  final TextEditingController receiptTimeController;
+  final TextEditingController totalController;
+  final TextEditingController subtotalController;
+  final TextEditingController discountTotalController;
+  final TextEditingController taxableAmountController;
+  final TextEditingController vatRateController;
+  final TextEditingController vatAmountController;
+  final TextEditingController paymentMethodController;
+  final TextEditingController paymentPaidController;
+  final TextEditingController paymentChangeController;
+  final TextEditingController fiscalIbfmController;
+  final TextEditingController fiscalVerificationCodeController;
+  final List<_ReceiptItemEditorDraft> items;
+  bool fiscalQrPresent;
+
+  ReceiptModel toReceipt(ReceiptModel receipt) {
+    final String normalizedDate = receiptDateController.text.trim();
+    final String normalizedTime = receiptTimeController.text.trim();
+
+    return ReceiptModel(
+      id: receipt.id,
+      country: _requiredText(countryController, receipt.country),
+      currency: _requiredText(currencyController, receipt.currency),
+      merchant: MerchantModel(
+        name: _requiredText(merchantNameController, receipt.merchant.name),
+        storeName: _nullableText(storeNameController),
+        address: _nullableText(addressController),
+        city: _nullableText(cityController),
+        jib: _nullableText(jibController),
+        pib: _nullableText(pibController),
+      ),
+      receiptInfo: ReceiptInfoModel(
+        type: _requiredText(receiptTypeController, receipt.receiptInfo.type),
+        number: _nullableText(receiptNumberController),
+        date: normalizedDate.isEmpty ? null : normalizedDate,
+        time: normalizedTime.isEmpty ? null : normalizedTime,
+        dateTime: _resolveDateTime(
+          existing: receipt.receiptInfo.dateTime,
+          date: normalizedDate,
+          time: normalizedTime,
+        ),
+      ),
+      items: items.map((draft) => draft.toItem()).toList(growable: false),
+      totals: ReceiptTotalsModel(
+        total: _requiredDouble(totalController, receipt.totals.total),
+        subtotal: _nullableDouble(subtotalController),
+        discountTotal: _nullableDouble(discountTotalController),
+        taxableAmount: _nullableDouble(taxableAmountController),
+        vatRate: _nullableDouble(vatRateController),
+        vatAmount: _nullableDouble(vatAmountController),
+      ),
+      payment: PaymentInfoModel(
+        method: _requiredText(paymentMethodController, receipt.payment.method),
+        paid: _nullableDouble(paymentPaidController),
+        change: _nullableDouble(paymentChangeController),
+      ),
+      fiscal:
+          fiscalQrPresent ||
+              fiscalIbfmController.text.trim().isNotEmpty ||
+              fiscalVerificationCodeController.text.trim().isNotEmpty
+          ? FiscalInfoModel(
+              ibfm: _nullableText(fiscalIbfmController),
+              qrPresent: fiscalQrPresent,
+              verificationCode: _nullableText(fiscalVerificationCodeController),
+            )
+          : null,
+      category: _requiredText(categoryController, receipt.category),
+      confidence: _requiredDouble(confidenceController, receipt.confidence),
+      rawText: receipt.rawText,
+      rawJson: receipt.rawJson,
+      imagePath: receipt.imagePath,
+      createdAt: receipt.createdAt,
+      travelSessionId: receipt.travelSessionId,
+    );
+  }
+
+  void dispose() {
+    countryController.dispose();
+    currencyController.dispose();
+    categoryController.dispose();
+    confidenceController.dispose();
+    merchantNameController.dispose();
+    storeNameController.dispose();
+    addressController.dispose();
+    cityController.dispose();
+    jibController.dispose();
+    pibController.dispose();
+    receiptTypeController.dispose();
+    receiptNumberController.dispose();
+    receiptDateController.dispose();
+    receiptTimeController.dispose();
+    totalController.dispose();
+    subtotalController.dispose();
+    discountTotalController.dispose();
+    taxableAmountController.dispose();
+    vatRateController.dispose();
+    vatAmountController.dispose();
+    paymentMethodController.dispose();
+    paymentPaidController.dispose();
+    paymentChangeController.dispose();
+    fiscalIbfmController.dispose();
+    fiscalVerificationCodeController.dispose();
+    for (final _ReceiptItemEditorDraft item in items) {
+      item.dispose();
+    }
+  }
+}
+
+class _ReceiptItemEditorDraft {
+  _ReceiptItemEditorDraft({
+    required this.nameController,
+    required this.categoryController,
+    required this.unitController,
+    required this.quantityController,
+    required this.unitPriceController,
+    required this.discountPercentController,
+    required this.discountAmountController,
+    required this.finalPriceController,
+  });
+
+  factory _ReceiptItemEditorDraft.fromItem(ReceiptItemModel item) {
+    return _ReceiptItemEditorDraft(
+      nameController: TextEditingController(text: item.name),
+      categoryController: TextEditingController(text: item.category),
+      unitController: TextEditingController(text: item.unit ?? ''),
+      quantityController: TextEditingController(text: item.quantity.toString()),
+      unitPriceController: TextEditingController(
+        text: item.unitPrice?.toString() ?? '',
+      ),
+      discountPercentController: TextEditingController(
+        text: item.discountPercent?.toString() ?? '',
+      ),
+      discountAmountController: TextEditingController(
+        text: item.discountAmount?.toString() ?? '',
+      ),
+      finalPriceController: TextEditingController(
+        text: item.finalPrice.toString(),
+      ),
+    );
+  }
+
+  factory _ReceiptItemEditorDraft.empty() {
+    return _ReceiptItemEditorDraft(
+      nameController: TextEditingController(),
+      categoryController: TextEditingController(text: 'miscellaneous'),
+      unitController: TextEditingController(),
+      quantityController: TextEditingController(text: '1'),
+      unitPriceController: TextEditingController(),
+      discountPercentController: TextEditingController(),
+      discountAmountController: TextEditingController(),
+      finalPriceController: TextEditingController(text: '0'),
+    );
+  }
+
+  final TextEditingController nameController;
+  final TextEditingController categoryController;
+  final TextEditingController unitController;
+  final TextEditingController quantityController;
+  final TextEditingController unitPriceController;
+  final TextEditingController discountPercentController;
+  final TextEditingController discountAmountController;
+  final TextEditingController finalPriceController;
+
+  ReceiptItemModel toItem() {
+    return ReceiptItemModel(
+      name: _requiredText(nameController, ''),
+      category: _requiredText(categoryController, 'miscellaneous'),
+      unit: _nullableText(unitController),
+      quantity: _requiredDouble(quantityController, 1),
+      unitPrice: _nullableDouble(unitPriceController),
+      discountPercent: _nullableDouble(discountPercentController),
+      discountAmount: _nullableDouble(discountAmountController),
+      finalPrice: _requiredDouble(finalPriceController, 0),
+    );
+  }
+
+  void dispose() {
+    nameController.dispose();
+    categoryController.dispose();
+    unitController.dispose();
+    quantityController.dispose();
+    unitPriceController.dispose();
+    discountPercentController.dispose();
+    discountAmountController.dispose();
+    finalPriceController.dispose();
+  }
+}
+
+class _EditorSectionTitle extends StatelessWidget {
+  const _EditorSectionTitle(this.title);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          title,
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+        ),
+      ),
+    );
+  }
+}
+
+class _EditorTextField extends StatelessWidget {
+  const _EditorTextField({
+    required this.controller,
+    required this.label,
+    this.keyboardType,
+  });
+
+  final TextEditingController controller;
+  final String label;
+  final TextInputType? keyboardType;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+    );
+  }
+}
+
+class _ReceiptItemEditorCard extends StatelessWidget {
+  const _ReceiptItemEditorCard({
+    required this.index,
+    required this.draft,
+    required this.onRemove,
+  });
+
+  final int index;
+  final _ReceiptItemEditorDraft draft;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Text(
+                'Item ${index + 1}',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const Spacer(),
+              IconButton(
+                onPressed: onRemove,
+                icon: Icon(Icons.delete_outline, color: colorScheme.error),
+              ),
+            ],
+          ),
+          _EditorTextField(controller: draft.nameController, label: 'Name'),
+          const SizedBox(height: 12),
+          _EditorTextField(
+            controller: draft.categoryController,
+            label: 'Category',
+          ),
+          const SizedBox(height: 12),
+          _EditorTextField(controller: draft.unitController, label: 'Unit'),
+          const SizedBox(height: 12),
+          _EditorTextField(
+            controller: draft.quantityController,
+            label: 'Quantity',
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          ),
+          const SizedBox(height: 12),
+          _EditorTextField(
+            controller: draft.unitPriceController,
+            label: 'Unit price',
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          ),
+          const SizedBox(height: 12),
+          _EditorTextField(
+            controller: draft.discountPercentController,
+            label: 'Discount %',
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          ),
+          const SizedBox(height: 12),
+          _EditorTextField(
+            controller: draft.discountAmountController,
+            label: 'Discount amount',
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          ),
+          const SizedBox(height: 12),
+          _EditorTextField(
+            controller: draft.finalPriceController,
+            label: 'Final price',
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _requiredText(TextEditingController controller, String fallback) {
+  final String value = controller.text.trim();
+  return value.isEmpty ? fallback : value;
+}
+
+String? _nullableText(TextEditingController controller) {
+  final String value = controller.text.trim();
+  return value.isEmpty ? null : value;
+}
+
+double _requiredDouble(TextEditingController controller, double fallback) {
+  final String value = controller.text.trim();
+  return value.isEmpty ? fallback : toDoubleValue(value, fallback: fallback);
+}
+
+double? _nullableDouble(TextEditingController controller) {
+  final String value = controller.text.trim();
+  return value.isEmpty ? null : toDoubleValue(value);
+}
+
+DateTime? _resolveDateTime({
+  required DateTime? existing,
+  required String date,
+  required String time,
+}) {
+  if (date.isEmpty && time.isEmpty) {
+    return null;
+  }
+
+  final String normalizedDateTime = time.isEmpty ? date : '$date $time';
+  return DateTime.tryParse(normalizedDateTime) ?? existing;
 }

@@ -67,6 +67,16 @@ class AppLocalizations {
       'scanCameraTitle': 'Take Photo',
       'scanCameraSubtitle': 'Use camera to capture',
       'scanSupportFormats': 'Supports JPG, PNG • Max 10MB',
+      'scanLongReceiptHint':
+          'Long bill? Add up to 3 images — top, middle, bottom — and we will scan them as one receipt.',
+      'scanAddPage': 'Add page',
+      'scanAddPageHint': 'Add another section',
+      'scanPageBadge': 'Page {index} / {total}',
+      'scanRemoveImage': 'Remove image',
+      'scanImageLimitReached': 'Up to 3 images per receipt.',
+      'scanFromGallery': 'From gallery',
+      'scanFromCamera': 'From camera',
+      'scanAddSourceTitle': 'Add another section',
       'scanReceiptButton': 'Scan Receipt',
       'scanReset': 'Reset',
       'scanAnother': 'Scan Another',
@@ -175,6 +185,16 @@ class AppLocalizations {
       'scanCameraTitle': 'Fotografiši',
       'scanCameraSubtitle': 'Koristi kameru za snimanje',
       'scanSupportFormats': 'Podržano JPG, PNG • Maks 10MB',
+      'scanLongReceiptHint':
+          'Dugačak račun? Dodaj do 3 slike — vrh, sredinu, dno — i skeniraćemo ih kao jedan račun.',
+      'scanAddPage': 'Dodaj dio',
+      'scanAddPageHint': 'Dodaj još jedan dio',
+      'scanPageBadge': 'Dio {index} / {total}',
+      'scanRemoveImage': 'Ukloni sliku',
+      'scanImageLimitReached': 'Maksimalno 3 slike po računu.',
+      'scanFromGallery': 'Iz galerije',
+      'scanFromCamera': 'Iz kamere',
+      'scanAddSourceTitle': 'Dodaj još jedan dio',
       'scanReceiptButton': 'Skeniraj račun',
       'scanReset': 'Poništi',
       'scanAnother': 'Skeniraj novi',
@@ -291,6 +311,16 @@ class AppLocalizations {
       'scanCameraTitle': 'Tag foto',
       'scanCameraSubtitle': 'Brug kamera til optagelse',
       'scanSupportFormats': 'Understotter JPG, PNG • Maks 10 MB',
+      'scanLongReceiptHint':
+          'Lang kvittering? Tilfoj op til 3 billeder — top, midt, bund — og vi scanner dem som en kvittering.',
+      'scanAddPage': 'Tilfoj side',
+      'scanAddPageHint': 'Tilfoj endnu en del',
+      'scanPageBadge': 'Side {index} / {total}',
+      'scanRemoveImage': 'Fjern billede',
+      'scanImageLimitReached': 'Maks. 3 billeder pr. kvittering.',
+      'scanFromGallery': 'Fra galleri',
+      'scanFromCamera': 'Fra kamera',
+      'scanAddSourceTitle': 'Tilfoj endnu en del',
       'scanReceiptButton': 'Scan kvittering',
       'scanReset': 'Nulstil',
       'scanAnother': 'Scan en til',
@@ -408,6 +438,17 @@ class AppLocalizations {
   String get scanCameraTitle => _text('scanCameraTitle');
   String get scanCameraSubtitle => _text('scanCameraSubtitle');
   String get scanSupportFormats => _text('scanSupportFormats');
+  String get scanLongReceiptHint => _text('scanLongReceiptHint');
+  String get scanAddPage => _text('scanAddPage');
+  String get scanAddPageHint => _text('scanAddPageHint');
+  String get scanRemoveImage => _text('scanRemoveImage');
+  String get scanImageLimitReached => _text('scanImageLimitReached');
+  String get scanFromGallery => _text('scanFromGallery');
+  String get scanFromCamera => _text('scanFromCamera');
+  String get scanAddSourceTitle => _text('scanAddSourceTitle');
+  String scanPageBadge(int index, int total) => _text('scanPageBadge')
+      .replaceAll('{index}', index.toString())
+      .replaceAll('{total}', total.toString());
   String get scanReceiptButton => _text('scanReceiptButton');
   String get scanReset => _text('scanReset');
   String get scanAnother => _text('scanAnother');

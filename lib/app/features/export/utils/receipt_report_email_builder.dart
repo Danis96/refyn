@@ -88,6 +88,17 @@ class ReceiptReportEmailBuilder {
           '${AppLocalizations.current.scanItems}: ${receipt.items.length}',
         );
 
+      for (int i = 0; i < receipt.items.length; i++) {
+        final item = receipt.items[i];
+        final String name = item.name.trim().isEmpty ? '—' : item.name.trim();
+        final String qty = item.quantity % 1 == 0
+            ? item.quantity.toStringAsFixed(0)
+            : item.quantity.toStringAsFixed(2);
+        buffer.writeln(
+          '  ${i + 1}. $name  ×$qty  —  ${item.finalPrice.toStringAsFixed(2)} ${receipt.currency}',
+        );
+      }
+
       if (index != receipts.length - 1) {
         buffer
           ..writeln()
@@ -110,8 +121,41 @@ class ReceiptReportEmailBuilder {
       <div style="margin-top:4px;font-size:14px;color:#344054;">${AppLocalizations.current.receiptNumber}: ${_escapeHtml(_readValue(receipt.receiptInfo.number))}</div>
       <div style="margin-top:4px;font-size:14px;color:#344054;">${AppLocalizations.current.payment}: ${_escapeHtml(_readValue(receipt.payment.method))}</div>
       <div style="margin-top:4px;font-size:14px;color:#344054;">${AppLocalizations.current.scanItems}: ${receipt.items.length}</div>
+      ${_buildItemsTable(receipt)}
     </td>
   </tr>
+</table>
+''';
+  }
+
+  static String _buildItemsTable(ReceiptModel receipt) {
+    if (receipt.items.isEmpty) return '';
+    final StringBuffer rows = StringBuffer();
+    for (int i = 0; i < receipt.items.length; i++) {
+      final item = receipt.items[i];
+      final String name = item.name.trim().isEmpty
+          ? '—'
+          : _escapeHtml(item.name.trim());
+      final String qty = item.quantity % 1 == 0
+          ? item.quantity.toStringAsFixed(0)
+          : item.quantity.toStringAsFixed(2);
+      final String bg = i.isEven ? '#ffffff' : '#f8fafc';
+      rows.write('''
+<tr style="background:$bg;">
+  <td style="padding:8px 10px;font-size:13px;color:#101828;border-top:1px solid #eaecf0;">$name</td>
+  <td style="padding:8px 10px;font-size:13px;color:#475467;border-top:1px solid #eaecf0;text-align:right;">$qty</td>
+  <td style="padding:8px 10px;font-size:13px;color:#101828;border-top:1px solid #eaecf0;text-align:right;font-weight:600;">${item.finalPrice.toStringAsFixed(2)} ${_escapeHtml(receipt.currency)}</td>
+</tr>
+''');
+    }
+    return '''
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;border:1px solid #eaecf0;border-radius:10px;overflow:hidden;border-collapse:collapse;">
+  <tr style="background:#f0f9ff;">
+    <th align="left" style="padding:8px 10px;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#0f766e;">Item</th>
+    <th align="right" style="padding:8px 10px;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#0f766e;">Qty</th>
+    <th align="right" style="padding:8px 10px;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#0f766e;">Price</th>
+  </tr>
+  $rows
 </table>
 ''';
   }

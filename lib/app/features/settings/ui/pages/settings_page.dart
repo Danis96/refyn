@@ -81,26 +81,19 @@ class _SettingsPageState extends State<SettingsPage> {
                 const SettingsTitleBlock(),
                 const SizedBox(height: 16),
                 TravelModeSettingsCard(
-                  onStartTrip: () =>
-                      TravelModeActionUtils.startTrip(context),
+                  onStartTrip: () => TravelModeActionUtils.startTrip(context),
                   onEndTrip: () => TravelModeActionUtils.endTrip(context),
-                  onOpenReceipts: () =>
-                      TravelModeActionUtils.showTripReceipts(context),
+                  onOpenReceipts: () => TravelModeActionUtils.showTripReceipts(context),
                 ),
                 const SizedBox(height: 14),
                 SettingsThemeCard(
                   selectedMode: controller.themeMode,
-                  onChanged: (ThemeMode mode) =>
-                      SettingsActionUtils.onThemeModeChanged(context, mode),
+                  onChanged: (ThemeMode mode) => SettingsActionUtils.onThemeModeChanged(context, mode),
                 ),
                 const SizedBox(height: 14),
                 SettingsLanguageCard(
                   languageCode: controller.locale.languageCode,
-                  onChanged: (String code) =>
-                      SettingsActionUtils.onLanguageChanged(
-                        context,
-                        Locale(code),
-                      ),
+                  onChanged: (String code) => SettingsActionUtils.onLanguageChanged(context, Locale(code)),
                 ),
                 const SizedBox(height: 14),
                 SettingsCurrencyCard(currencyCode: controller.currencyCode),

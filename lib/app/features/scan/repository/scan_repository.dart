@@ -55,6 +55,18 @@ class ScanRepository {
     return image?.path;
   }
 
+  Future<List<String>> pickMultipleImagesFromGallery({int limit = 3}) async {
+    final List<XFile> images = await _imagePicker.pickMultiImage(
+      imageQuality: 90,
+      limit: limit,
+    );
+    return images
+        .map((XFile image) => image.path)
+        .where((String path) => path.trim().isNotEmpty)
+        .take(limit)
+        .toList(growable: false);
+  }
+
   Future<List<ReceiptModel>> getRecentReceipts({int limit = 2}) async {
     final List<ReceiptWithItems> rows = await _receiptDao
         .getRecentReceiptsWithItems(limit);
@@ -63,7 +75,17 @@ class ScanRepository {
         .toList(growable: false);
   }
 
-  Future<ReceiptModel> scanReceipt({required String imagePath}) async {
+  Future<ReceiptModel> scanReceipt({required List<String> imagePaths}) async {
+    if (imagePaths.isEmpty) {
+      throw ScanException(
+        ScanFailure(
+          type: ScanFailureType.imageUploadFailed,
+          title: AppLocalizations.current.scanNoImageSelectedTitle,
+          message: AppLocalizations.current.scanNoImageSelectedMessage,
+        ),
+      );
+    }
+    final String primaryImagePath = imagePaths.first;
     try {
       final String homeCurrency = await _getDefaultCurrency();
       final TravelModeState travelState = await _travelModeRepository
@@ -74,13 +96,13 @@ class ScanRepository {
 
       final Map<String, dynamic> aiPayload = await _gemmaService
           .scanReceiptImage(
-            imagePath: imagePath,
+            imagePaths: imagePaths,
             defaultCurrency: targetCurrency,
           );
       if (_isNotAReceipt(aiPayload)) {
         final String reason = _notAReceiptReason(aiPayload);
         developer.log(
-          'Rejected non-receipt image. imagePath=$imagePath reason=$reason',
+          'Rejected non-receipt image. imagePaths=$imagePaths reason=$reason',
           name: 'ScanRepository',
         );
         throw ScanException(
@@ -95,7 +117,7 @@ class ScanRepository {
       if (_hasImageQualityIssue(aiPayload)) {
         final String reason = _imageQualityIssueReason(aiPayload);
         developer.log(
-          'Rejected low-quality receipt image. imagePath=$imagePath reason=$reason',
+          'Rejected low-quality receipt image. imagePaths=$imagePaths reason=$reason',
           name: 'ScanRepository',
         );
         throw ScanException(
@@ -110,7 +132,7 @@ class ScanRepository {
 
       final ReceiptModel scannedRaw = GemmaReceiptMapper.toReceiptModel(
         payload: aiPayload,
-        imagePath: imagePath,
+        imagePath: primaryImagePath,
         defaultCurrency: targetCurrency,
       );
 

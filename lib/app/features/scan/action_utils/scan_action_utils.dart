@@ -38,12 +38,47 @@ class ScanActionUtils {
     return context.read<ScanController>().pickFromCamera();
   }
 
+  static void onRemoveImage(BuildContext context, int index) {
+    context.read<ScanController>().removeImageAt(index);
+  }
+
+  static Future<void> onAddPage(BuildContext context) async {
+    final ScanController controller = context.read<ScanController>();
+    if (!controller.canAddMoreImages) {
+      return;
+    }
+    final _AddPageSource? choice = await showModalBottomSheet<_AddPageSource>(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (BuildContext sheetContext) =>
+          _AddPageSourceSheet(parentContext: context),
+    );
+    if (choice == null || !context.mounted) {
+      return;
+    }
+    switch (choice) {
+      case _AddPageSource.gallery:
+        await controller.pickFromGallery();
+        break;
+      case _AddPageSource.camera:
+        await controller.pickFromCamera();
+        break;
+    }
+  }
+
   static Future<void> onScan(BuildContext context) async {
     await context.read<ScanController>().scanSelectedImage();
   }
 
   static Future<void> onRetryScan(BuildContext context) async {
     await context.read<ScanController>().scanSelectedImage();
+  }
+
+  static void onCancelScan(BuildContext context) {
+    context.read<ScanController>().cancelScan();
   }
 
   static Future<void> onSaveDraft(BuildContext context) async {
@@ -282,8 +317,7 @@ class ScanActionUtils {
     context.read<SettingsSpotlightController>().spotlightThinkingMode();
   }
 
-  static Future<LowConfidenceDialogAction>
-  _showLowConfidenceConfirmationDialog(
+  static Future<LowConfidenceDialogAction> _showLowConfidenceConfirmationDialog(
     BuildContext context, {
     required bool shouldSuggestThinkingMode,
   }) async {
@@ -296,5 +330,116 @@ class ScanActionUtils {
               ),
         );
     return action ?? LowConfidenceDialogAction.dismiss;
+  }
+}
+
+enum _AddPageSource { gallery, camera }
+
+class _AddPageSourceSheet extends StatelessWidget {
+  const _AddPageSourceSheet({required this.parentContext});
+
+  final BuildContext parentContext;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme cs = theme.colorScheme;
+
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 12, 18, 18),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Center(
+              child: Container(
+                height: 4,
+                width: 42,
+                margin: const EdgeInsets.only(bottom: 14),
+                decoration: BoxDecoration(
+                  color: cs.outline.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+            ),
+            Text(
+              parentContext.l10n.scanAddSourceTitle,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 14),
+            _SourceOptionTile(
+              icon: Icons.image_outlined,
+              label: parentContext.l10n.scanFromGallery,
+              onTap: () => Navigator.of(context).pop(_AddPageSource.gallery),
+            ),
+            const SizedBox(height: 10),
+            _SourceOptionTile(
+              icon: Icons.camera_alt_outlined,
+              label: parentContext.l10n.scanFromCamera,
+              onTap: () => Navigator.of(context).pop(_AddPageSource.camera),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SourceOptionTile extends StatelessWidget {
+  const _SourceOptionTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme cs = theme.colorScheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          decoration: BoxDecoration(
+            border: Border.all(color: cs.outline.withValues(alpha: 0.25)),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            children: <Widget>[
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: cs.primary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: cs.primary),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  label,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Icon(Icons.arrow_forward_rounded, color: cs.secondary, size: 20),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

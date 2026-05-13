@@ -8,6 +8,13 @@ import 'app/core/config/firebase_remote_config_repository.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _systemOrientation();
+  await _loadEnv();
+  final appConfig = await _appConfigEnvironment();
+  runApp(AppRoot(appConfig: appConfig));
+}
+
+Future<void> _systemOrientation() async {
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
   ]);
@@ -22,8 +29,13 @@ Future<void> main() async {
       systemNavigationBarDividerColor: Colors.transparent,
     ),
   );
-  await dotenv.load(fileName: '.env', isOptional: true);
+}
 
+Future<void> _loadEnv() async {
+  await dotenv.load(fileName: '.env', isOptional: true);
+}
+
+Future<AppConfig> _appConfigEnvironment() async {
   final fallbackConfig = AppConfig.fromEnvironment();
   final apiKeyResolution = await FirebaseRemoteConfigRepository(
     config: fallbackConfig,
@@ -31,10 +43,11 @@ Future<void> main() async {
   final appConfig = fallbackConfig.copyWith(
     gemmaApiKey: apiKeyResolution.apiKey,
   );
+
   debugPrint(
     'Startup API key source: '
-    '${apiKeyResolution.usedRemoteConfigValue ? 'firebase_remote_config' : 'fallback_env'}',
+        '${apiKeyResolution.usedRemoteConfigValue ? 'firebase_remote_config' : 'fallback_env'}',
   );
 
-  runApp(AppRoot(appConfig: appConfig));
+  return appConfig;
 }

@@ -26,7 +26,10 @@ class ReceiptPaperList extends StatefulWidget {
 }
 
 class _ReceiptPaperListState extends State<ReceiptPaperList> {
+  static const int _collapsedItemLimit = 12;
+
   late Set<String> _expandedReceiptIds;
+  late Set<String> _expandedItemReceiptIds;
 
   @override
   void initState() {
@@ -35,6 +38,7 @@ class _ReceiptPaperListState extends State<ReceiptPaperList> {
       if (widget.expandFirstByDefault && widget.receipts.isNotEmpty)
         widget.receipts.first.id,
     };
+    _expandedItemReceiptIds = <String>{};
   }
 
   @override
@@ -42,6 +46,12 @@ class _ReceiptPaperListState extends State<ReceiptPaperList> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.receipts != widget.receipts) {
       _expandedReceiptIds = _expandedReceiptIds
+          .where(
+            (String id) =>
+                widget.receipts.any((ReceiptModel item) => item.id == id),
+          )
+          .toSet();
+      _expandedItemReceiptIds = _expandedItemReceiptIds
           .where(
             (String id) =>
                 widget.receipts.any((ReceiptModel item) => item.id == id),
@@ -64,12 +74,15 @@ class _ReceiptPaperListState extends State<ReceiptPaperList> {
         final int index = entry.key;
         final ReceiptModel receipt = entry.value;
         final bool expanded = _expandedReceiptIds.contains(receipt.id);
+        final bool showAllItems = _expandedItemReceiptIds.contains(receipt.id);
 
         final Widget card = Padding(
           padding: const EdgeInsets.only(bottom: AppSpacing.sm),
           child: ReceiptPaperCard(
             receipt: receipt,
             expanded: expanded,
+            collapsedItemLimit: _collapsedItemLimit,
+            showAllItems: showAllItems,
             heroTag: widget.heroTagBuilder?.call(receipt),
             onOpen: widget.onOpenReceipt == null
                 ? null
@@ -78,8 +91,18 @@ class _ReceiptPaperListState extends State<ReceiptPaperList> {
               setState(() {
                 if (expanded) {
                   _expandedReceiptIds.remove(receipt.id);
+                  _expandedItemReceiptIds.remove(receipt.id);
                 } else {
                   _expandedReceiptIds.add(receipt.id);
+                }
+              });
+            },
+            onToggleItems: () {
+              setState(() {
+                if (showAllItems) {
+                  _expandedItemReceiptIds.remove(receipt.id);
+                } else {
+                  _expandedItemReceiptIds.add(receipt.id);
                 }
               });
             },
@@ -114,6 +137,9 @@ class ReceiptPaperCard extends StatelessWidget {
     required this.receipt,
     required this.expanded,
     required this.onToggleExpanded,
+    required this.onToggleItems,
+    required this.collapsedItemLimit,
+    required this.showAllItems,
     this.onOpen,
     this.heroTag,
   });
@@ -122,6 +148,9 @@ class ReceiptPaperCard extends StatelessWidget {
   final bool expanded;
   final Future<void> Function()? onOpen;
   final VoidCallback onToggleExpanded;
+  final VoidCallback onToggleItems;
+  final int collapsedItemLimit;
+  final bool showAllItems;
   final String? heroTag;
 
   @override
@@ -138,6 +167,12 @@ class ReceiptPaperCard extends StatelessWidget {
           (double sum, ReceiptItemModel item) => sum + item.quantity,
         )
         .round();
+    final bool hasLongItemList = itemCount > collapsedItemLimit;
+    final List<ReceiptItemModel> visibleItems =
+        expanded && hasLongItemList && !showAllItems
+        ? receipt.items.take(collapsedItemLimit).toList()
+        : receipt.items;
+    final int hiddenItemCount = itemCount - visibleItems.length;
 
     return Material(
       color: Colors.transparent,
@@ -257,7 +292,7 @@ class ReceiptPaperCard extends StatelessWidget {
                               children: expanded
                                   ? <Widget>[
                                       const SizedBox(height: AppSpacing.xs),
-                                      ...receipt.items.map(
+                                      ...visibleItems.map(
                                         (ReceiptItemModel item) => Padding(
                                           padding: const EdgeInsets.only(
                                             bottom: 4,
@@ -268,6 +303,38 @@ class ReceiptPaperCard extends StatelessWidget {
                                           ),
                                         ),
                                       ),
+                                      if (hasLongItemList) ...<Widget>[
+                                        const SizedBox(height: 2),
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: TextButton(
+                                            onPressed: onToggleItems,
+                                            style: TextButton.styleFrom(
+                                              padding: EdgeInsets.zero,
+                                              minimumSize: Size.zero,
+                                              tapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                              foregroundColor: theme
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withValues(alpha: 0.56),
+                                              textStyle:
+                                                  ReceiptPaperText.buttonStyle(
+                                                    context,
+                                                  ),
+                                            ),
+                                            child: Text(
+                                              showAllItems
+                                                  ? context
+                                                        .l10n
+                                                        .receiptPaperShowLess
+                                                        .toUpperCase()
+                                                  : '${context.l10n.receiptPaperShowMore.toUpperCase()} ($hiddenItemCount)',
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                       const SizedBox(height: AppSpacing.xs),
                                       Divider(
                                         color: isTripReceipt
