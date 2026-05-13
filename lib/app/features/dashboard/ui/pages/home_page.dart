@@ -240,9 +240,7 @@ class _AnimatedBody extends StatelessWidget {
                   child: _HomeBody(data: data, controller: controller),
                 )
               : const KeyedSubtree(
-                  key: ValueKey<String>('trip-body'),
-                  child: HomeTripBody(),
-                ),
+                  key: ValueKey<String>('trip-body'), child: HomeTripBody()),
         ),
       ),
     );
@@ -269,14 +267,12 @@ class _HomeBody extends StatelessWidget {
         children: <Widget>[
           HomeQuickActionsRow(
             onScanReceipt: () => DashboardActionUtils.onScanReceipt(context),
-            onUploadReceipt: () =>
-                DashboardActionUtils.onUploadReceipt(context),
+            onUploadReceipt: () => DashboardActionUtils.onUploadReceipt(context),
           ),
           const SizedBox(height: AppSpacing.md),
           HomeCategoryBudgetsCard(
             data: data,
-            onOpenCategory: (String category) =>
-                DashboardActionUtils.onBudgetCategoryPressed(
+            onOpenCategory: (String category) => DashboardActionUtils.onBudgetCategoryPressed(
                   context,
                   category: category,
                 ),

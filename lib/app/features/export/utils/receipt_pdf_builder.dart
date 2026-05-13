@@ -64,7 +64,7 @@ class ReceiptPdfBuilder {
           if (receipts.isNotEmpty) ...<pw.Widget>[
             _sectionLabel(l10n.exportFullDetails),
             pw.SizedBox(height: 10),
-            ...receipts.map((receipt) => _detailCard(receipt, l10n)),
+            ...receipts.expand((receipt) => _detailCard(receipt, l10n)),
           ],
         ],
       ),
@@ -240,99 +240,121 @@ class ReceiptPdfBuilder {
     ),
   );
 
-  static pw.Widget _detailCard(ReceiptModel receipt, AppLocalizations l10n) {
+  static List<pw.Widget> _detailCard(
+    ReceiptModel receipt,
+    AppLocalizations l10n,
+  ) {
     final String merchantName = _readValue(
       receipt.merchant.name,
       fallback: l10n.unknownMerchant,
     );
-    return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 16),
-      decoration: pw.BoxDecoration(
-        border: pw.Border.all(color: _line, width: 0.5),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: <pw.Widget>[
-          pw.Container(
-            color: _ink,
-            padding: const pw.EdgeInsets.fromLTRB(16, 12, 16, 12),
-            child: pw.Row(
-              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: <pw.Widget>[
-                pw.Expanded(
-                  child: pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: <pw.Widget>[
-                      pw.Text(
-                        merchantName,
-                        style: pw.TextStyle(
-                          fontSize: 13,
-                          fontWeight: pw.FontWeight.bold,
-                          color: _white,
-                        ),
-                      ),
-                      if (_hasText(receipt.merchant.city)) ...<pw.Widget>[
-                        pw.SizedBox(height: 3),
+    return <pw.Widget>[
+      pw.Container(
+        decoration: pw.BoxDecoration(
+          border: pw.Border(
+            left: pw.BorderSide(color: _line, width: 0.5),
+            right: pw.BorderSide(color: _line, width: 0.5),
+            top: pw.BorderSide(color: _line, width: 0.5),
+          ),
+        ),
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: <pw.Widget>[
+            pw.Container(
+              color: _ink,
+              padding: const pw.EdgeInsets.fromLTRB(16, 12, 16, 12),
+              child: pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: <pw.Widget>[
+                  pw.Expanded(
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: <pw.Widget>[
                         pw.Text(
-                          receipt.merchant.city!,
+                          merchantName,
                           style: pw.TextStyle(
-                            fontSize: 8,
-                            color: _accentSoft,
-                            fontStyle: pw.FontStyle.italic,
+                            fontSize: 13,
+                            fontWeight: pw.FontWeight.bold,
+                            color: _white,
                           ),
                         ),
+                        if (_hasText(receipt.merchant.city)) ...<pw.Widget>[
+                          pw.SizedBox(height: 3),
+                          pw.Text(
+                            receipt.merchant.city!,
+                            style: pw.TextStyle(
+                              fontSize: 8,
+                              color: _accentSoft,
+                              fontStyle: pw.FontStyle.italic,
+                            ),
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-                pw.SizedBox(width: 16),
-                pw.Text(
-                  '${receipt.totals.total.toStringAsFixed(2)} ${receipt.currency}',
-                  style: pw.TextStyle(
-                    fontSize: 17,
-                    fontWeight: pw.FontWeight.bold,
-                    color: _accentSoft,
+                  pw.SizedBox(width: 16),
+                  pw.Text(
+                    '${receipt.totals.total.toStringAsFixed(2)} ${receipt.currency}',
+                    style: pw.TextStyle(
+                      fontSize: 17,
+                      fontWeight: pw.FontWeight.bold,
+                      color: _accentSoft,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          pw.Container(height: 2, color: _accent),
-          pw.Padding(
-            padding: const pw.EdgeInsets.all(14),
-            child: pw.Column(
-              children: <pw.Widget>[
-                _dataRow(
-                  l10n.created,
-                  _formatDateTime(receipt.createdAt),
-                  l10n.receiptNumber,
-                  _readValue(receipt.receiptInfo.number),
-                ),
-                pw.SizedBox(height: 8),
-                _dataRow(
-                  l10n.payment,
-                  _readValue(receipt.payment.method),
-                  l10n.scanCategory,
-                  _readValue(receipt.category),
-                ),
-                pw.SizedBox(height: 8),
-                _dataRow(
-                  l10n.scanConfidence,
-                  receipt.confidence.toStringAsFixed(2),
-                  l10n.scanItems,
-                  '${receipt.items.length}',
-                ),
-                if (receipt.items.isNotEmpty) ...<pw.Widget>[
-                  pw.SizedBox(height: 12),
-                  _itemsTable(receipt),
                 ],
-              ],
+              ),
+            ),
+            pw.Container(height: 2, color: _accent),
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(14),
+              child: pw.Column(
+                children: <pw.Widget>[
+                  _dataRow(
+                    l10n.created,
+                    _formatDateTime(receipt.createdAt),
+                    l10n.receiptNumber,
+                    _readValue(receipt.receiptInfo.number),
+                  ),
+                  pw.SizedBox(height: 8),
+                  _dataRow(
+                    l10n.payment,
+                    _readValue(receipt.payment.method),
+                    l10n.scanCategory,
+                    _readValue(receipt.category),
+                  ),
+                  pw.SizedBox(height: 8),
+                  _dataRow(
+                    l10n.scanConfidence,
+                    receipt.confidence.toStringAsFixed(2),
+                    l10n.scanItems,
+                    '${receipt.items.length}',
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      if (receipt.items.isNotEmpty)
+        pw.Container(
+          decoration: pw.BoxDecoration(
+            border: pw.Border(
+              left: pw.BorderSide(color: _line, width: 0.5),
+              right: pw.BorderSide(color: _line, width: 0.5),
             ),
           ),
-        ],
+          padding: const pw.EdgeInsets.fromLTRB(14, 0, 14, 14),
+          child: _itemsTable(receipt),
+        ),
+      pw.Container(
+        decoration: pw.BoxDecoration(
+          border: pw.Border.all(color: _line, width: 0.5),
+        ),
+        height: 0.5,
       ),
-    );
+      pw.SizedBox(height: 16),
+    ];
   }
 
   static pw.Widget _dataRow(String l1, String v1, String l2, String v2) {

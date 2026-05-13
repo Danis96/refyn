@@ -114,6 +114,12 @@ class ReceiptDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> saveEditedReceipt(ReceiptModel receipt) async {
+    await _repository.saveReceipt(receipt);
+    _receipt = receipt;
+    notifyListeners();
+  }
+
   Future<void> updateItemCategory({
     required int itemIndex,
     required String category,

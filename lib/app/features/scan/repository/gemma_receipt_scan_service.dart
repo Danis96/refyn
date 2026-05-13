@@ -59,16 +59,22 @@ class GemmaReceiptScanService {
   }
 
   Future<Map<String, dynamic>> scanReceiptImage({
-    required String imagePath,
+    required List<String> imagePaths,
     String? defaultCurrency,
   }) async {
+    if (imagePaths.isEmpty) {
+      throw GemmaScanException('No image selected.');
+    }
+
     final AiConfiguration config = await _configurationRepository
         .getConfiguration();
     final String apiKey = config.apiKey.trim();
     final String model = _normalizeModelId(config.selectedModel);
     final String thinkingLevel = config.thinkingLevel;
 
-    _logDebug('Starting receipt scan. model=$model imagePath=$imagePath');
+    _logDebug(
+      'Starting receipt scan. model=$model imageCount=${imagePaths.length}',
+    );
 
     if (apiKey.isEmpty) {
       throw GemmaScanException(
@@ -76,19 +82,22 @@ class GemmaReceiptScanService {
       );
     }
 
-    final File imageFile = File(imagePath);
-    if (!await imageFile.exists()) {
-      throw GemmaScanException('Selected image file not found.');
+    final List<PreparedReceiptImage> prepared = <PreparedReceiptImage>[];
+    for (final String imagePath in imagePaths) {
+      final File imageFile = File(imagePath);
+      if (!await imageFile.exists()) {
+        throw GemmaScanException('Selected image file not found.');
+      }
+      final PreparedReceiptImage preparedImage = await _imageCompressionService
+          .prepareForUpload(imagePath: imagePath);
+      if (preparedImage.bytes.isEmpty) {
+        throw GemmaScanException('Selected image is empty.');
+      }
+      _logDebug(
+        'Prepared image bytes. index=${prepared.length} count=${preparedImage.bytes.length} mime=${preparedImage.mimeType}',
+      );
+      prepared.add(preparedImage);
     }
-
-    final PreparedReceiptImage preparedImage = await _imageCompressionService
-        .prepareForUpload(imagePath: imagePath);
-    if (preparedImage.bytes.isEmpty) {
-      throw GemmaScanException('Selected image is empty.');
-    }
-    _logDebug(
-      'Prepared image bytes. count=${preparedImage.bytes.length} mime=${preparedImage.mimeType}',
-    );
 
     final Uri uri = Uri.parse(
       '$_baseUrl/models/$model:generateContent?key=$apiKey',
@@ -97,20 +106,25 @@ class GemmaReceiptScanService {
     final HttpClientRequest request = await _httpClient.postUrl(uri);
     request.headers.contentType = ContentType.json;
 
-    final String prompt = _promptBuilder.build(defaultCurrency: defaultCurrency);
+    final String prompt = _promptBuilder.build(
+      defaultCurrency: defaultCurrency,
+      imageCount: prepared.length,
+    );
+    final List<dynamic> parts = <dynamic>[
+      <String, dynamic>{'text': prompt},
+      for (final PreparedReceiptImage image in prepared)
+        <String, dynamic>{
+          'inlineData': <String, dynamic>{
+            'mimeType': image.mimeType,
+            'data': base64Encode(image.bytes),
+          },
+        },
+    ];
     final Map<String, dynamic> body = <String, dynamic>{
       'contents': <dynamic>[
         <String, dynamic>{
           'role': 'user',
-          'parts': <dynamic>[
-            <String, dynamic>{'text': prompt},
-            <String, dynamic>{
-              'inlineData': <String, dynamic>{
-                'mimeType': preparedImage.mimeType,
-                'data': base64Encode(preparedImage.bytes),
-              },
-            },
-          ],
+          'parts': parts,
         },
       ],
       'generationConfig': <String, dynamic>{

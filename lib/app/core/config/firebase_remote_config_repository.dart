@@ -48,11 +48,21 @@ class FirebaseRemoteConfigRepository {
         _config.firebaseRemoteConfigGemmaApiKeyParam: fallbackApiKey,
       });
 
-      await remoteConfig.fetchAndActivate();
+      final activated = await remoteConfig.fetchAndActivate();
+      debugPrint(
+        'Remote Config fetchAndActivate activated=$activated '
+        'lastFetchStatus=${remoteConfig.lastFetchStatus.name} '
+        'lastFetchTime=${remoteConfig.lastFetchTime.toIso8601String()}',
+      );
 
       final remoteApiKey = remoteConfig
           .getString(_config.firebaseRemoteConfigGemmaApiKeyParam)
           .trim();
+      debugPrint(
+        'Remote Config param '
+        '${_config.firebaseRemoteConfigGemmaApiKeyParam} '
+        'length=${remoteApiKey.length}',
+      );
 
       if (remoteApiKey.isEmpty) {
         return RemoteConfigApiKeyResolution(

@@ -24,7 +24,7 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
   final ScanRepository _repository;
 
   ScanViewState _state = ScanViewState.idle;
-  String? _selectedImagePath;
+  final List<String> _selectedImagePaths = <String>[];
   ScanFailure? _failure;
   ReceiptModel? _lastScannedReceipt;
   ReceiptModel? _pendingReceiptDraft;
@@ -39,9 +39,15 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
 
   static const double lowConfidenceThreshold = 0.95;
   static const int thinkingModeSuggestionTriggerCount = 2;
+  static const int maxImageCount = 3;
 
   ScanViewState get state => _state;
-  String? get selectedImagePath => _selectedImagePath;
+  List<String> get selectedImagePaths =>
+      List<String>.unmodifiable(_selectedImagePaths);
+  String? get selectedImagePath =>
+      _selectedImagePaths.isEmpty ? null : _selectedImagePaths.first;
+  bool get canAddMoreImages => _selectedImagePaths.length < maxImageCount;
+  int get selectedImageCount => _selectedImagePaths.length;
   ScanFailure? get failure => _failure;
   String? get errorMessage => _failure?.message;
   ReceiptModel? get lastScannedReceipt => _lastScannedReceipt;
@@ -82,14 +88,47 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> pickFromGallery() async {
-    await _pickImage(_repository.pickImageFromGallery);
+    if (!canAddMoreImages) {
+      return;
+    }
+    await _runPicker(() async {
+      final int remaining = maxImageCount - _selectedImagePaths.length;
+      if (remaining <= 0) {
+        return const <String>[];
+      }
+      if (remaining == 1) {
+        final String? path = await _repository.pickImageFromGallery();
+        return path == null ? const <String>[] : <String>[path];
+      }
+      return _repository.pickMultipleImagesFromGallery(limit: remaining);
+    });
   }
 
   Future<void> pickFromCamera() async {
-    await _pickImage(_repository.pickImageFromCamera);
+    if (!canAddMoreImages) {
+      return;
+    }
+    await _runPicker(() async {
+      final String? path = await _repository.pickImageFromCamera();
+      return path == null ? const <String>[] : <String>[path];
+    });
   }
 
-  Future<void> _pickImage(Future<String?> Function() picker) async {
+  void removeImageAt(int index) {
+    if (index < 0 || index >= _selectedImagePaths.length) {
+      return;
+    }
+    _selectedImagePaths.removeAt(index);
+    if (_selectedImagePaths.isEmpty) {
+      _state = ScanViewState.idle;
+    } else {
+      _state = ScanViewState.imageSelected;
+    }
+    _clearFailure();
+    notifyListeners();
+  }
+
+  Future<void> _runPicker(Future<List<String>> Function() picker) async {
     if (_busy) {
       return;
     }
@@ -99,14 +138,27 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
 
     try {
-      final String? path = await picker();
-      if (path == null || path.trim().isEmpty) {
+      final List<String> paths = await picker();
+      final List<String> normalized = paths
+          .map((String value) => value.trim())
+          .where((String value) => value.isNotEmpty)
+          .toList(growable: false);
+
+      if (normalized.isEmpty) {
         _busy = false;
         notifyListeners();
         return;
       }
 
-      _selectedImagePath = path;
+      for (final String path in normalized) {
+        if (_selectedImagePaths.length >= maxImageCount) {
+          break;
+        }
+        if (_selectedImagePaths.contains(path)) {
+          continue;
+        }
+        _selectedImagePaths.add(path);
+      }
       _state = ScanViewState.imageSelected;
     } catch (error) {
       _setFailure(
@@ -125,7 +177,7 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
 
   void clearSelection() {
     _activeScanRequestId++;
-    _selectedImagePath = null;
+    _selectedImagePaths.clear();
     _clearFailure();
     _loadingStep = 0;
     _lastScannedReceipt = null;
@@ -139,8 +191,8 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
       return;
     }
 
-    final String? path = _selectedImagePath;
-    if (path == null || path.trim().isEmpty) {
+    final List<String> paths = List<String>.unmodifiable(_selectedImagePaths);
+    if (paths.isEmpty) {
       _setFailure(
         ScanFailure(
           type: ScanFailureType.imageUploadFailed,
@@ -164,7 +216,7 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
     try {
       _advanceLoadingSteps();
       final ReceiptModel scanned = await _repository.scanReceipt(
-        imagePath: path,
+        imagePaths: paths,
       );
       if (requestId != _activeScanRequestId) {
         return;
@@ -293,12 +345,29 @@ class ScanController extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> showReadyToScan() async {
     _activeScanRequestId++;
-    _selectedImagePath = null;
+    _selectedImagePaths.clear();
     _lastScannedReceipt = null;
     _pendingReceiptDraft = null;
     _clearFailure();
     _loadingStep = 0;
     _state = ScanViewState.idle;
+    notifyListeners();
+  }
+
+  void cancelScan() {
+    if (_state != ScanViewState.loading) {
+      return;
+    }
+
+    _activeScanRequestId++;
+    _busy = false;
+    _loadingStep = 0;
+    _lastScannedReceipt = null;
+    _pendingReceiptDraft = null;
+    _clearFailure();
+    _state = _selectedImagePaths.isEmpty
+        ? ScanViewState.idle
+        : ScanViewState.imageSelected;
     notifyListeners();
   }
 
