@@ -43,16 +43,16 @@ class DashboardRepository {
       fromInclusive: monthStart,
       toExclusive: monthEnd,
     );
-    final double thisMonthSpending = await _receiptDao.getTotalSpentBetween(
-      fromInclusive: monthStart,
-      toExclusive: monthEnd,
-    );
 
     final List<CategoryBudgetModel> budgets = await _categoryBudgetRepository
         .getBudgets();
     final List<DashboardBudgetProgressModel> progress = budgets
         .map(_toBudgetProgress)
         .toList(growable: false);
+    final double thisMonthSpending = progress.fold<double>(
+      0,
+      (double sum, DashboardBudgetProgressModel item) => sum + item.spentAmount,
+    );
 
     final double totalBudget = progress.fold<double>(
       0,

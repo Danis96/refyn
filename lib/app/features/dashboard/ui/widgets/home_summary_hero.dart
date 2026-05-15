@@ -12,13 +12,25 @@ class HomeSummaryHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double safeTotalBudget =
-    data.totalBudget <= 0 ? 1 : data.totalBudget;
-    final double ratio = (data.thisMonthSpending / safeTotalBudget).clamp(0, 1);
-    final int usedPercent = (ratio * 100).round();
+    final double safeTotalBudget = data.totalBudget <= 0 ? 1 : data.totalBudget;
+    final double rawRatio = data.thisMonthSpending / safeTotalBudget;
+    final double ratio = rawRatio.clamp(0, 1);
+    final int usedPercent = (rawRatio * 100).round();
     final String greeting = TimeGreetingLabel.forNow(DateTime.now());
     final double topInset = MediaQuery.paddingOf(context).top;
     final theme = Theme.of(context);
+    final bool isOverBudget = data.remainingBudget < 0;
+    final String remainingLabel = isOverBudget
+        ? context.l10n.overBudgetLabel(
+            DashboardMoney.formatDecimalConditionally(
+              data.remainingBudget.abs(),
+            ),
+            data.currency,
+          )
+        : context.l10n.remainingBudgetLabel(
+            DashboardMoney.formatDecimalConditionally(data.remainingBudget),
+            data.currency,
+          );
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -67,13 +79,13 @@ class HomeSummaryHero extends StatelessWidget {
                     _HeroMetric(
                       title: context.l10n.thisMonth,
                       value:
-                      '${DashboardMoney.formatDecimalConditionally(data.thisMonthSpending)} ${data.currency}',
+                          '${DashboardMoney.formatDecimalConditionally(data.thisMonthSpending)} ${data.currency}',
                       alignEnd: false,
                     ),
                     _HeroMetric(
                       title: context.l10n.budget,
                       value:
-                      '${DashboardMoney.formatDecimalConditionally(data.totalBudget)} ${data.currency}',
+                          '${DashboardMoney.formatDecimalConditionally(data.totalBudget)} ${data.currency}',
                       alignEnd: true,
                     ),
                   ],
@@ -97,14 +109,11 @@ class HomeSummaryHero extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      context.l10n.remainingBudgetLabel(
-                        DashboardMoney.formatDecimalConditionally(
-                          data.remainingBudget,
-                        ),
-                        data.currency,
-                      ),
+                      remainingLabel,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: HomeThemePalette.success(context),
+                        color: isOverBudget
+                            ? theme.colorScheme.error
+                            : HomeThemePalette.success(context),
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -134,8 +143,9 @@ class _HeroMetric extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
-      crossAxisAlignment:
-      alignEnd ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: alignEnd
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           title,
