@@ -60,7 +60,7 @@ class _ScanPageState extends State<ScanPage> {
             SizedBox(height: AppSpacing.md),
             _ScanSurfaceSection(),
             SizedBox(height: AppSpacing.lg),
-            _RecentScanSection(),
+            // _RecentScanSection(),
           ],
         ),
       ),
